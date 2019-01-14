@@ -1,5 +1,49 @@
 #!/usr/bin/env python
 
+import os
+import sys
+import json
+import threading
+import subprocess
+from datetime import *
+#from mrtparse import *
+
+
+#count ASes and number of occurrences
+def countASes(_msglist):
+
+    msglist = _msglist
+
+    ASes = {}
+    ASeslist =[]
+
+    for j in msglist:
+        ASeslist.append(j["as"])
+
+    ASes = {x:ASeslist.count(x) for x in set(ASeslist)}
+
+    return ASes
+
+#count message type of each AS
+def msgAS(_ASnumber, _msglist):
+
+    msglist = _msglist
+    ASnumber = _ASnumber
+
+    countWithdrawn = 0
+    countAnnouncement = 0
+
+    for i in msglist:
+        if ASnumber == i["as"]:
+            if i["type"] == 'a':
+                countAnnouncement = countAnnouncement + 1
+            else:
+                countWithdrawn = countWithdrawn +1
+
+    return (countAnnouncement,countWithdrawn)
+
+
+
 def main():
 
     msg = {}
@@ -8,6 +52,7 @@ def main():
     with open('routes.txt') as fp:
         line = fp.readline()
 
+        #reading the txt file into memory
         while line:
             type = line.split(";")[0]
             if type == 'w':
@@ -26,9 +71,21 @@ def main():
 
             line = fp.readline()
 
-    print(msglist)
+
+    #looking for which ASes sent messages
+    ASes = countASes(msglist)
+    print("ASes found and number of occurrences.")
+    print(ASes)
+    print("\n")
 
 
+    #counting the types of messages of each AS
+    for i in ASes:
+        print("AS: ", i)
+        a,w = msgAS(i, msglist)
+        print("announcements: ", a)
+        print("withdrawns: ", w)
+        print("\n")
 
 
 if __name__ == '__main__':
