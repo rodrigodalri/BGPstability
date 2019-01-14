@@ -9,6 +9,7 @@ from datetime import *
 #from mrtparse import *
 
 
+
 #count ASes and number of occurrences
 def countASes(_msglist):
 
