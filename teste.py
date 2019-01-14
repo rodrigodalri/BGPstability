@@ -8,7 +8,38 @@ import subprocess
 from datetime import *
 #from mrtparse import *
 
+#count Prefix and number of occurrences
+def countPrefix(_msglist):
 
+    msglist = _msglist
+
+    prefix = {}
+    prefixList =[]
+
+    for j in msglist:
+        prefixList.append(j["prefix"])
+
+    prefix = {x:prefixList.count(x) for x in set(prefixList)}
+
+    return prefix
+
+#count message type of each prefix
+def msgPrefix(_prefix, _msglist):
+
+    msglist = _msglist
+    prefix = _prefix
+
+    countWithdrawn = 0
+    countAnnouncement = 0
+
+    for i in msglist:
+        if prefix == i["prefix"]:
+            if i["type"] == 'a':
+                countAnnouncement = countAnnouncement + 1
+            else:
+                countWithdrawn = countWithdrawn +1
+
+    return (countAnnouncement,countWithdrawn)
 
 #count ASes and number of occurrences
 def countASes(_msglist):
@@ -24,6 +55,7 @@ def countASes(_msglist):
     ASes = {x:ASeslist.count(x) for x in set(ASeslist)}
 
     return ASes
+
 
 #count message type of each AS
 def msgAS(_ASnumber, _msglist):
@@ -84,6 +116,22 @@ def main():
     for i in ASes:
         print("AS: ", i)
         a,w = msgAS(i, msglist)
+        print("announcements: ", a)
+        print("withdrawns: ", w)
+        print("\n")
+
+
+    #looking for which prefix
+    prefixes = countPrefix(msglist)
+    print("Prefixes found and number of occurrences.")
+    print(prefixes)
+    print("\n")
+
+
+    #counting the types of messages of each prefix
+    for i in prefixes:
+        print("Prefix: ", i)
+        a,w = msgPrefix(i, msglist)
         print("announcements: ", a)
         print("withdrawns: ", w)
         print("\n")
