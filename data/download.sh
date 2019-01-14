@@ -20,6 +20,9 @@ fi
       do
         echo "Downloading 0$k:0$i"
         wget https://www.pch.net/resources/Raw_Routing_Data/$route_collector/$year/$month/$day/$route_collector-mrt-bgp-updates-$year-$month-$day-0$k-0$i.gz
+        echo "Decompressing 0$k:0$i"
+        gzip -d $route_collector-mrt-bgp-updates-$year-$month-$day-0$k-0$i.gz
+
       done
     done
 
@@ -29,6 +32,8 @@ fi
       do
         echo "Downloading $k:0$i"
         wget https://www.pch.net/resources/Raw_Routing_Data/$route_collector/$year/$month/$day/$route_collector-mrt-bgp-updates-$year-$month-$day-$k-0$i.gz
+        echo "Decompressing $k:0$i"
+        gzip -d $route_collector-mrt-bgp-updates-$year-$month-$day-$k-0$i.gz
       done
     done
 
@@ -38,6 +43,8 @@ fi
       do
         echo "Downloading 0$k:$i"
         wget https://www.pch.net/resources/Raw_Routing_Data/$route_collector/$year/$month/$day/$route_collector-mrt-bgp-updates-$year-$month-$day-0$k-$i.gz
+        echo "Decompressing 0$k:$i"
+        gzip -d $route_collector-mrt-bgp-updates-$year-$month-$day-0$k-$i.gz
       done
     done
 
@@ -47,5 +54,7 @@ fi
       do
         echo "Downloading $k:$i"
         wget https://www.pch.net/resources/Raw_Routing_Data/$route_collector/$year/$month/$day/$route_collector-mrt-bgp-updates-$year-$month-$day-$k-$i.gz
+        echo "Decompressing $k:$i"
+        gzip -d $route_collector-mrt-bgp-updates-$year-$month-$day-$k-$i.gz
       done
     done
