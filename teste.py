@@ -153,6 +153,58 @@ def msgASPath(_prefix, _msglist):
 
     return aspathList
 
+#save in a txt file information about the IXP
+def txtIXP(_totalMSG, _announcement, _withdrawn):
+
+    totalMSG = _totalMSG
+    announcement = _announcement
+    withdrawn = _withdrawn
+
+    f = open('reports/route-collector.decix-ham.fra.pch.net.txt', 'a+')
+    #FORMAT: total_number_of_messages;number_of_announcements;number_of_withdrawns
+    f.write(str(totalMSG)+';'+str(announcement)+';'+str(withdrawn)+'\n')
+    f.close()
+
+#save in a txt file information about the AS
+def txtAS(_label, _msgA, _msgW, _prefix, _prefixA, _prefixW):
+
+    label = _label
+    msgA = _msgA
+    msgW = _msgW
+    prefix = _prefix
+    prefixA = _prefixA
+    prefixW = _prefixW
+
+    label = 'reports/AS'+label+'.txt'
+    f = open(label, 'a+')
+    #FORMAT: total_number_of_messages;number_of_announcements;number_of_withdrawns;total_number_of_prefixes;announced_prefixes;withdrawed_prefixes
+    f.write(str(msgA+msgW)+';'+str(msgA)+';'+str(msgW)+';'+str(prefix)+';'+str(prefixA)+';'+str(prefixW)+'\n')
+    f.close()
+
+#count statistics about IXP and ASes and save to a txt file
+def countStatistics(_msgList, _ASes):
+
+    totalMSG = 0
+    announcement = 0
+    withdrawn = 0
+
+    ASes = _ASes
+    msglist = _msgList
+
+    for i in ASes:
+        msgA,msgW = msgAS(i, msglist)
+        prefix,prefixA,prefixW = prefixAS(i, msglist)
+
+        txtAS(i,msgA,msgW,prefix,prefixA,prefixW)
+
+        totalMSG = totalMSG + msgA + msgW
+        announcement = announcement + msgA
+        withdrawn = withdrawn + msgW
+
+    txtIXP(totalMSG,announcement,withdrawn)
+
+
+
 def plotIXP(_totalMSG1,_announcement1,_withdrawn1,_label1,_totalMSG2,_announcement2,_withdrawn2,_label2):
 
     totalMSG1 = _totalMSG1
@@ -281,118 +333,57 @@ def plotASprefix(_ASN,_totalPrefix1,_aPrefix1,_wPrefix1,_label1,_totalPrefix2,_a
 
     plt.show()
 
+
+
 def main():
 
-    totalMSG1 = 0
-    announcement1 = 0
-    withdrawn1 = 0
-    totalMSG2 = 0
-    announcement2 = 0
-    withdrawn2 = 0
-
     #reading the txt file into memory
-    msglist = txttoMemory('20190101.txt')
+    print('Reading the 20190101.txt file into memory.')
+    msglist1 = txttoMemory('20190101.txt')
+    print('Reading the 20190102.txt file into memory.')
     msglist2 = txttoMemory('20190102.txt')
+    print("\n")
 
     #looking for which ASes sent messages
-    ASes1 = countASes(msglist)
+    ASes1 = countASes(msglist1)
     print("ASes found and number of occurrences in 20190101")
     print(ASes1)
-    #print("\n")
+    print("\n")
 
     #looking for which ASes sent messages
     ASes2 = countASes(msglist2)
     print("ASes found and number of occurrences in 20190102")
     print(ASes2)
-    #print("\n")
-
-    ASes= {}
-    ASes.update(ASes1)
-    ASes.update(ASes2)
-
-    #lists to store number of messages and generate statistics
-    asN = []
-    total1 = []
-    announcements1 = []
-    withdrawns1 = []
-    total2 = []
-    announcements2 = []
-    withdrawns2 = []
-    pre1 = []
-    pre2 = []
-    preA1 = []
-    preA2 = []
-    preW1 = []
-    preW2 = []
-
-    #counting the types of messages and number of prefixes of each AS
-    for i in ASes:
-        #print("AS: %s" % i)
-        msgA1,msgW1 = msgAS(i, msglist)
-        msgA2,msgW2 = msgAS(i, msglist2)
-
-        asN.append(i)
-        total1.append(msgA1+msgW1)
-        announcements1.append(msgA1)
-        withdrawns1.append(msgW1)
-        total2.append(msgA2+msgW2)
-        announcements2.append(msgA2)
-        withdrawns2.append(msgW2)
-
-        prefix1,prefixA1,prefixW1 = prefixAS(i, msglist)
-        prefix2,prefixA2,prefixW2 = prefixAS(i, msglist2)
-
-        pre1.append(prefix1)
-        pre2.append(prefix2)
-        preA1.append(prefixA1)
-        preA2.append(prefixA2)
-        preW1.append(prefixW1)
-        preW2.append(prefixW2)
-
-        totalMSG1 = totalMSG1 + msgA1 + msgW1
-        totalMSG2 = totalMSG2 + msgA2 + msgW2
-        announcement1 = announcement1 + msgA1
-        announcement2 = announcement2 + msgA2
-        withdrawn1 = withdrawn1 + msgW1
-        withdrawn2 = withdrawn2 + msgW2
-
-        #print("msg announcements: %s" % msgA1)
-        #print("msg withdrawns: %s" % msgW1)
-        #print("prefix msg: %s" % prefix1)
-        #print("prefix announcements: %s" % prefixA1)
-        #print("prefix withdrawns: %s" % prefixW1)
-        #print("\n")
-        #print("msg announcements: %s" % msgA2)
-        #print("msg withdrawns: %s" % msgW2)
-        #print("prefix msg: %s" % prefix2)
-        #print("prefix announcements: %s" % prefixA2)
-        #print("prefix withdrawns: %s" % prefixW2)
-        #print("\n")
-
     print("\n")
-    print("totalMSG1 = %d" % totalMSG1)
-    print("announcement1 = %d" % announcement1)
-    print("withdrawn1 = %d" % withdrawn1)
-    print("totalMSG2 = %d" % totalMSG2)
-    print("announcement2 = %d" % announcement2)
-    print("withdrawn2 = %d" % withdrawn2)
 
+    print('Counting statistics and saving to a txt file')
+    countStatistics(msglist1,ASes1)
+    countStatistics(msglist2,ASes2)
+
+
+    #TODO plots are out of date ---------------------------------------------------------------------------------------------------------
 
     #plot ASes graphics
-    j = 0
-    for i in ASes:
+    #j = 0
+    #for i in ASes:
         #plotASmsg(asN[j],total1[j],announcements1[j],withdrawns1[j],'2019-01-01',total2[j],announcements2[j],withdrawns2[j],'2019-01-02')
-        plotASprefix(asN[j],pre1[j],preA1[j],preW1[j],'2019-01-01',pre2[j],preA2[j],preW2[j],'2019-01-02')
-        j = j+1
+        #plotASprefix(asN[j],pre1[j],preA1[j],preW1[j],'2019-01-01',pre2[j],preA2[j],preW2[j],'2019-01-02')
+        #j = j+1
 
     #plot IXP graphic
     #plotIXP(totalMSG1,announcement1,withdrawn1,'2019-01-01',totalMSG2,announcement2,withdrawn2,'2019-01-02')
 
+    #TODO plots are out of date ---------------------------------------------------------------------------------------------------------
 
 
 
 
 
+
+
+
+
+    #------------------------------------------------------------------------------------------------------------------------------------
 
     #looking for which prefix
     #prefixes = countPrefix(msglist)
@@ -418,6 +409,7 @@ def main():
     #        print(j)
     #    print("\n")
 
+    #------------------------------------------------------------------------------------------------------------------------------------
 
 
 if __name__ == '__main__':
