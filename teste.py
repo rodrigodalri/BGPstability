@@ -5,9 +5,9 @@ import json
 import threading
 import subprocess
 from datetime import *
-#from mrtparse import *
 import numpy as np
 import matplotlib.pyplot as plt
+import pylab
 
 
 #read the txt file into memory
@@ -25,14 +25,14 @@ def txttoMemory(_path):
             if type == 'w':
                 timestamp = line.split(";")[1]
                 n_as = line.split(";")[2]
-                prefix = line.split(";")[3]+'/'+ line.split(";")[4]
+                prefix = line.split(";")[3]+';'+ line.split(";")[4]
                 msg = {"type": type,"timestamp": timestamp,"as": n_as,"prefix": prefix}
                 msglist.append(msg)
             else:
                 timestamp = line.split(";")[1]
                 n_as = line.split(";")[2]
                 aspath = line.split(";")[3]
-                prefix = line.split(";")[4] +'/'+ line.split(";")[5]
+                prefix = line.split(";")[4] +';'+ line.split(";")[5]
                 msg = {"type": type,"timestamp": timestamp,"as": n_as,"aspath": aspath,"prefix": prefix}
                 msglist.append(msg)
 
@@ -203,8 +203,63 @@ def countStatistics(_msgList, _ASes):
 
     txtIXP(totalMSG,announcement,withdrawn)
 
+#calculate the time between an announcement and a withdrawn
+def calculateTimeAW(_msgList, _prefixes, _label):
 
+    prefixes = _prefixes
+    msglist = _msgList
+    label = _label
 
+    time = 0
+    find = 0
+
+    for i in prefixes:
+        for j in msglist:
+            find = 0
+            if i == j["prefix"] and j["type"] == 'a':
+                for k in msglist:
+                    if i == k["prefix"] and k["type"] == 'w' and find == 0 and int(k["timestamp"]) >= int(j["timestamp"]):
+                        dataA = datetime.fromtimestamp(int(j["timestamp"]))
+                        dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
+                        dataW = datetime.fromtimestamp(int(k["timestamp"]))
+                        dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
+                        time = dW - dA
+                        find = 1
+
+                        f = open('reports/timeAW'+label+'.txt', 'a+')
+                        f.write(str(time)+'\n')
+                        f.close()
+
+#calculate the time between an withdrawn and a announcement
+def calculateTimeWA(_msgList, _prefixes, _label):
+
+    prefixes = _prefixes
+    msglist = _msgList
+    label = _label
+
+    time = 0
+    find = 0
+
+    for i in prefixes:
+        for j in msglist:
+            find = 0
+            if i == j["prefix"] and j["type"] == 'w':
+                for k in msglist:
+                    if i == k["prefix"] and k["type"] == 'a' and find == 0 and int(k["timestamp"]) >= int(j["timestamp"]):
+                        dataW = datetime.fromtimestamp(int(j["timestamp"]))
+                        dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
+                        dataA = datetime.fromtimestamp(int(k["timestamp"]))
+                        dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
+                        time = dA - dW
+                        find = 1
+
+                        f = open('reports/timeWA'+label+'.txt', 'a+')
+                        f.write(str(time)+'\n')
+                        f.close()
+
+    return 0
+
+#TODO plots are out of date ---------------------------------------------------------------------------------------------------------
 def plotIXP(_totalMSG1,_announcement1,_withdrawn1,_label1,_totalMSG2,_announcement2,_withdrawn2,_label2):
 
     totalMSG1 = _totalMSG1
@@ -246,7 +301,6 @@ def plotIXP(_totalMSG1,_announcement1,_withdrawn1,_label1,_totalMSG2,_announceme
     autolabel(rects2, "center")
 
     plt.show()
-
 def plotASmsg(_ASN,_totalMSG1,_announcement1,_withdrawn1,_label1,_totalMSG2,_announcement2,_withdrawn2,_label2):
 
     ASN = _ASN
@@ -289,7 +343,6 @@ def plotASmsg(_ASN,_totalMSG1,_announcement1,_withdrawn1,_label1,_totalMSG2,_ann
     autolabel(rects2, "center")
 
     plt.show()
-
 def plotASprefix(_ASN,_totalPrefix1,_aPrefix1,_wPrefix1,_label1,_totalPrefix2,_aPrefix2,_wPrefix2,_label2):
 
     ASN = _ASN
@@ -332,6 +385,50 @@ def plotASprefix(_ASN,_totalPrefix1,_aPrefix1,_wPrefix1,_label1,_totalPrefix2,_a
     autolabel(rects2, "center")
 
     plt.show()
+#TODO plots are out of date ---------------------------------------------------------------------------------------------------------
+
+#plot times between messages
+def plotCDF(_path, _type):
+
+    path = _path
+    type = _type
+    timeList = []
+    count = 0
+
+    save = path.split(".")[0]
+    save = "figures/"+save.split("/")[1]
+
+    if type == "W-A":
+        name = "DECIX Route Collector " + save.split("figures/timeWA")[1]
+    else:
+        name = "DECIX Route Collector " + save.split("figures/timeAW")[1]
+
+    with open(path) as fp:
+        line = fp.readline()
+
+        while line:
+            h = int(line.split(":")[0])
+            m = int(line.split(":")[1])
+            s = int(line.split(":")[2])
+
+            timeList.append(m + h*60)
+            line = fp.readline()
+
+
+    count = len(timeList)
+
+    pylab.plot(np.sort(timeList),np.arange(len(timeList))/float(len(timeList)-1), label="Time between "+type,  linewidth=2)
+    pylab.title(name + " - "+str(count) + " occurrences", loc='center')
+    pylab.ylabel("Frequency", fontsize=18)
+    pylab.xlabel("Time (m)", fontsize=18)
+    pylab.grid(True)
+    pylab.xlim(0, )
+    pylab.ylim(0, 1)
+    pylab.legend(loc="best", fontsize=14)
+    pylab.savefig(save+".pdf", dpi=600)
+    pylab.savefig(save+".png", dpi=600)
+    pylab.clf()
+
 
 
 
@@ -357,12 +454,10 @@ def main():
     print("\n")
 
     print('Counting statistics and saving to a txt file')
-    countStatistics(msglist1,ASes1)
-    countStatistics(msglist2,ASes2)
-
+    #countStatistics(msglist1,ASes1)
+    #countStatistics(msglist2,ASes2)
 
     #TODO plots are out of date ---------------------------------------------------------------------------------------------------------
-
     #plot ASes graphics
     #j = 0
     #for i in ASes:
@@ -372,26 +467,27 @@ def main():
 
     #plot IXP graphic
     #plotIXP(totalMSG1,announcement1,withdrawn1,'2019-01-01',totalMSG2,announcement2,withdrawn2,'2019-01-02')
-
     #TODO plots are out of date ---------------------------------------------------------------------------------------------------------
 
 
+    #looking for which prefix
+    #prefixes1 = countPrefix(msglist1)
+    #prefixes2 = countPrefix(msglist2)
 
+    print('Calculating the time between an announcement and a withdrawn')
+    #calculateTimeAW(msglist1, prefixes1, '20190101')
+    #calculateTimeAW(msglist2, prefixes2, '20190102')
 
+    print('Calculating the time between an withdrawn and a announcement')
+    #calculateTimeWA(msglist1, prefixes1, '20190101')
+    #calculateTimeWA(msglist2, prefixes2, '20190102')
 
-
-
-
+    plotCDF("reports/timeWA20190101.txt", "W-A")
+    plotCDF("reports/timeWA20190102.txt", "W-A")
+    plotCDF("reports/timeAW20190101.txt", "A-W")
+    plotCDF("reports/timeAW20190102.txt", "A-W")
 
     #------------------------------------------------------------------------------------------------------------------------------------
-
-    #looking for which prefix
-    #prefixes = countPrefix(msglist)
-    #print("Prefixes found and number of occurrences.")
-    #print(prefixes)
-    #print("\n")
-
-
     #counting the types of messages of each prefix
     #for i in prefixes:
     #    print("Prefix: %s" % i)
@@ -408,7 +504,6 @@ def main():
     #    for j in aspathList:
     #        print(j)
     #    print("\n")
-
     #------------------------------------------------------------------------------------------------------------------------------------
 
 
