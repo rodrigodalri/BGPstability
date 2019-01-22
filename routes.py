@@ -31,7 +31,7 @@ def main():
                             print('withdrawn')
                             timestamp = m.ts
                             n_as = m.bgp.peer_as
-                            f = open('routes.txt', 'a+')
+                            f = open('20190102.txt', 'a+')
                             f.write('w;'+str(timestamp)+';'+str(n_as)+';')
                             f.close()
                             print(timestamp)
@@ -39,11 +39,11 @@ def main():
                             for withdrawn in m.bgp.msg.withdrawn:
                                 prefix = withdrawn.prefix
                                 leng = withdrawn.plen
-                                f = open('routes.txt', 'a+')
+                                f = open('20190102.txt', 'a+')
                                 f.write(str(prefix)+';'+str(leng)+';')
                                 f.close()
                                 print(prefix,leng)
-                            f = open('routes.txt', 'a+')
+                            f = open('20190102.txt', 'a+')
                             f.write('\n')
                             f.close()
 
@@ -57,17 +57,17 @@ def main():
                                         for withdrawn in attr.mp_unreach['withdrawn']:
                                             prefix = withdrawn.prefix
                                             leng = withdrawn.plen
-                                            f = open('routes.txt', 'a+')
-                                            f.write('w;'+str(timestamp)+';'+str(n_as)+';'+str(prefix)+';'+str(leng)+';')
+                                            f = open('20190102.txt', 'a+')
+                                            f.write('w;'+str(timestamp)+';'+str(n_as)+';'+str(prefix)+';'+str(leng)+';'+'\n')
                                             f.close()
                                             print('----------------------------------')
                                             print('withdrawn')
                                             print(timestamp)
                                             print(n_as)
                                             print(prefix, leng)
-                                    f = open('routes.txt', 'a+')
-                                    f.write('\n')
-                                    f.close()
+                                    #f = open('20190102.txt', 'a+')
+                                    #f.write('\n')
+                                    #f.close()
 
                         #announcement ipv6
                         if m.bgp.msg.attr_len != 0:
@@ -82,8 +82,8 @@ def main():
                                         for nlri in attr.mp_reach['nlri']:
                                             prefix = nlri.prefix
                                             leng = nlri.plen
-                                            f = open('routes.txt', 'a+')
-                                            f.write('a;'+str(timestamp)+';'+str(n_as)+';'+str(as_path)+';'+str(prefix)+';'+str(leng)+';')
+                                            f = open('20190102.txt', 'a+')
+                                            f.write('a;'+str(timestamp)+';'+str(n_as)+';'+str(as_path)+';'+str(prefix)+';'+str(leng)+';'+'\n')
                                             f.close()
                                             print('----------------------------------')
                                             print('announcement')
@@ -91,9 +91,9 @@ def main():
                                             print(n_as)
                                             print(as_path)
                                             print(prefix, leng)
-                                    f = open('routes.txt', 'a+')
-                                    f.write('\n')
-                                    f.close()
+                                    #f = open('20190102.txt', 'a+')
+                                    #f.write('\n')
+                                    #f.close()
 
                         #announcement ipv4
                         if m.bgp.msg.attr_len != 0:
@@ -102,7 +102,7 @@ def main():
                             for nlri in m.bgp.msg.nlri:
                                 prefix = nlri.prefix
                                 leng = nlri.plen
-                                f = open('routes.txt', 'a+')
+                                f = open('20190102.txt', 'a+')
                                 f.write('a;'+str(timestamp)+';'+str(n_as)+';'+str(as_path)+';'+str(prefix)+';'+str(leng)+';')
                                 f.close()
                                 print('----------------------------------')
@@ -111,7 +111,7 @@ def main():
                                 print(n_as)
                                 print(as_path)
                                 print(prefix, leng)
-                                f = open('routes.txt', 'a+')
+                                f = open('20190102.txt', 'a+')
                                 f.write('\n')
                                 f.close()
 

@@ -8,7 +8,13 @@ from datetime import *
 import numpy as np
 import matplotlib.pyplot as plt
 import pylab
+import ipaddress
 
+#AS43252 is decix
+
+
+#TODO check if you are picking up all the prefixes when there is more than one in the same message
+#TODO some plots are out of date
 
 #read the txt file into memory
 def txttoMemory(_path):
@@ -25,7 +31,22 @@ def txttoMemory(_path):
             if type == 'w':
                 timestamp = line.split(";")[1]
                 n_as = line.split(";")[2]
-                prefix = line.split(";")[3]+';'+ line.split(";")[4]
+                list = line.split(";")
+                prefix = list[3]+";"+list[4]
+                i = 5
+                try:
+                    while "\n" != list[i]:
+                        try:
+                            prefix = prefix+";"+list[i]+";"+list[i+1]
+                            i = i + 2
+                        except:
+                            a = 0
+                except:
+                        a = 0
+                if prefix[:-1] == ";":
+                    prefix = prefix[:-1]
+                    print("entrou")
+                    print(prefix)
                 msg = {"type": type,"timestamp": timestamp,"as": n_as,"prefix": prefix}
                 msglist.append(msg)
             else:
@@ -49,7 +70,15 @@ def countASes(_msglist):
     ASeslist =[]
 
     for j in msglist:
-        ASeslist.append(j["as"])
+        if j["as"] == '43252' and j["type"] == 'a':
+            list = j["aspath"].split(',')[0]
+            try:
+                ASeslist.append(int(list[2:-1]))
+            except:
+                ASeslist.append(int(list[2:-2]))
+        else:
+            ASeslist.append(int(j["as"]))
+
 
     ASes = {x:ASeslist.count(x) for x in set(ASeslist)}
 
@@ -65,11 +94,23 @@ def msgAS(_ASnumber, _msglist):
     countAnnouncement = 0
 
     for i in msglist:
-        if ASnumber == i["as"]:
-            if i["type"] == 'a':
-                countAnnouncement = countAnnouncement + 1
-            else:
-                countWithdrawn = countWithdrawn +1
+        if i["as"] == '43252' and i["type"] == 'a':
+            list = i["aspath"].split(',')[0]
+            try:
+                var = int(list[2:-1])
+            except:
+                var = int(list[2:-2])
+            if ASnumber == var:
+                if i["type"] == 'a':
+                    countAnnouncement = countAnnouncement + 1
+                else:
+                    countWithdrawn = countWithdrawn + 1
+        else:
+            if str(ASnumber) == i["as"]:
+                if i["type"] == 'a':
+                    countAnnouncement = countAnnouncement + 1
+                else:
+                    countWithdrawn = countWithdrawn + 1
 
     return (countAnnouncement,countWithdrawn)
 
@@ -88,13 +129,71 @@ def prefixAS(_ASnumber, _msglist):
     count = 0
 
     for i in msglist:
-        if ASnumber == i["as"]:
-            if i["type"] == 'a':
-                prefixList.append(i["prefix"])
-                prefixListA.append(i["prefix"])
-            else:
-                prefixList.append(i["prefix"])
-                prefixListW.append(i["prefix"])
+        if i["as"] == '43252' and i["type"] == 'a':
+            list = i["aspath"].split(',')[0]
+            try:
+                var = int(list[2:-1])
+            except:
+                var = int(list[2:-2])
+            if ASnumber == var:
+                if i["type"] == 'a':
+                    list = i["prefix"].split(';')
+                    for k in range(0,len(list)-1,2):
+                        prefixList.append(list[k]+';'+list[k+1])
+                        prefixListA.append(list[k]+';'+list[k+1])
+                else:
+                    list = i["prefix"].split(';')
+                    for j in range(0,len(list)-1,2):
+                        prefixList.append(list[j]+';'+list[j+1])
+                        prefixListW.append(list[j]+';'+list[j+1])
+        else:
+            if str(ASnumber) == i["as"]:
+                if i["type"] == 'a':
+                    list = i["prefix"].split(';')
+                    for k in range(0,len(list)-1,2):
+                        prefixList.append(list[k]+';'+list[k+1])
+                        prefixListA.append(list[k]+';'+list[k+1])
+                else:
+                    list = i["prefix"].split(';')
+                    for j in range(0,len(list)-1,2):
+                        prefixList.append(list[j]+';'+list[j+1])
+                        prefixListW.append(list[j]+';'+list[j+1])
+
+
+    count = {x:prefixList.count(x) for x in set(prefixList)}
+    countAnnouncement = {x:prefixListA.count(x) for x in set(prefixListA)}
+    countWithdrawn = {x:prefixListW.count(x) for x in set(prefixListW)}
+
+    count = len(count)
+    countAnnouncement = len(countAnnouncement)
+    countWithdrawn = len(countWithdrawn)
+
+    return (count,countAnnouncement,countWithdrawn)
+
+#count the number of prefixes of IXP
+def prefixIXP(_msglist):
+
+    msglist = _msglist
+
+    prefixListA =[]
+    prefixListW =[]
+    prefixList =[]
+
+    countWithdrawn = 0
+    countAnnouncement = 0
+    count = 0
+
+    for i in msglist:
+        if i["type"] == 'a':
+            list = i["prefix"].split(';')
+            for k in range(0,len(list)-1,2):
+                prefixList.append(list[k]+';'+list[k+1])
+                prefixListA.append(list[k]+';'+list[k+1])
+        else:
+            list = i["prefix"].split(';')
+            for j in range(0,len(list)-1,2):
+                prefixList.append(list[j]+';'+list[j+1])
+                prefixListW.append(list[j]+';'+list[j+1])
 
 
     count = {x:prefixList.count(x) for x in set(prefixList)}
@@ -115,8 +214,10 @@ def countPrefix(_msglist):
     prefix = {}
     prefixList =[]
 
-    for j in msglist:
-        prefixList.append(j["prefix"])
+    for i in msglist:
+        list = i["prefix"].split(';')
+        for k in range(0,len(list)-1,2):
+            prefixList.append(list[k]+';'+list[k+1])
 
     prefix = {x:prefixList.count(x) for x in set(prefixList)}
 
@@ -132,15 +233,18 @@ def msgPrefix(_prefix, _msglist):
     countAnnouncement = 0
 
     for i in msglist:
-        if prefix == i["prefix"]:
-            if i["type"] == 'a':
-                countAnnouncement = countAnnouncement + 1
-            else:
-                countWithdrawn = countWithdrawn +1
+        list = i["prefix"].split(';')
+        for k in range(0,len(list)-1,2):
+            if prefix == list[k]+';'+list[k+1]:
+                if i["type"] == 'a':
+                    countAnnouncement = countAnnouncement + 1
+                else:
+                    countWithdrawn = countWithdrawn +1
 
     return (countAnnouncement,countWithdrawn)
 
 #list every aspath from this prefix
+#TODO more than one prefix for message
 def msgASPath(_prefix, _msglist):
 
     msglist = _msglist
@@ -154,15 +258,18 @@ def msgASPath(_prefix, _msglist):
     return aspathList
 
 #save in a txt file information about the IXP
-def txtIXP(_totalMSG, _announcement, _withdrawn):
+def txtIXP(_totalMSG, _announcement, _withdrawn, _prefix, _prefixA, _prefixW):
 
     totalMSG = _totalMSG
     announcement = _announcement
     withdrawn = _withdrawn
+    prefix = _prefix
+    prefixA = _prefixA
+    prefixW = _prefixW
 
     f = open('reports/route-collector.decix-ham.fra.pch.net.txt', 'a+')
-    #FORMAT: total_number_of_messages;number_of_announcements;number_of_withdrawns
-    f.write(str(totalMSG)+';'+str(announcement)+';'+str(withdrawn)+'\n')
+    #FORMAT: total_number_of_messages;number_of_announcements;number_of_withdrawns;total_number_of_prefixes;announced_prefixes;withdrawed_prefixes
+    f.write(str(totalMSG)+';'+str(announcement)+';'+str(withdrawn)+';'+str(prefix)+';'+str(prefixA)+';'+str(prefixW)+'\n')
     f.close()
 
 #save in a txt file information about the AS
@@ -175,7 +282,7 @@ def txtAS(_label, _msgA, _msgW, _prefix, _prefixA, _prefixW):
     prefixA = _prefixA
     prefixW = _prefixW
 
-    label = 'reports/AS'+label+'.txt'
+    label = 'reports/AS'+str(label)+'.txt'
     f = open(label, 'a+')
     #FORMAT: total_number_of_messages;number_of_announcements;number_of_withdrawns;total_number_of_prefixes;announced_prefixes;withdrawed_prefixes
     f.write(str(msgA+msgW)+';'+str(msgA)+';'+str(msgW)+';'+str(prefix)+';'+str(prefixA)+';'+str(prefixW)+'\n')
@@ -201,7 +308,8 @@ def countStatistics(_msgList, _ASes):
         announcement = announcement + msgA
         withdrawn = withdrawn + msgW
 
-    txtIXP(totalMSG,announcement,withdrawn)
+    prefix,prefixA,prefixW = prefixIXP(msglist)
+    txtIXP(totalMSG,announcement,withdrawn,prefix,prefixA,prefixW)
 
 #calculate the time between an announcement and a withdrawn
 def calculateTimeAW(_msgList, _prefixes, _label):
@@ -209,6 +317,9 @@ def calculateTimeAW(_msgList, _prefixes, _label):
     prefixes = _prefixes
     msglist = _msgList
     label = _label
+
+    prefix = {}
+    prefixList =[]
 
     time = 0
     find = 0
@@ -218,17 +329,24 @@ def calculateTimeAW(_msgList, _prefixes, _label):
             find = 0
             if i == j["prefix"] and j["type"] == 'a':
                 for k in msglist:
-                    if i == k["prefix"] and k["type"] == 'w' and find == 0 and int(k["timestamp"]) >= int(j["timestamp"]):
-                        dataA = datetime.fromtimestamp(int(j["timestamp"]))
-                        dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
-                        dataW = datetime.fromtimestamp(int(k["timestamp"]))
-                        dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
-                        time = dW - dA
-                        find = 1
+                    if k["type"] == 'w' and find == 0 and int(k["timestamp"]) >= int(j["timestamp"]):
+                        list = k["prefix"].split(';')
+                        for l in range(0,len(list)-1,2):
+                            if i == list[l]+';'+list[l+1]:
+                                dataA = datetime.fromtimestamp(int(j["timestamp"]))
+                                dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
+                                dataW = datetime.fromtimestamp(int(k["timestamp"]))
+                                dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
+                                time = dW - dA
+                                find = 1
+                                prefixList.append(i)
+                                f = open('reports/timeAW'+label+'.txt', 'a+')
+                                f.write(str(time)+'\n')
+                                f.close()
 
-                        f = open('reports/timeAW'+label+'.txt', 'a+')
-                        f.write(str(time)+'\n')
-                        f.close()
+    prefix = {x:prefixList.count(x) for x in set(prefixList)}
+
+    return prefix
 
 #calculate the time between an withdrawn and a announcement
 def calculateTimeWA(_msgList, _prefixes, _label):
@@ -237,27 +355,35 @@ def calculateTimeWA(_msgList, _prefixes, _label):
     msglist = _msgList
     label = _label
 
+    prefix = {}
+    prefixList =[]
+
     time = 0
     find = 0
 
     for i in prefixes:
         for j in msglist:
             find = 0
-            if i == j["prefix"] and j["type"] == 'w':
-                for k in msglist:
-                    if i == k["prefix"] and k["type"] == 'a' and find == 0 and int(k["timestamp"]) >= int(j["timestamp"]):
-                        dataW = datetime.fromtimestamp(int(j["timestamp"]))
-                        dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
-                        dataA = datetime.fromtimestamp(int(k["timestamp"]))
-                        dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
-                        time = dA - dW
-                        find = 1
+            if j["type"] == 'w':
+                list = j["prefix"].split(';')
+                for l in range(0,len(list)-1,2):
+                    if i == list[l]+';'+list[l+1]:
+                        for k in msglist:
+                            if i == k["prefix"] and k["type"] == 'a' and find == 0 and int(k["timestamp"]) >= int(j["timestamp"]):
+                                dataW = datetime.fromtimestamp(int(j["timestamp"]))
+                                dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
+                                dataA = datetime.fromtimestamp(int(k["timestamp"]))
+                                dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
+                                time = dA - dW
+                                find = 1
+                                prefixList.append(i)
+                                f = open('reports/timeWA'+label+'.txt', 'a+')
+                                f.write(str(time)+'\n')
+                                f.close()
 
-                        f = open('reports/timeWA'+label+'.txt', 'a+')
-                        f.write(str(time)+'\n')
-                        f.close()
+    prefix = {x:prefixList.count(x) for x in set(prefixList)}
 
-    return 0
+    return prefix
 
 #TODO plots are out of date ---------------------------------------------------------------------------------------------------------
 def plotIXP(_totalMSG1,_announcement1,_withdrawn1,_label1,_totalMSG2,_announcement2,_withdrawn2,_label2):
@@ -387,7 +513,7 @@ def plotASprefix(_ASN,_totalPrefix1,_aPrefix1,_wPrefix1,_label1,_totalPrefix2,_a
     plt.show()
 #TODO plots are out of date ---------------------------------------------------------------------------------------------------------
 
-#plot times between messages
+#plot times between messages AW and WA
 def plotCDF(_path, _type):
 
     path = _path
@@ -429,31 +555,44 @@ def plotCDF(_path, _type):
     pylab.savefig(save+".png", dpi=600)
     pylab.clf()
 
+#test if the networks overlaps
+def isAggregate(_prefix1, _prefix2):
 
+    prefix1 = _prefix1
+    prefix2 = _prefix2
 
+    prefix1 = prefix1.replace(";", "/")
+    prefix2 = prefix2.replace(";", "/")
+
+    network1 = ipaddress.ip_network(prefix1)
+    network2 = ipaddress.ip_network(prefix2)
+
+    if network1.overlaps(network2):
+        print("isAggregate", "\n")
+        print(prefix1, prefix2)
+        return 1
+    else:
+        return 0
 
 def main():
 
     #reading the txt file into memory
-    print('Reading the 20190101.txt file into memory.')
+    print('Reading the 20190101.txt file into memory.',"\n")
     msglist1 = txttoMemory('20190101.txt')
-    print('Reading the 20190102.txt file into memory.')
+    print('Reading the 20190102.txt file into memory.',"\n")
     msglist2 = txttoMemory('20190102.txt')
-    print("\n")
 
     #looking for which ASes sent messages
     ASes1 = countASes(msglist1)
     print("ASes found and number of occurrences in 20190101")
-    print(ASes1)
-    print("\n")
+    print(ASes1,"\n")
 
     #looking for which ASes sent messages
     ASes2 = countASes(msglist2)
     print("ASes found and number of occurrences in 20190102")
-    print(ASes2)
-    print("\n")
+    print(ASes2,"\n")
 
-    print('Counting statistics and saving to a txt file')
+    print('Counting statistics and saving to a txt file',"\n")
     #countStatistics(msglist1,ASes1)
     #countStatistics(msglist2,ASes2)
 
@@ -470,37 +609,38 @@ def main():
     #TODO plots are out of date ---------------------------------------------------------------------------------------------------------
 
 
-    #looking for which prefix
+    print('Looking for which prefix',"\n")
     #prefixes1 = countPrefix(msglist1)
-    #prefixes2 = countPrefix(msglist2)
+    prefixes2 = countPrefix(msglist2)
 
-    print('Calculating the time between an announcement and a withdrawn')
+    print('Calculating the time between an announcement and a withdrawn',"\n")
     #calculateTimeAW(msglist1, prefixes1, '20190101')
     #calculateTimeAW(msglist2, prefixes2, '20190102')
 
-    print('Calculating the time between an withdrawn and a announcement')
+    print('Calculating the time between an withdrawn and a announcement',"\n")
     #calculateTimeWA(msglist1, prefixes1, '20190101')
-    #calculateTimeWA(msglist2, prefixes2, '20190102')
+    calculateTimeWA(msglist2, prefixes2, '20190102')
 
-    plotCDF("reports/timeWA20190101.txt", "W-A")
-    plotCDF("reports/timeWA20190102.txt", "W-A")
-    plotCDF("reports/timeAW20190101.txt", "A-W")
-    plotCDF("reports/timeAW20190102.txt", "A-W")
+    print('Ploting CDF graphics',"\n")
+    #plotCDF("reports/timeWA20190101.txt", "W-A")
+    #plotCDF("reports/timeWA20190102.txt", "W-A")
+    #plotCDF("reports/timeAW20190101.txt", "A-W")
+    #plotCDF("reports/timeAW20190102.txt", "A-W")
 
     #------------------------------------------------------------------------------------------------------------------------------------
     #counting the types of messages of each prefix
-    #for i in prefixes:
+    #for i in prefixes1:
     #    print("Prefix: %s" % i)
-    #    a,w = msgPrefix(i, msglist)
+    #    a,w = msgPrefix(i, msglist1)
     #    print("announcements: %s" % a)
     #    print("withdrawns: %s" % w)
     #    print("\n")
 
     #list every aspath from every prefix
-    #for i in prefixes:
+    #for i in prefixes1:
     #    print("Prefix: %s" % i)
     #    print("Timestamp : AS : ASpath")
-    #    aspathList = msgASPath(i,msglist)
+    #    aspathList = msgASPath(i,msglist1)
     #    for j in aspathList:
     #        print(j)
     #    print("\n")

@@ -19,7 +19,7 @@ echo "Parser MRT Files PCH - $route_collector from $year/$month/$day"
       for i in {0..9};
       do
         echo "Parsing 0$k:0$i"
-        python routes.py ../data/$route_collector-mrt-bgp-updates-$year-$month-$day-0$k-0$i
+        python routes.py data/$route_collector-mrt-bgp-updates-$year-$month-$day-0$k-0$i
       done
     done
 
@@ -28,7 +28,7 @@ echo "Parser MRT Files PCH - $route_collector from $year/$month/$day"
       for i in {0..9};
       do
         echo "Parsing $k:0$i"
-        python routes.py ../data/$route_collector-mrt-bgp-updates-$year-$month-$day-$k-0$i
+        python routes.py data/$route_collector-mrt-bgp-updates-$year-$month-$day-$k-0$i
       done
     done
 
@@ -37,7 +37,7 @@ echo "Parser MRT Files PCH - $route_collector from $year/$month/$day"
       for i in {10..59};
       do
         echo "Parsing 0$k:$i"
-        python routes.py ../data/$route_collector-mrt-bgp-updates-$year-$month-$day-0$k-$i
+        python routes.py data/$route_collector-mrt-bgp-updates-$year-$month-$day-0$k-$i
       done
     done
 
@@ -46,6 +46,6 @@ echo "Parser MRT Files PCH - $route_collector from $year/$month/$day"
       for i in {10..59};
       do
         echo "Parsing $k:$i"
-        python routes.py ../data/$route_collector-mrt-bgp-updates-$year-$month-$day-$k-$i
+        python routes.py data/$route_collector-mrt-bgp-updates-$year-$month-$day-$k-$i
       done
     done
