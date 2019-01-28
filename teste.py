@@ -549,32 +549,57 @@ def calculateChangesPrefix(_prefixes, _msglist, _label):
 
 #------------------------------[PLOT]---------------------------------------------
 #TODO plots are out of date
-def plotIXP(_totalMSG1,_announcement1,_withdrawn1,_label1,_totalMSG2,_announcement2,_withdrawn2,_label2):
+def plotIXP(_path):
 
-    totalMSG1 = _totalMSG1
-    announcement1 = _announcement1
-    withdrawn1 = _withdrawn1
-    label1 = _label1
-    totalMSG2 = _totalMSG2
-    announcement2 = _announcement2
-    withdrawn2 = _withdrawn2
-    label2 = _label2
+    path = _path
+    totalMSG1 = 0
+    announcement1 = 0
+    withdrawn1 = 0
+    totalPrefix1 = 0
+    prefixA1 = 0
+    prefixW1 = 0
+    totalMSG2 = 0
+    announcement2 = 0
+    withdrawn2 = 0
+    totalPrefix2 = 0
+    prefixA2 = 0
+    prefixW2 = 0
 
-    day1 = (totalMSG1, announcement1, withdrawn1)
-    day2 = (totalMSG2, announcement2, withdrawn2)
+    with open(path) as fp:
+        line = fp.readline()
+        print(line)
+        totalMSG1 = line.split(";")[0]
+        announcement1 = line.split(";")[1]
+        withdrawn1 = line.split(";")[2]
+        totalPrefix1 = line.split(";")[3]
+        prefixA1 = line.split(";")[4]
+        prefixW1 = line.split(";")[5]
+        prefixW1=prefixW1[:-1]
+        line = fp.readline()
+        print(line)
+        totalMSG2 = line.split(";")[0]
+        announcement2 = line.split(";")[1]
+        withdrawn2 = line.split(";")[2]
+        totalPrefix2 = line.split(";")[3]
+        prefixA2 = line.split(";")[4]
+        prefixW2 = line.split(";")[5]
+
+
+    day1 = (int(totalMSG1), int(announcement1), int(withdrawn1), int(totalPrefix1), int(prefixA1), int(prefixW1))
+    day2 = (int(totalMSG2), int(announcement2), int(withdrawn2), int(totalPrefix2), int(prefixA2), int(prefixW2))
 
     ind = np.arange(len(day1))  # the x locations for the groups
     width = 0.35  # the width of the bars
 
     fig, ax = plt.subplots()
-    rects1 = ax.bar(ind - width/2, day1, width, color='SkyBlue', label=label1)
-    rects2 = ax.bar(ind + width/2, day2, width, color='IndianRed', label=label2)
+    rects1 = ax.bar(ind - width/2, day1, width, color='SkyBlue', label='2019/01/01')
+    rects2 = ax.bar(ind + width/2, day2, width, color='IndianRed', label='2019/01/02')
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
-    ax.set_ylabel('Number of Messages')
+    ax.set_ylabel('Number of')
     ax.set_title('BGP Messages - DECIX Route Collector')
     ax.set_xticks(ind)
-    ax.set_xticklabels(('Total', 'Announcement', 'Withdrawn'))
+    ax.set_xticklabels(('Total Messages', 'Announcement Messages', 'Withdrawn Messages', 'Total Prefixes', 'Announced Prefixes', 'Withdrawed Prefixes'))
     ax.legend()
 
     def autolabel(rects, xpos='center'):
@@ -590,6 +615,8 @@ def plotIXP(_totalMSG1,_announcement1,_withdrawn1,_label1,_totalMSG2,_announceme
     autolabel(rects2, "center")
 
     plt.show()
+
+
 def plotASmsg(_ASN,_totalMSG1,_announcement1,_withdrawn1,_label1,_totalMSG2,_announcement2,_withdrawn2,_label2):
 
     ASN = _ASN
@@ -740,7 +767,8 @@ def plotCDFPrefix(_path):
     pylab.ylabel("Frequency", fontsize=18)
     pylab.xlabel("ASPATH changes (n)", fontsize=18)
     pylab.grid(True)
-    pylab.xlim(0, )
+    plt.xticks(np.arange(min(changesList), max(changesList)+1, 1.0))
+    pylab.xlim(0, 20)
     pylab.ylim(0, 1)
     pylab.legend(loc="best", fontsize=14)
     pylab.savefig(save+".pdf", dpi=600)
@@ -786,35 +814,36 @@ def main():
 
 
     print('Looking for which prefix',"\n")
-    prefixes1 = countPrefix(msglist1)
-    prefixes2 = countPrefix(msglist2)
+    #prefixes1 = countPrefix(msglist1)
+    #prefixes2 = countPrefix(msglist2)
 
     print('Calculating the time between an announcement and a withdrawn',"\n")
-    calculateTimeAW(msglist1, prefixes1, '20190101')
-    calculateTimeAW(msglist2, prefixes2, '20190102')
+    #calculateTimeAW(msglist1, prefixes1, '20190101')
+    #calculateTimeAW(msglist2, prefixes2, '20190102')
     #calculateTimeA(msglist1, prefixes1, '20190101')
     #calculateTimeA(msglist2, prefixes2, '20190102')
 
     print('Calculating the time between an withdrawn and a announcement',"\n")
-    calculateTimeWA(msglist1, prefixes1, '20190101')
-    calculateTimeWA(msglist2, prefixes2, '20190102')
+    #calculateTimeWA(msglist1, prefixes1, '20190101')
+    #calculateTimeWA(msglist2, prefixes2, '20190102')
     #calculateTimeW(msglist1, prefixes1, '20190101')
     #calculateTimeW(msglist2, prefixes2, '20190102')
 
     print('Ploting CDF graphics',"\n")
-    plotCDF("reports/timeWA20190101.txt", "W-A")
-    plotCDF("reports/timeWA20190102.txt", "W-A")
-    plotCDF("reports/timeAW20190101.txt", "A-W")
-    plotCDF("reports/timeAW20190102.txt", "A-W")
+    #plotCDF("reports/timeWA20190101.txt", "W-A")
+    #plotCDF("reports/timeWA20190102.txt", "W-A")
+    #plotCDF("reports/timeAW20190101.txt", "A-W")
+    #plotCDF("reports/timeAW20190102.txt", "A-W")
 
     print('Calculating the changes of each prefix',"\n")
-    calculateChangesPrefix(prefixes1,msglist1, '20190101')
-    calculateChangesPrefix(prefixes2,msglist2, '20190102')
+    #calculateChangesPrefix(prefixes1,msglist1, '20190101')
+    #calculateChangesPrefix(prefixes2,msglist2, '20190102')
 
     print('Ploting prefixes CDF graphics',"\n")
-    plotCDFPrefix("reports/prefixes20190101.txt")
-    plotCDFPrefix("reports/prefixes20190102.txt")
+    #plotCDFPrefix("reports/prefixes20190101.txt")
+    #plotCDFPrefix("reports/prefixes20190102.txt")
 
+    #plotIXP("reports/route-collector.decix-ham.fra.pch.net.txt")
 
 
 if __name__ == '__main__':
