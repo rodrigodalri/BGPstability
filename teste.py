@@ -457,6 +457,7 @@ def calculateTimeWA(_msgList, _prefixes, _label):
 
     return prefix
 
+#TODO fix
 def calculateTimeA(_msgList, _prefixes, _label):
 
     prefixes = _prefixes
@@ -496,6 +497,7 @@ def calculateTimeA(_msgList, _prefixes, _label):
 
     return prefix
 
+#TODO fix
 def calculateTimeW(_msgList, _prefixes, _label):
 
     prefixes = _prefixes
@@ -615,8 +617,6 @@ def plotIXP(_path):
     autolabel(rects2, "center")
 
     plt.show()
-
-
 def plotASmsg(_ASN,_totalMSG1,_announcement1,_withdrawn1,_label1,_totalMSG2,_announcement2,_withdrawn2,_label2):
 
     ASN = _ASN
@@ -775,7 +775,6 @@ def plotCDFPrefix(_path):
     pylab.savefig(save+".png", dpi=600)
     pylab.clf()
 #------------------------------[PLOT]---------------------------------------------
-
 
 
 def main():
