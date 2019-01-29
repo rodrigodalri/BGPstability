@@ -74,6 +74,19 @@ def txtPrefix(_prefix, _numASes, _numChanges, _label):
     f.write(str(prefix)+';'+str(numASes)+';'+str(numChanges)+'\n')
     f.close()
 
+#save in a txt file information about the prefix:AS
+def txtPrefix2(_prefix, _asn, _numChanges, _label):
+
+    prefix = _prefix
+    numChanges = _numChanges
+    label = _label
+    asn = _asn
+
+    f = open('reports/prefixes'+label+'.txt', 'a+')
+    #FORMAT: prefix;asn;number_of_changes
+    f.write(str(prefix)+';'+str(asn)+';'+str(numChanges)+'\n')
+    f.close()
+
 #save in a txt file information about the IXP
 def txtIXP(_totalMSG, _announcement, _withdrawn, _prefix, _prefixA, _prefixW):
 
@@ -352,6 +365,38 @@ def prefixChanges(_prefix, _prefixes, _msglist):
                 changesList.append(j.split(':')[2])
 
     return({x:asesList.count(x) for x in set(asesList)},{y:changesList.count(y) for y in set(changesList)})
+
+#count prefix:AS changes
+def prefixASChanges(_prefix, _asn, _prefixes, _msglist):
+
+    prefix = _prefix
+    prefixes = _prefixes
+    msglist = _msglist
+    asn = _asn
+
+    var = 0
+    list = []
+    changesList = []
+
+    for i in prefixes:
+        if prefix == i:
+            list = msgASPath(i,msglist)
+            for j in list:
+                test = j.split(':')[1]
+                if int(test[1:]) == int('43252'):
+                    var = list[0].split(':')[2]
+                    var = var.split(',')[0]
+                    try:
+                        var = int(var[3:-1])
+                    except:
+                        var = int(var[4:-2])
+                else:
+                    var = int(j.split(':')[1])
+
+                if var == asn:
+                    changesList.append(j.split(':')[2])
+
+    return({y:changesList.count(y) for y in set(changesList)})
 #------------------------------[PREFIX]-------------------------------------------
 
 
@@ -537,7 +582,7 @@ def calculateTimeW(_msgList, _prefixes, _label):
 
     return prefix
 
-#calculate how many changes and how many cars announced each prefix
+#calculate how many changes and how many ases announced each prefix
 def calculateChangesPrefix(_prefixes, _msglist, _label):
 
     prefixes = _prefixes
@@ -546,6 +591,19 @@ def calculateChangesPrefix(_prefixes, _msglist, _label):
     for i in prefixes:
         var1,var2 = prefixChanges(i, prefixes, msglist)
         txtPrefix(i,len(var1),len(var2), label)
+
+def calculateChangesASPrefix(_prefixes, _ases, _msglist, _label):
+
+    prefixes = _prefixes
+    msglist = _msglist
+    label = _label
+    ases = _ases
+
+    for i in prefixes:
+        for j in ases:
+            var1 = prefixASChanges(i, j, prefixes, msglist)
+            if len(var1) != 0:
+                txtPrefix2(i,j,len(var1),label)
 #------------------------------[STATISTIC]-------------------------------------------
 
 
@@ -704,35 +762,52 @@ def plotASprefix(_ASN,_totalPrefix1,_aPrefix1,_wPrefix1,_label1,_totalPrefix2,_a
 #TODO plots are out of date
 
 #plot times between messages AW and WA
-def plotCDF(_path, _type):
+def plotCDF(_type):
 
-    path = _path
+    pathWA1 = "reports/timeWA20190101.txt"
+    pathWA2 = "reports/timeWA20190102.txt"
+    pathAW1 = "reports/timeAW20190101.txt"
+    pathAW2 = "reports/timeAW20190102.txt"
+    path1 = ""
+    path2 = ""
+
     type = _type
-    timeList = []
+    timeList1 = []
+    timeList2 = []
     count = 0
 
-    save = path.split(".")[0]
-    save = "figures/"+save.split("/")[1]
-
     if type == "W-A":
-        name = "DECIX Route Collector " + save.split("figures/timeWA")[1]
+        name = "DECIX Route Collector time WA"
+        path1 = pathWA1
+        path2 = pathWA2
+        save = "figures/timeWA"
     else:
-        name = "DECIX Route Collector " + save.split("figures/timeAW")[1]
+        name = "DECIX Route Collector time AW"
+        path1 = pathAW1
+        path2 = pathAW2
+        save = "figures/timeAW"
 
-    with open(path) as fp:
+    with open(path1) as fp:
         line = fp.readline()
         while line:
             h = int(line.split(":")[0])
             m = int(line.split(":")[1])
             s = int(line.split(":")[2])
-            timeList.append(m + h*60)
+            timeList1.append(m + h*60)
             line = fp.readline()
 
+    with open(path2) as fp2:
+        line = fp2.readline()
+        while line:
+            h = int(line.split(":")[0])
+            m = int(line.split(":")[1])
+            s = int(line.split(":")[2])
+            timeList2.append(m + h*60)
+            line = fp2.readline()
 
-    count = len(timeList)
-
-    pylab.plot(np.sort(timeList),np.arange(len(timeList))/float(len(timeList)-1), label="Time between "+type,  linewidth=2)
-    pylab.title(name + " - "+str(count) + " occurrences", loc='center')
+    pylab.plot(np.sort(timeList1),np.arange(len(timeList1))/float(len(timeList1)-1), label="2019/01/01 - " + str(len(timeList1)) + "occurrences",  linewidth=2)
+    pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), label="2019/01/02 - "+ str(len(timeList2)) + "occurrences",  linewidth=2)
+    pylab.title("Time between " + type, loc='center')
     pylab.ylabel("Frequency", fontsize=18)
     pylab.xlabel("Time (m)", fontsize=18)
     pylab.grid(True)
@@ -744,30 +819,78 @@ def plotCDF(_path, _type):
     pylab.clf()
 
 #plot number of changes in aspath
-def plotCDFPrefix(_path):
+def plotCDFPrefix():
 
-    path = _path
-    changesList = []
+    path1 = "reports/prefixes20190101.txt"
+    path2 = "reports/prefixes20190102.txt"
+    changesList1 = []
+    changesList2 = []
     count = 0
 
-    save = path.split(".")[0]
-    save = "figures/"+save.split("/")[1]
+    save = "figures/prefixes"
 
-    with open(path) as fp:
+    with open(path1) as fp:
         line = fp.readline()
         while line:
             num = int(line.split(";")[3])
-            changesList.append(num)
+            changesList1.append(num)
             line = fp.readline()
 
-    count = len(changesList)
+    with open(path2) as fp2:
+        line = fp2.readline()
+        while line:
+            num = int(line.split(";")[3])
+            changesList2.append(num)
+            line = fp2.readline()
 
-    pylab.plot(np.sort(changesList),np.arange(len(changesList))/float(len(changesList)-1), label='number of changes',  linewidth=2)
-    pylab.title(str(count) + " occurrences", loc='center')
+
+    pylab.plot(np.sort(changesList1),np.arange(len(changesList1))/float(len(changesList1)-1), label='2019/01/01 - ' + str(len(changesList1)),  linewidth=2)
+    pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), label='2019/01/02 - ' + str(len(changesList2)),  linewidth=2)
+    pylab.title("Prefix ASPATH Changes", loc='center')
     pylab.ylabel("Frequency", fontsize=18)
-    pylab.xlabel("ASPATH changes (n)", fontsize=18)
+    pylab.xlabel("Changes (n)", fontsize=18)
     pylab.grid(True)
-    plt.xticks(np.arange(min(changesList), max(changesList)+1, 1.0))
+    plt.xticks(np.arange(min(changesList2), max(changesList2)+1, 1.0))
+    pylab.xlim(0, 20)
+    pylab.ylim(0, 1)
+    pylab.legend(loc="best", fontsize=14)
+    pylab.savefig(save+".pdf", dpi=600)
+    pylab.savefig(save+".png", dpi=600)
+    pylab.clf()
+
+#plot number of changes in aspath
+def plotCDFASPrefix():
+
+    path1 = "reports/prefixesAS20190101.txt"
+    path2 = "reports/prefixesAS20190102.txt"
+    changesList1 = []
+    changesList2 = []
+    count = 0
+
+    save = "figures/prefixesAS"
+
+    with open(path1) as fp:
+        line = fp.readline()
+        while line:
+            num = int(line.split(";")[3])
+            changesList1.append(num)
+            line = fp.readline()
+
+    #with open(path2) as fp2:
+    #    line = fp2.readline()
+    #    while line:
+    #        num = int(line.split(";")[3])
+    #        changesList2.append(num)
+    #        line = fp2.readline()
+
+
+    pylab.plot(np.sort(changesList1),np.arange(len(changesList1))/float(len(changesList1)-1), label='2019/01/01 - ' + str(len(changesList1)),  linewidth=2)
+    #pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), label='2019/01/02 - ' + str(len(changesList2)),  linewidth=2)
+    pylab.title("Prefix ASPATH Changes", loc='center')
+    pylab.ylabel("Frequency", fontsize=18)
+    pylab.xlabel("Changes (n)", fontsize=18)
+    pylab.grid(True)
+    plt.xticks(np.arange(min(changesList1), max(changesList1)+1, 1.0))
     pylab.xlim(0, 20)
     pylab.ylim(0, 1)
     pylab.legend(loc="best", fontsize=14)
@@ -814,7 +937,7 @@ def main():
 
     print('Looking for which prefix',"\n")
     #prefixes1 = countPrefix(msglist1)
-    #prefixes2 = countPrefix(msglist2)
+    prefixes2 = countPrefix(msglist2)
 
     print('Calculating the time between an announcement and a withdrawn',"\n")
     #calculateTimeAW(msglist1, prefixes1, '20190101')
@@ -829,20 +952,23 @@ def main():
     #calculateTimeW(msglist2, prefixes2, '20190102')
 
     print('Ploting CDF graphics',"\n")
-    #plotCDF("reports/timeWA20190101.txt", "W-A")
-    #plotCDF("reports/timeWA20190102.txt", "W-A")
-    #plotCDF("reports/timeAW20190101.txt", "A-W")
-    #plotCDF("reports/timeAW20190102.txt", "A-W")
+    #plotCDF("W-A")
+    #plotCDF("A-W")
 
     print('Calculating the changes of each prefix',"\n")
     #calculateChangesPrefix(prefixes1,msglist1, '20190101')
     #calculateChangesPrefix(prefixes2,msglist2, '20190102')
+    #calculateChangesASPrefix(prefixes1,ASes1,msglist1, 'AS20190101')
+    calculateChangesASPrefix(prefixes2,ASes2,msglist2, 'AS20190102')
 
     print('Ploting prefixes CDF graphics',"\n")
-    #plotCDFPrefix("reports/prefixes20190101.txt")
-    #plotCDFPrefix("reports/prefixes20190102.txt")
+    #plotCDFPrefix()
+    #plotCDFASPrefix()
 
+    print('Ploting IXP informations',"\n")
     #plotIXP("reports/route-collector.decix-ham.fra.pch.net.txt")
+
+
 
 
 if __name__ == '__main__':
