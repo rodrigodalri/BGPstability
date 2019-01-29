@@ -876,21 +876,21 @@ def plotCDFASPrefix():
             changesList1.append(num)
             line = fp.readline()
 
-    #with open(path2) as fp2:
-    #    line = fp2.readline()
-    #    while line:
-    #        num = int(line.split(";")[3])
-    #        changesList2.append(num)
-    #        line = fp2.readline()
+    with open(path2) as fp2:
+        line = fp2.readline()
+        while line:
+            num = int(line.split(";")[3])
+            changesList2.append(num)
+            line = fp2.readline()
 
 
     pylab.plot(np.sort(changesList1),np.arange(len(changesList1))/float(len(changesList1)-1), label='2019/01/01 - ' + str(len(changesList1)),  linewidth=2)
-    #pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), label='2019/01/02 - ' + str(len(changesList2)),  linewidth=2)
+    pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), label='2019/01/02 - ' + str(len(changesList2)),  linewidth=2)
     pylab.title("Prefix ASPATH Changes", loc='center')
     pylab.ylabel("Frequency", fontsize=18)
     pylab.xlabel("Changes (n)", fontsize=18)
     pylab.grid(True)
-    plt.xticks(np.arange(min(changesList1), max(changesList1)+1, 1.0))
+    plt.xticks(np.arange(min(changesList2), max(changesList2)+1, 1.0))
     pylab.xlim(0, 20)
     pylab.ylim(0, 1)
     pylab.legend(loc="best", fontsize=14)
@@ -919,8 +919,8 @@ def main():
     print(ASes2,"\n")
 
     print('Counting statistics and saving to a txt file',"\n")
-    #countStatistics(msglist1,ASes1)
-    #countStatistics(msglist2,ASes2)
+    countStatistics(msglist1,ASes1)
+    countStatistics(msglist2,ASes2)
 
     #TODO plots are out of date ---------------------------------------------------------------------------------------------------------
     #plot ASes graphics
@@ -936,37 +936,37 @@ def main():
 
 
     print('Looking for which prefix',"\n")
-    #prefixes1 = countPrefix(msglist1)
+    prefixes1 = countPrefix(msglist1)
     prefixes2 = countPrefix(msglist2)
 
     print('Calculating the time between an announcement and a withdrawn',"\n")
-    #calculateTimeAW(msglist1, prefixes1, '20190101')
-    #calculateTimeAW(msglist2, prefixes2, '20190102')
-    #calculateTimeA(msglist1, prefixes1, '20190101')
-    #calculateTimeA(msglist2, prefixes2, '20190102')
+    calculateTimeAW(msglist1, prefixes1, '20190101')
+    calculateTimeAW(msglist2, prefixes2, '20190102')
+    calculateTimeA(msglist1, prefixes1, '20190101')
+    calculateTimeA(msglist2, prefixes2, '20190102')
 
     print('Calculating the time between an withdrawn and a announcement',"\n")
-    #calculateTimeWA(msglist1, prefixes1, '20190101')
-    #calculateTimeWA(msglist2, prefixes2, '20190102')
-    #calculateTimeW(msglist1, prefixes1, '20190101')
-    #calculateTimeW(msglist2, prefixes2, '20190102')
+    calculateTimeWA(msglist1, prefixes1, '20190101')
+    calculateTimeWA(msglist2, prefixes2, '20190102')
+    calculateTimeW(msglist1, prefixes1, '20190101')
+    calculateTimeW(msglist2, prefixes2, '20190102')
 
     print('Ploting CDF graphics',"\n")
-    #plotCDF("W-A")
-    #plotCDF("A-W")
+    plotCDF("W-A")
+    plotCDF("A-W")
 
     print('Calculating the changes of each prefix',"\n")
-    #calculateChangesPrefix(prefixes1,msglist1, '20190101')
-    #calculateChangesPrefix(prefixes2,msglist2, '20190102')
-    #calculateChangesASPrefix(prefixes1,ASes1,msglist1, 'AS20190101')
+    calculateChangesPrefix(prefixes1,msglist1, '20190101')
+    calculateChangesPrefix(prefixes2,msglist2, '20190102')
+    calculateChangesASPrefix(prefixes1,ASes1,msglist1, 'AS20190101')
     calculateChangesASPrefix(prefixes2,ASes2,msglist2, 'AS20190102')
 
     print('Ploting prefixes CDF graphics',"\n")
-    #plotCDFPrefix()
-    #plotCDFASPrefix()
+    plotCDFPrefix()
+    plotCDFASPrefix()
 
     print('Ploting IXP informations',"\n")
-    #plotIXP("reports/route-collector.decix-ham.fra.pch.net.txt")
+    plotIXP("reports/route-collector.decix-ham.fra.pch.net.txt")
 
 
 
