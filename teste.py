@@ -608,7 +608,6 @@ def calculateChangesASPrefix(_prefixes, _ases, _msglist, _label):
 
 
 #------------------------------[PLOT]---------------------------------------------
-#TODO plots are out of date
 def plotIXP(_path):
 
     path = _path
@@ -675,91 +674,6 @@ def plotIXP(_path):
     autolabel(rects2, "center")
 
     plt.show()
-def plotASmsg(_ASN,_totalMSG1,_announcement1,_withdrawn1,_label1,_totalMSG2,_announcement2,_withdrawn2,_label2):
-
-    ASN = _ASN
-    totalMSG1 = _totalMSG1
-    announcement1 = _announcement1
-    withdrawn1 = _withdrawn1
-    label1 = _label1
-    totalMSG2 = _totalMSG2
-    announcement2 = _announcement2
-    withdrawn2 = _withdrawn2
-    label2 = _label2
-
-    day1 = (totalMSG1, announcement1, withdrawn1)
-    day2 = (totalMSG2, announcement2, withdrawn2)
-
-    ind = np.arange(len(day1))  # the x locations for the groups
-    width = 0.35  # the width of the bars
-
-    fig, ax = plt.subplots()
-    rects1 = ax.bar(ind - width/2, day1, width, color='SkyBlue', label=label1)
-    rects2 = ax.bar(ind + width/2, day2, width, color='IndianRed', label=label2)
-
-    # Add some text for labels, title and custom x-axis tick labels, etc.
-    ax.set_ylabel('Number of Messages')
-    ax.set_title('BGP Messages of AS%s' % ASN)
-    ax.set_xticks(ind)
-    ax.set_xticklabels(('Total', 'Announcement', 'Withdrawn'))
-    ax.legend()
-
-    def autolabel(rects, xpos='center'):
-        xpos = xpos.lower()  # normalize the case of the parameter
-        ha = {'center': 'center', 'right': 'left', 'left': 'right'}
-        offset = {'center': 0.5, 'right': 0.57, 'left': 0.43}  # x_txt = x + w*off
-        for rect in rects:
-            height = rect.get_height()
-            ax.text(rect.get_x() + rect.get_width()*offset[xpos], 1.01*height,
-                    '{}'.format(height), ha=ha[xpos], va='bottom')
-
-    autolabel(rects1, "center")
-    autolabel(rects2, "center")
-
-    plt.show()
-def plotASprefix(_ASN,_totalPrefix1,_aPrefix1,_wPrefix1,_label1,_totalPrefix2,_aPrefix2,_wPrefix2,_label2):
-
-    ASN = _ASN
-    totalPrefix1 = _totalPrefix1
-    aPrefix1 = _aPrefix1
-    wPrefix1 = _wPrefix1
-    label1 = _label1
-    totalPrefix2 = _totalPrefix2
-    aPrefix2 = _aPrefix2
-    wPrefix2 = _wPrefix2
-    label2 = _label2
-
-    day1 = (totalPrefix1, aPrefix1, wPrefix1)
-    day2 = (totalPrefix2, aPrefix2, wPrefix2)
-
-    ind = np.arange(len(day1))  # the x locations for the groups
-    width = 0.35  # the width of the bars
-
-    fig, ax = plt.subplots()
-    rects1 = ax.bar(ind - width/2, day1, width, color='SkyBlue', label=label1)
-    rects2 = ax.bar(ind + width/2, day2, width, color='IndianRed', label=label2)
-
-    # Add some text for labels, title and custom x-axis tick labels, etc.
-    ax.set_ylabel('Number of Prefixes')
-    ax.set_title('Prefixes announced/withdrawed by AS%s' % ASN)
-    ax.set_xticks(ind)
-    ax.set_xticklabels(('Total', 'Announceds', 'Withdraweds'))
-    ax.legend()
-
-    def autolabel(rects, xpos='center'):
-        xpos = xpos.lower()  # normalize the case of the parameter
-        ha = {'center': 'center', 'right': 'left', 'left': 'right'}
-        offset = {'center': 0.5, 'right': 0.57, 'left': 0.43}  # x_txt = x + w*off
-        for rect in rects:
-            height = rect.get_height()
-            ax.text(rect.get_x() + rect.get_width()*offset[xpos], 1.01*height,
-                    '{}'.format(height), ha=ha[xpos], va='bottom')
-
-    autolabel(rects1, "center")
-    autolabel(rects2, "center")
-
-    plt.show()
-#TODO plots are out of date
 
 #plot times between messages AW and WA
 def plotCDF(_type):
@@ -897,6 +811,39 @@ def plotCDFASPrefix():
     pylab.savefig(save+".pdf", dpi=600)
     pylab.savefig(save+".png", dpi=600)
     pylab.clf()
+
+def teste(_listASNs):
+
+    listASNs = _listASNs
+    print(listASNs)
+    for i in listASNs:
+        with open("reports/AS"+i+".txt") as fp:
+            line = fp.readline()
+            while line:
+                num = int(line.split(";")[4])
+                changesList2.append(num)
+                line = fp2.readline()
+
+    N = len(listASNs)
+    #N = 5
+    menMeans = []
+    womenMeans = (5, 5, 3, 7, 5, 3, 5, 7, 5, 3, 5, 7, 5, 3, 5, 7, 5, 3, 5, 7, 5, 3, 5, 7, 5, 3, 5, 7)
+    ind = np.arange(N)    # the x locations for the groups
+    width = 0.35       # the width of the bars: can also be len(x) sequence
+
+    p1 = plt.bar(ind, menMeans, width)
+    p2 = plt.bar(ind, womenMeans, width, bottom=menMeans)
+
+    plt.ylabel('Number of Prefixes')
+    plt.title('Prefixes of ASes')
+
+    plt.xticks(ind, ('AS_', 'AS_', 'AS_', 'AS_', 'AS_'))
+    plt.yticks(np.arange(0, 81, 10))
+    plt.legend((p1[0], p2[0]), ('Announced', 'Withdrawed'))
+    plt.savefig("teste.pdf", dpi=600)
+    plt.savefig("teste.png", dpi=600)
+
+    plt.show()
 #------------------------------[PLOT]---------------------------------------------
 
 
@@ -919,55 +866,44 @@ def main():
     print(ASes2,"\n")
 
     print('Counting statistics and saving to a txt file',"\n")
-    countStatistics(msglist1,ASes1)
-    countStatistics(msglist2,ASes2)
-
-    #TODO plots are out of date ---------------------------------------------------------------------------------------------------------
-    #plot ASes graphics
-    #j = 0
-    #for i in ASes:
-        #plotASmsg(asN[j],total1[j],announcements1[j],withdrawns1[j],'2019-01-01',total2[j],announcements2[j],withdrawns2[j],'2019-01-02')
-        #plotASprefix(asN[j],pre1[j],preA1[j],preW1[j],'2019-01-01',pre2[j],preA2[j],preW2[j],'2019-01-02')
-        #j = j+1
-
-    #plot IXP graphic
-    #plotIXP(totalMSG1,announcement1,withdrawn1,'2019-01-01',totalMSG2,announcement2,withdrawn2,'2019-01-02')
-    #TODO plots are out of date ---------------------------------------------------------------------------------------------------------
+    #countStatistics(msglist1,ASes1)
+    #countStatistics(msglist2,ASes2)
 
 
     print('Looking for which prefix',"\n")
-    prefixes1 = countPrefix(msglist1)
-    prefixes2 = countPrefix(msglist2)
+    #prefixes1 = countPrefix(msglist1)
+    #prefixes2 = countPrefix(msglist2)
 
     print('Calculating the time between an announcement and a withdrawn',"\n")
-    calculateTimeAW(msglist1, prefixes1, '20190101')
-    calculateTimeAW(msglist2, prefixes2, '20190102')
-    calculateTimeA(msglist1, prefixes1, '20190101')
-    calculateTimeA(msglist2, prefixes2, '20190102')
+    #calculateTimeAW(msglist1, prefixes1, '20190101')
+    #calculateTimeAW(msglist2, prefixes2, '20190102')
+    #calculateTimeA(msglist1, prefixes1, '20190101')
+    #calculateTimeA(msglist2, prefixes2, '20190102')
 
     print('Calculating the time between an withdrawn and a announcement',"\n")
-    calculateTimeWA(msglist1, prefixes1, '20190101')
-    calculateTimeWA(msglist2, prefixes2, '20190102')
-    calculateTimeW(msglist1, prefixes1, '20190101')
-    calculateTimeW(msglist2, prefixes2, '20190102')
+    #calculateTimeWA(msglist1, prefixes1, '20190101')
+    #calculateTimeWA(msglist2, prefixes2, '20190102')
+    #calculateTimeW(msglist1, prefixes1, '20190101')
+    #calculateTimeW(msglist2, prefixes2, '20190102')
 
     print('Ploting CDF graphics',"\n")
-    plotCDF("W-A")
-    plotCDF("A-W")
+    #plotCDF("W-A")
+    #plotCDF("A-W")
 
     print('Calculating the changes of each prefix',"\n")
-    calculateChangesPrefix(prefixes1,msglist1, '20190101')
-    calculateChangesPrefix(prefixes2,msglist2, '20190102')
-    calculateChangesASPrefix(prefixes1,ASes1,msglist1, 'AS20190101')
-    calculateChangesASPrefix(prefixes2,ASes2,msglist2, 'AS20190102')
+    #calculateChangesPrefix(prefixes1,msglist1, '20190101')
+    #calculateChangesPrefix(prefixes2,msglist2, '20190102')
+    #calculateChangesASPrefix(prefixes1,ASes1,msglist1, 'AS20190101')
+    #calculateChangesASPrefix(prefixes2,ASes2,msglist2, 'AS20190102')
 
     print('Ploting prefixes CDF graphics',"\n")
-    plotCDFPrefix()
-    plotCDFASPrefix()
+    #plotCDFPrefix()
+    #plotCDFASPrefix()
 
     print('Ploting IXP informations',"\n")
-    plotIXP("reports/route-collector.decix-ham.fra.pch.net.txt")
+    #plotIXP("reports/route-collector.decix-ham.fra.pch.net.txt")
 
+    teste(ASes1)
 
 
 
