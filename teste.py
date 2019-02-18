@@ -815,30 +815,31 @@ def plotCDFASPrefix():
 def teste(_listASNs):
 
     listASNs = _listASNs
-    print(listASNs)
+    numA = []
+    numW = []
+    listASs = []
+
     for i in listASNs:
-        with open("reports/AS"+i+".txt") as fp:
+        with open("reports/AS"+str(i)+".txt") as fp:
             line = fp.readline()
-            while line:
-                num = int(line.split(";")[4])
-                changesList2.append(num)
-                line = fp2.readline()
+            a = int(line.split(";")[4])
+            w = int(line.split(";")[5])
+            listASs.append(str(i))
+            numA.append(a)
+            numW.append(w)
 
     N = len(listASNs)
-    #N = 5
-    menMeans = []
-    womenMeans = (5, 5, 3, 7, 5, 3, 5, 7, 5, 3, 5, 7, 5, 3, 5, 7, 5, 3, 5, 7, 5, 3, 5, 7, 5, 3, 5, 7)
     ind = np.arange(N)    # the x locations for the groups
     width = 0.35       # the width of the bars: can also be len(x) sequence
 
-    p1 = plt.bar(ind, menMeans, width)
-    p2 = plt.bar(ind, womenMeans, width, bottom=menMeans)
+    p1 = plt.bar(ind, numA, width)
+    p2 = plt.bar(ind, numW, width, bottom=numA)
 
     plt.ylabel('Number of Prefixes')
     plt.title('Prefixes of ASes')
 
-    plt.xticks(ind, ('AS_', 'AS_', 'AS_', 'AS_', 'AS_'))
-    plt.yticks(np.arange(0, 81, 10))
+    plt.xticks(ind, listASs)
+    plt.yticks(np.arange(0, 5, 10))
     plt.legend((p1[0], p2[0]), ('Announced', 'Withdrawed'))
     plt.savefig("teste.pdf", dpi=600)
     plt.savefig("teste.png", dpi=600)
@@ -851,40 +852,106 @@ def main():
 
     #reading the txt file into memory
     print('Reading the 20190101.txt file into memory.',"\n")
-    msglist1 = txttoMemory('20190101.txt')
+    #msglist1 = txttoMemory('20190101.txt')
     print('Reading the 20190102.txt file into memory.',"\n")
-    msglist2 = txttoMemory('20190102.txt')
+    #msglist2 = txttoMemory('20190102.txt')
+    print('Reading the 20190103.txt file into memory.',"\n")
+    #msglist3 = txttoMemory('20190103.txt')
+    print('Reading the 20190104.txt file into memory.',"\n")
+    #msglist4 = txttoMemory('20190104.txt')
+    print('Reading the 20190105.txt file into memory.',"\n")
+    #msglist5 = txttoMemory('20190105.txt')
+    print('Reading the 20190106.txt file into memory.',"\n")
+    #msglist6 = txttoMemory('20190106.txt')
+    print('Reading the 20190107.txt file into memory.',"\n")
+    #msglist7 = txttoMemory('20190107.txt')
 
     #looking for which ASes sent messages
-    ASes1 = countASes(msglist1)
+    #ASes1 = countASes(msglist1)
     print("ASes found and number of occurrences in 20190101")
-    print(ASes1,"\n")
+    #print(ASes1,"\n")
 
     #looking for which ASes sent messages
-    ASes2 = countASes(msglist2)
+    #ASes2 = countASes(msglist2)
     print("ASes found and number of occurrences in 20190102")
-    print(ASes2,"\n")
+    #print(ASes2,"\n")
+
+    #looking for which ASes sent messages
+    #ASes3 = countASes(msglist3)
+    print("ASes found and number of occurrences in 20190103")
+    #print(ASes3,"\n")
+
+    #looking for which ASes sent messages
+    #ASes4 = countASes(msglist4)
+    print("ASes found and number of occurrences in 20190104")
+    #print(ASes4,"\n")
+
+    #looking for which ASes sent messages
+    #ASes5 = countASes(msglist5)
+    print("ASes found and number of occurrences in 20190105")
+    #print(ASes5,"\n")
+
+    #looking for which ASes sent messages
+    #ASes6 = countASes(msglist6)
+    print("ASes found and number of occurrences in 20190106")
+    #print(ASes6,"\n")
+
+    #looking for which ASes sent messages
+    #ASes7 = countASes(msglist7)
+    print("ASes found and number of occurrences in 20190107")
+    #print(ASes7,"\n")
+
 
     print('Counting statistics and saving to a txt file',"\n")
     #countStatistics(msglist1,ASes1)
     #countStatistics(msglist2,ASes2)
-
+    #countStatistics(msglist3,ASes3)
+    #countStatistics(msglist4,ASes4)
+    #countStatistics(msglist5,ASes5)
+    #countStatistics(msglist6,ASes6)
+    #countStatistics(msglist7,ASes7)
 
     print('Looking for which prefix',"\n")
     #prefixes1 = countPrefix(msglist1)
     #prefixes2 = countPrefix(msglist2)
+    #prefixes3 = countPrefix(msglist3)
+    #prefixes4 = countPrefix(msglist4)
+    #prefixes5 = countPrefix(msglist5)
+    #prefixes6 = countPrefix(msglist6)
+    #prefixes7 = countPrefix(msglist7)
+
 
     print('Calculating the time between an announcement and a withdrawn',"\n")
     #calculateTimeAW(msglist1, prefixes1, '20190101')
     #calculateTimeAW(msglist2, prefixes2, '20190102')
+    #calculateTimeAW(msglist3, prefixes3, '20190103')
+    #calculateTimeAW(msglist4, prefixes4, '20190104')
+    #calculateTimeAW(msglist5, prefixes5, '20190105')
+    #calculateTimeAW(msglist6, prefixes6, '20190106')
+    #calculateTimeAW(msglist7, prefixes7, '20190107')
     #calculateTimeA(msglist1, prefixes1, '20190101')
     #calculateTimeA(msglist2, prefixes2, '20190102')
+    #calculateTimeA(msglist3, prefixes3, '20190103')
+    #calculateTimeA(msglist4, prefixes4, '20190104')
+    #calculateTimeA(msglist5, prefixes5, '20190105')
+    #calculateTimeA(msglist6, prefixes6, '20190106')
+    #calculateTimeA(msglist7, prefixes7, '20190107')
 
     print('Calculating the time between an withdrawn and a announcement',"\n")
     #calculateTimeWA(msglist1, prefixes1, '20190101')
     #calculateTimeWA(msglist2, prefixes2, '20190102')
+    #calculateTimeWA(msglist3, prefixes3, '20190103')
+    #calculateTimeWA(msglist4, prefixes4, '20190104')
+    #calculateTimeWA(msglist5, prefixes5, '20190105')
+    #calculateTimeWA(msglist6, prefixes6, '20190106')
+    #calculateTimeWA(msglist7, prefixes7, '20190107')
     #calculateTimeW(msglist1, prefixes1, '20190101')
     #calculateTimeW(msglist2, prefixes2, '20190102')
+    #calculateTimeW(msglist3, prefixes3, '20190103')
+    #calculateTimeW(msglist4, prefixes4, '20190104')
+    #calculateTimeW(msglist5, prefixes5, '20190105')
+    #calculateTimeW(msglist6, prefixes6, '20190106')
+    #calculateTimeW(msglist7, prefixes7, '20190107')
 
     print('Ploting CDF graphics',"\n")
     #plotCDF("W-A")
@@ -893,8 +960,18 @@ def main():
     print('Calculating the changes of each prefix',"\n")
     #calculateChangesPrefix(prefixes1,msglist1, '20190101')
     #calculateChangesPrefix(prefixes2,msglist2, '20190102')
+    #calculateChangesPrefix(prefixes3,msglist3, '20190103')
+    #calculateChangesPrefix(prefixes4,msglist4, '20190104')
+    #calculateChangesPrefix(prefixes5,msglist5, '20190105')
+    #calculateChangesPrefix(prefixes6,msglist6, '20190106')
+    #calculateChangesPrefix(prefixes7,msglist7, '20190107')
     #calculateChangesASPrefix(prefixes1,ASes1,msglist1, 'AS20190101')
     #calculateChangesASPrefix(prefixes2,ASes2,msglist2, 'AS20190102')
+    #calculateChangesASPrefix(prefixes3,ASes3,msglist3, 'AS20190103')
+    #calculateChangesASPrefix(prefixes4,ASes4,msglist4, 'AS20190104')
+    #calculateChangesASPrefix(prefixes5,ASes5,msglist5, 'AS20190105')
+    #calculateChangesASPrefix(prefixes6,ASes6,msglist6, 'AS20190106')
+    #calculateChangesASPrefix(prefixes7,ASes7,msglist7, 'AS20190107')
 
     print('Ploting prefixes CDF graphics',"\n")
     #plotCDFPrefix()
@@ -903,7 +980,7 @@ def main():
     print('Ploting IXP informations',"\n")
     #plotIXP("reports/route-collector.decix-ham.fra.pch.net.txt")
 
-    teste(ASes1)
+    #teste(ASes1)
 
 
 
