@@ -11,6 +11,7 @@ import pylab
 import ipaddress
 
 #AS43252 is decix
+#AS62972 is amsix
 
 #TODO check if you are picking up all the prefixes when there is more than one in the same message
 #TODO some plots are out of date
@@ -97,7 +98,7 @@ def txtIXP(_totalMSG, _announcement, _withdrawn, _prefix, _prefixA, _prefixW):
     prefixA = _prefixA
     prefixW = _prefixW
 
-    f = open('reports/route-collector.decix-ham.fra.pch.net.txt', 'a+')
+    f = open('reports/route-collector.amsix-ord.pch.net.txt', 'a+')
     #FORMAT: total_number_of_messages;number_of_announcements;number_of_withdrawns;total_number_of_prefixes;announced_prefixes;withdrawed_prefixes
     f.write(str(totalMSG)+';'+str(announcement)+';'+str(withdrawn)+';'+str(prefix)+';'+str(prefixA)+';'+str(prefixW)+'\n')
     f.close()
@@ -113,7 +114,7 @@ def txtAS(_label, _msgA, _msgW, _prefix, _prefixA, _prefixW, _date):
     prefixW = _prefixW
     date = _date
 
-    label = 'reports/AS'+str(label)+'.txt'
+    label = 'reports/AMSIX/AS'+str(label)+'.txt'
     f = open(label, 'a+')
     #FORMAT: total_number_of_messages;number_of_announcements;number_of_withdrawns;total_number_of_prefixes;announced_prefixes;withdrawed_prefixes
     f.write(str(date)+';'+str(msgA+msgW)+';'+str(msgA)+';'+str(msgW)+';'+str(prefix)+';'+str(prefixA)+';'+str(prefixW)+'\n')
@@ -130,7 +131,7 @@ def countASes(_msglist):
     ASeslist =[]
 
     for j in msglist:
-        if j["as"] == '43252' and j["type"] == 'a':
+        if (j["as"] == '43252' or j["as"] == '62972') and j["type"] == 'a':
             list = j["aspath"].split(',')[0]
             try:
                 ASeslist.append(int(list[2:-1]))
@@ -154,7 +155,7 @@ def msgAS(_ASnumber, _msglist):
     countAnnouncement = 0
 
     for i in msglist:
-        if i["as"] == '43252' and i["type"] == 'a':
+        if (i["as"] == '43252' or i["as"] == '62972') and i["type"] == 'a':
             list = i["aspath"].split(',')[0]
             try:
                 var = int(list[2:-1])
@@ -189,7 +190,7 @@ def prefixAS(_ASnumber, _msglist):
     count = 0
 
     for i in msglist:
-        if i["as"] == '43252' and i["type"] == 'a':
+        if (i["as"] == '43252' or i["as"] == '62972') and i["type"] == 'a':
             list = i["aspath"].split(',')[0]
             try:
                 var = int(list[2:-1])
@@ -353,7 +354,7 @@ def prefixChanges(_prefix, _prefixes, _msglist):
         if prefix == i:
             list = msgASPath(i,msglist)
             for j in list:
-                if j.split(':')[1] == '43252':
+                if j.split(':')[1] == '43252' or j.split(':')[1] == '62972':
                     list = j["aspath"].split(',')[0]
                     try:
                         asesList.append(int(list[2:-1]))
@@ -382,7 +383,7 @@ def prefixASChanges(_prefix, _asn, _prefixes, _msglist):
             list = msgASPath(i,msglist)
             for j in list:
                 test = j.split(':')[1]
-                if int(test[1:]) == int('43252'):
+                if int(test[1:]) == int('43252') or int(test[1:]) == int('62972'):
                     var = list[0].split(':')[2]
                     var = var.split(',')[0]
                     try:
@@ -661,23 +662,39 @@ def plotIXP(_path):
         d5.append(int(line.split(";")[4]))
         d5.append(int(line.split(";")[5]))
 
+        line = fp.readline()
+        d6.append(int(line.split(";")[0]))
+        d6.append(int(line.split(";")[1]))
+        d6.append(int(line.split(";")[2]))
+        d6.append(int(line.split(";")[3]))
+        d6.append(int(line.split(";")[4]))
+        d6.append(int(line.split(";")[5]))
+
+        line = fp.readline()
+        d7.append(int(line.split(";")[0]))
+        d7.append(int(line.split(";")[1]))
+        d7.append(int(line.split(";")[2]))
+        d7.append(int(line.split(";")[3]))
+        d7.append(int(line.split(";")[4]))
+        d7.append(int(line.split(";")[5]))
+
 
     ind = np.arange(len(d1))  # the x locations for the groups
-    width = 0.15  # the width of the bars
+    width = 0.12  # the width of the bars
 
     fig, ax = plt.subplots()
-    rects1 = ax.bar(ind - 2*width, d1, width, color='SkyBlue', label='2019/01/01')
-    rects2 = ax.bar(ind - width, d2, width, color='IndianRed', label='2019/01/02')
-    rects3 = ax.bar(ind, d3, width, color='Chocolate', label='2019/01/03')
-    rects4 = ax.bar(ind + width, d4, width, color='Orange', label='2019/01/04')
-    rects5 = ax.bar(ind + 2*width, d5, width, color='Olive', label='2019/01/05')
-    #rects6 = ax.bar(ind + width/2, d6, width, color='Yellow', label='2019/01/06')
-    #rects7 = ax.bar(ind - width/2, d7, width, color='Green', label='2019/01/07')
+    rects1 = ax.bar(ind - 3*width, d1, width, color='SkyBlue', label='2019/01/01')
+    rects2 = ax.bar(ind - 2*width, d2, width, color='IndianRed', label='2019/01/02')
+    rects3 = ax.bar(ind - width, d3, width, color='Chocolate', label='2019/01/03')
+    rects4 = ax.bar(ind, d4, width, color='Orange', label='2019/01/04')
+    rects5 = ax.bar(ind + width, d5, width, color='Olive', label='2019/01/05')
+    rects6 = ax.bar(ind + 2*width, d6, width, color='Yellow', label='2019/01/06')
+    rects7 = ax.bar(ind + 3*width, d7, width, color='Green', label='2019/01/07')
 
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Number of')
-    ax.set_title('BGP Messages - DECIX Route Collector')
+    ax.set_title('BGP Messages - AMSIX Route Collector')
     ax.set_xticks(ind)
     ax.set_xticklabels(('Total Messages', 'Announcement Messages', 'Withdrawn Messages', 'Total Prefixes', 'Announced Prefixes', 'Withdrawed Prefixes'))
     ax.legend()
@@ -695,14 +712,13 @@ def plotIXP(_path):
     autolabel(rects2, "left")
     autolabel(rects3, "center")
     autolabel(rects4, "center")
-    autolabel(rects5, "right")
-    #autolabel(rects6, "center")
-    #autolabel(rects7, "center")
+    autolabel(rects5, "center")
+    autolabel(rects6, "center")
+    autolabel(rects7, "center")
 
-
+    plt.show()
     plt.savefig("figures/newIXP.pdf", dpi=600)
     plt.savefig("figures/newIXP.png", dpi=600)
-    plt.show()
     plt.clf()
 
 #plot times between messages AW and WA
@@ -743,7 +759,8 @@ def plotCDF(_type):
     count = 0
 
     if type == "W-A":
-        name = "DECIX Route Collector time WA"
+        #name = "DECIX Route Collector time WA"
+        name = "an Withdrawn and a Announcement"
         path1 = pathWA1
         path2 = pathWA2
         path3 = pathWA3
@@ -753,7 +770,8 @@ def plotCDF(_type):
         path7 = pathWA7
         save = "figures/timeWA"
     else:
-        name = "DECIX Route Collector time AW"
+        #name = "DECIX Route Collector time AW"
+        name = "an Announcement and a Withdrawn"
         path1 = pathAW1
         path2 = pathAW2
         path3 = pathAW3
@@ -808,34 +826,34 @@ def plotCDF(_type):
             timeList5.append(m + h*60)
             line = fp5.readline()
 
-    #with open(path6) as fp6:
-    #    line = fp6.readline()
-    #    while line:
-    #        h = int(line.split(":")[0])
-    #        m = int(line.split(":")[1])
-    #        s = int(line.split(":")[2])
-    #        timeList6.append(m + h*60)
-    #        line = fp6.readline()
+    with open(path6) as fp6:
+        line = fp6.readline()
+        while line:
+            h = int(line.split(":")[0])
+            m = int(line.split(":")[1])
+            s = int(line.split(":")[2])
+            timeList6.append(m + h*60)
+            line = fp6.readline()
 
-    #with open(path7) as fp7:
-    #    line = fp7.readline()
-    #    while line:
-    #        h = int(line.split(":")[0])
-    #        m = int(line.split(":")[1])
-    #        s = int(line.split(":")[2])
-    #        timeList7.append(m + h*60)
-    #        line = fp7.readline()
+    with open(path7) as fp7:
+        line = fp7.readline()
+        while line:
+            h = int(line.split(":")[0])
+            m = int(line.split(":")[1])
+            s = int(line.split(":")[2])
+            timeList7.append(m + h*60)
+            line = fp7.readline()
 
-    pylab.plot(np.sort(timeList1),np.arange(len(timeList1))/float(len(timeList1)-1), label="2019/01/01 - " + str(len(timeList1)),  linewidth=2)
-    pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), label="2019/01/02 - "+ str(len(timeList2)),  linewidth=2)
-    pylab.plot(np.sort(timeList3),np.arange(len(timeList3))/float(len(timeList3)-1), label="2019/01/03 - "+ str(len(timeList3)),  linewidth=2)
-    pylab.plot(np.sort(timeList4),np.arange(len(timeList4))/float(len(timeList4)-1), label="2019/01/04 - "+ str(len(timeList4)),  linewidth=2)
-    pylab.plot(np.sort(timeList5),np.arange(len(timeList5))/float(len(timeList5)-1), label="2019/01/05 - "+ str(len(timeList5)),  linewidth=2)
-    #pylab.plot(np.sort(timeList6),np.arange(len(timeList6))/float(len(timeList6)-1), label="2019/01/06 - "+ str(len(timeList6)) + "occurrences",  linewidth=2)
-    #pylab.plot(np.sort(timeList7),np.arange(len(timeList7))/float(len(timeList7)-1), label="2019/01/07 - "+ str(len(timeList7)) + "occurrences",  linewidth=2)
-    pylab.title("Time between " + type, loc='center')
-    pylab.ylabel("Frequency", fontsize=18)
-    pylab.xlabel("Time (m)", fontsize=18)
+    pylab.plot(np.sort(timeList1),np.arange(len(timeList1))/float(len(timeList1)-1), color='SkyBlue', label="2019/01/01 - "+ str(len(timeList1)),  linewidth=2, linestyle='-')
+    pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), color='IndianRed', label="2019/01/02 - "+ str(len(timeList2)),  linewidth=2, linestyle='--')
+    pylab.plot(np.sort(timeList3),np.arange(len(timeList3))/float(len(timeList3)-1), color='Chocolate', label="2019/01/03 - "+ str(len(timeList3)),  linewidth=2, linestyle='-.')
+    pylab.plot(np.sort(timeList4),np.arange(len(timeList4))/float(len(timeList4)-1), color='Orange', label="2019/01/04 - "+ str(len(timeList4)),  linewidth=2, linestyle=':')
+    pylab.plot(np.sort(timeList5),np.arange(len(timeList5))/float(len(timeList5)-1), color='Olive', label="2019/01/05 - "+ str(len(timeList5)),  linewidth=2, linestyle='-')
+    pylab.plot(np.sort(timeList6),np.arange(len(timeList6))/float(len(timeList6)-1), color='Yellow', label="2019/01/06 - "+ str(len(timeList6)),  linewidth=2, linestyle='--')
+    pylab.plot(np.sort(timeList7),np.arange(len(timeList7))/float(len(timeList7)-1), color='Green', label="2019/01/07 - "+ str(len(timeList7)),  linewidth=2, linestyle='-.')
+    pylab.title("Time between " + name, loc='center')
+    pylab.ylabel("Frequency", fontsize=10)
+    pylab.xlabel("Time (min)", fontsize=10)
     pylab.grid(True)
     pylab.xlim(0, )
     pylab.ylim(0, 1)
@@ -880,48 +898,48 @@ def plotCDFPrefix():
             changesList2.append(num)
             line = fp2.readline()
 
-    #with open(path3) as fp3:
-    #    line = fp3.readline()
-    #    while line:
-    #        num = int(line.split(";")[3])
-    #        changesList3.append(num)
-    #        line = fp3.readline()
+    with open(path3) as fp3:
+        line = fp3.readline()
+        while line:
+            num = int(line.split(";")[3])
+            changesList3.append(num)
+            line = fp3.readline()
 
-    #with open(path4) as fp4:
-    #    line = fp4.readline()
-    #    while line:
-    #        num = int(line.split(";")[3])
-    #        changesList4.append(num)
-    #        line = fp4.readline()
+    with open(path4) as fp4:
+        line = fp4.readline()
+        while line:
+            num = int(line.split(";")[3])
+            changesList4.append(num)
+            line = fp4.readline()
 
-    #with open(path5) as fp5:
-    #    line = fp5.readline()
-    #    while line:
-    #        num = int(line.split(";")[3])
-    #        changesList5.append(num)
-    #        line = fp5.readline()
+    with open(path5) as fp5:
+        line = fp5.readline()
+        while line:
+            num = int(line.split(";")[3])
+            changesList5.append(num)
+            line = fp5.readline()
 
-    #with open(path6) as fp6:
-    #    line = fp6.readline()
-    #    while line:
-    #        num = int(line.split(";")[3])
-    #        changesList6.append(num)
-    #        line = fp6.readline()
+    with open(path6) as fp6:
+        line = fp6.readline()
+        while line:
+            num = int(line.split(";")[3])
+            changesList6.append(num)
+            line = fp6.readline()
 
-    #with open(path7) as fp7:
-    #    line = fp7.readline()
-    #    while line:
-    #        num = int(line.split(";")[3])
-    #        changesList7.append(num)
-    #        line = fp7.readline()
+    with open(path7) as fp7:
+        line = fp7.readline()
+        while line:
+            num = int(line.split(";")[3])
+            changesList7.append(num)
+            line = fp7.readline()
 
     pylab.plot(np.sort(changesList1),np.arange(len(changesList1))/float(len(changesList1)-1), label='2019/01/01 - ' + str(len(changesList1)),  linewidth=2)
     pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), label='2019/01/02 - ' + str(len(changesList2)),  linewidth=2)
-    #pylab.plot(np.sort(changesList3),np.arange(len(changesList3))/float(len(changesList3)-1), label='2019/01/02 - ' + str(len(changesList3)),  linewidth=2)
-    #pylab.plot(np.sort(changesList4),np.arange(len(changesList4))/float(len(changesList4)-1), label='2019/01/02 - ' + str(len(changesList4)),  linewidth=2)
-    #pylab.plot(np.sort(changesList5),np.arange(len(changesList5))/float(len(changesList5)-1), label='2019/01/02 - ' + str(len(changesList5)),  linewidth=2)
-    #pylab.plot(np.sort(changesList6),np.arange(len(changesList6))/float(len(changesList6)-1), label='2019/01/02 - ' + str(len(changesList6)),  linewidth=2)
-    #pylab.plot(np.sort(changesList7),np.arange(len(changesList7))/float(len(changesList7)-1), label='2019/01/02 - ' + str(len(changesList7)),  linewidth=2)
+    pylab.plot(np.sort(changesList3),np.arange(len(changesList3))/float(len(changesList3)-1), label='2019/01/02 - ' + str(len(changesList3)),  linewidth=2)
+    pylab.plot(np.sort(changesList4),np.arange(len(changesList4))/float(len(changesList4)-1), label='2019/01/02 - ' + str(len(changesList4)),  linewidth=2)
+    pylab.plot(np.sort(changesList5),np.arange(len(changesList5))/float(len(changesList5)-1), label='2019/01/02 - ' + str(len(changesList5)),  linewidth=2)
+    pylab.plot(np.sort(changesList6),np.arange(len(changesList6))/float(len(changesList6)-1), label='2019/01/02 - ' + str(len(changesList6)),  linewidth=2)
+    pylab.plot(np.sort(changesList7),np.arange(len(changesList7))/float(len(changesList7)-1), label='2019/01/02 - ' + str(len(changesList7)),  linewidth=2)
     pylab.title("Prefix - ASPATH Changes", loc='center')
     pylab.ylabel("Frequency", fontsize=18)
     pylab.xlabel("Changes (n)", fontsize=18)
@@ -991,31 +1009,31 @@ def plotCDFASPrefix():
             changesList5.append(num)
             line = fp5.readline()
 
-    #with open(path6) as fp6:
-    #    line = fp6.readline()
-    #    while line:
-    #        num = int(line.split(";")[3])
-    #        changesList6.append(num)
-    #        line = fp6.readline()
+    with open(path6) as fp6:
+        line = fp6.readline()
+        while line:
+            num = int(line.split(";")[3])
+            changesList6.append(num)
+            line = fp6.readline()
 
-    #with open(path7) as fp7:
-    #    line = fp7.readline()
-    #    while line:
-    #        num = int(line.split(";")[3])
-    #        changesList7.append(num)
-    #        line = fp7.readline()
+    with open(path7) as fp7:
+        line = fp7.readline()
+        while line:
+            num = int(line.split(";")[3])
+            changesList7.append(num)
+            line = fp7.readline()
 
 
-    pylab.plot(np.sort(changesList1),np.arange(len(changesList1))/float(len(changesList1)-1), label='2019/01/01 - ' + str(len(changesList1)),  linewidth=2)
-    pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), label='2019/01/02 - ' + str(len(changesList2)),  linewidth=2)
-    pylab.plot(np.sort(changesList3),np.arange(len(changesList3))/float(len(changesList3)-1), label='2019/01/03 - ' + str(len(changesList3)),  linewidth=2)
-    pylab.plot(np.sort(changesList4),np.arange(len(changesList4))/float(len(changesList4)-1), label='2019/01/04 - ' + str(len(changesList4)),  linewidth=2)
-    pylab.plot(np.sort(changesList5),np.arange(len(changesList5))/float(len(changesList5)-1), label='2019/01/05 - ' + str(len(changesList5)),  linewidth=2)
-    #pylab.plot(np.sort(changesList6),np.arange(len(changesList6))/float(len(changesList6)-1), label='2019/01/06 - ' + str(len(changesList6)),  linewidth=2)
-    #pylab.plot(np.sort(changesList7),np.arange(len(changesList7))/float(len(changesList7)-1), label='2019/01/07 - ' + str(len(changesList7)),  linewidth=2)
+    pylab.plot(np.sort(changesList1),np.arange(len(changesList1))/float(len(changesList1)-1), color='SkyBlue', label='2019/01/01 - ' + str(len(changesList1)),  linewidth=2, linestyle='-')
+    pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), color='IndianRed', label='2019/01/02 - ' + str(len(changesList2)),  linewidth=2, linestyle='--')
+    pylab.plot(np.sort(changesList3),np.arange(len(changesList3))/float(len(changesList3)-1), color='Chocolate', label='2019/01/03 - ' + str(len(changesList3)),  linewidth=2, linestyle='-.')
+    pylab.plot(np.sort(changesList4),np.arange(len(changesList4))/float(len(changesList4)-1), color='Orange', label='2019/01/04 - ' + str(len(changesList4)),  linewidth=2, linestyle=':')
+    pylab.plot(np.sort(changesList5),np.arange(len(changesList5))/float(len(changesList5)-1), color='Olive', label='2019/01/05 - ' + str(len(changesList5)),  linewidth=2, linestyle='-')
+    pylab.plot(np.sort(changesList6),np.arange(len(changesList6))/float(len(changesList6)-1), color='Yellow', label='2019/01/06 - ' + str(len(changesList6)),  linewidth=2, linestyle='--')
+    pylab.plot(np.sort(changesList7),np.arange(len(changesList7))/float(len(changesList7)-1), color='Green', label='2019/01/07 - ' + str(len(changesList7)),  linewidth=2, linestyle='-.')
     pylab.title("(Prefix,AS) - ASPATH Changes", loc='center')
-    pylab.ylabel("Frequency", fontsize=18)
-    pylab.xlabel("Changes (n)", fontsize=18)
+    pylab.ylabel("Frequency", fontsize=10)
+    pylab.xlabel("Number of changes", fontsize=10)
     pylab.grid(True)
     plt.xticks(np.arange(min(changesList2), max(changesList2)+1, 1.0))
     pylab.xlim(0, 20)
@@ -1025,6 +1043,7 @@ def plotCDFASPrefix():
     pylab.savefig(save+".png", dpi=600)
     pylab.clf()
 
+#TODO fix
 def printASes(_listASNs, _date):
 
     listASNs = _listASNs
@@ -1034,7 +1053,7 @@ def printASes(_listASNs, _date):
     listASs = []
 
     for i in listASNs:
-        with open("reports/AS"+str(i)+".txt") as fp:
+        with open("reports/AMSIX/AS"+str(i)+".txt") as fp:
             line = fp.readline()
             while line:
                 if(line.split(";")[0] == date):
@@ -1054,36 +1073,46 @@ def printASes(_listASNs, _date):
 
     plt.ylabel('Number of Prefixes')
     plt.title('Prefixes of ASes - ' + date )
-
-    plt.xticks(ind, listASs)
-    plt.yticks(np.arange(0, 5, 10))
+    plt.semilogy(ind, np.exp(-ind/5.0))
+    plt.xticks(ind, listASs, fontsize=8)
     plt.legend((p1[0], p2[0]), ('Announced', 'Withdrawed'))
-    #plt.savefig("teste.pdf", dpi=600)
-    #plt.savefig("teste.png", dpi=600)
-
+    plt.savefig("figures/amsixASes"+date+".pdf", dpi=600)
+    plt.savefig("figures/amsixASes"+date+".png", dpi=600)
     plt.show()
+    plt.clf()
 #------------------------------[PLOT]---------------------------------------------
-
 
 def main():
 
-    #reading the txt file into memory
-    msglist1 = txttoMemory('20190101.txt')
-    msglist2 = txttoMemory('20190102.txt')
-    msglist3 = txttoMemory('20190103.txt')
-    msglist4 = txttoMemory('20190104.txt')
-    msglist5 = txttoMemory('20190105.txt')
-    #msglist6 = txttoMemory('20190106.txt')
-    #msglist7 = txttoMemory('20190107.txt')
+    print("Reading the txt files into memory","\n")
+    msglist1 = txttoMemory('amsix20190101.txt')
+    msglist2 = txttoMemory('amsix20190102.txt')
+    msglist3 = txttoMemory('amsix20190103.txt')
+    msglist4 = txttoMemory('amsix20190104.txt')
+    msglist5 = txttoMemory('amsix20190105.txt')
+    msglist6 = txttoMemory('amsix20190106.txt')
+    msglist7 = txttoMemory('amsix20190107.txt')
+    msglist8 = txttoMemory('decix20190101.txt')
+    msglist9 = txttoMemory('decix20190102.txt')
+    msglist10 = txttoMemory('decix20190103.txt')
+    msglist11 = txttoMemory('decix20190104.txt')
+    msglist12 = txttoMemory('decix20190105.txt')
+    msglist13 = txttoMemory('decix20190106.txt')
+    msglist14 = txttoMemory('decix20190107.txt')
 
-    #looking for which ASes sent messages
-    ASes1 = countASes(msglist1)
-    ASes2 = countASes(msglist2)
-    ASes3 = countASes(msglist3)
-    ASes4 = countASes(msglist4)
-    ASes5 = countASes(msglist5)
+    msglistAMSIX = msglist1 + msglist2 + msglist3 + msglist4 + msglist5 + msglist6 + msglist7
+    msglistDECIX = msglist8 + msglist9 + msglist10 + msglist11 + msglist12 + msglist13 + msglist14
+
+    print("Looking for which ASes sent messages","\n")
+    #ASes1 = countASes(msglist1)
+    #ASes2 = countASes(msglist2)
+    #ASes3 = countASes(msglist3)
+    #ASes4 = countASes(msglist4)
+    #ASes5 = countASes(msglist5)
     #ASes6 = countASes(msglist6)
     #ASes7 = countASes(msglist7)
+    ASesAMSIX = countASes(msglistAMSIX)
+    ASesDECIX = countASes(msglistDECIX)
 
     print('Counting statistics and saving to a txt file',"\n")
     #countStatistics(msglist1,ASes1,"20190101")
@@ -1091,13 +1120,13 @@ def main():
     #countStatistics(msglist3,ASes3,"20190103")
     #countStatistics(msglist4,ASes4,"20190104")
     #countStatistics(msglist5,ASes5,"20190105")
-    #-----------falta
     #countStatistics(msglist6,ASes6,"20190106")
     #countStatistics(msglist7,ASes7,"20190107")
-    #-----------falta
+
 
     print('Ploting IXP informations',"\n")
     #plotIXP("reports/route-collector.decix-ham.fra.pch.net.txt")
+    #plotIXP("reports/route-collector.amsix-ord.pch.net.txt")
 
     print('Ploting ASes informations',"\n")
     #printASes(ASes1,"20190101")
@@ -1117,16 +1146,21 @@ def main():
     #prefixes6 = countPrefix(msglist6)
     #prefixes7 = countPrefix(msglist7)
 
+    prefixesAMSIX = countPrefix(msglistAMSIX)
+    prefixesDECIX = countPrefix(msglistDECIX)
+
     print('Calculating the time between an announcement and a withdrawn',"\n")
     #calculateTimeAW(msglist1, prefixes1, '20190101')
     #calculateTimeAW(msglist2, prefixes2, '20190102')
     #calculateTimeAW(msglist3, prefixes3, '20190103')
     #calculateTimeAW(msglist4, prefixes4, '20190104')
     #calculateTimeAW(msglist5, prefixes5, '20190105')
-    #-----------falta
     #calculateTimeAW(msglist6, prefixes6, '20190106')
     #calculateTimeAW(msglist7, prefixes7, '20190107')
-    #-----------falta
+
+    calculateTimeAW(msglistAMSIX, prefixesAMSIX, 'AMSIX')
+    calculateTimeAW(msglistDECIX, prefixesDECIX, 'DECIX')
+
 
     #calculateTimeA(msglist1, prefixes1, '20190101')
     #calculateTimeA(msglist2, prefixes2, '20190102')
@@ -1142,10 +1176,12 @@ def main():
     #calculateTimeWA(msglist3, prefixes3, '20190103')
     #calculateTimeWA(msglist4, prefixes4, '20190104')
     #calculateTimeWA(msglist5, prefixes5, '20190105')
-    #-----------falta
     #calculateTimeWA(msglist6, prefixes6, '20190106')
     #calculateTimeWA(msglist7, prefixes7, '20190107')
-    #-----------falta
+
+    calculateTimeWA(msglistAMSIX, prefixesAMSIX, 'AMSIX')
+    calculateTimeWA(msglistDECIX, prefixesDECIX, 'DECIX')
+
 
     #calculateTimeW(msglist1, prefixes1, '20190101')
     #calculateTimeW(msglist2, prefixes2, '20190102')
@@ -1175,10 +1211,11 @@ def main():
     #calculateChangesASPrefix(prefixes3,ASes3,msglist3, 'AS20190103')
     #calculateChangesASPrefix(prefixes4,ASes4,msglist4, 'AS20190104')
     #calculateChangesASPrefix(prefixes5,ASes5,msglist5, 'AS20190105')
-    #-----------falta
     #calculateChangesASPrefix(prefixes6,ASes6,msglist6, 'AS20190106')
     #calculateChangesASPrefix(prefixes7,ASes7,msglist7, 'AS20190107')
-    #-----------falta
+
+    calculateChangesASPrefix(prefixesAMSIX,ASesAMSIX,msglistAMSIX, 'ASAMSIX')
+    calculateChangesASPrefix(prefixesDECIX,ASesDECIX,msglistDECIX, 'ASDECIX')
 
     print('Ploting prefixes CDF graphics',"\n")
     #plotCDFPrefix()
