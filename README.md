@@ -1,7 +1,7 @@
 # Parser BGP/MRT
 
 ### Dependencies
-mrtparser - https://github.com/t2mune/mrtparse
+mrtparse - https://github.com/t2mune/mrtparse
 
 python
 
