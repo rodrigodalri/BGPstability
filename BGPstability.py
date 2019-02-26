@@ -428,80 +428,90 @@ def countStatistics(_msgList, _ASes, _collectorName):
     txtIXP(totalMSG,announcement,withdrawn,prefix,prefixA,prefixW,collectorName)
 
 #calculate the time between an announcement and a withdrawn
-#TODO add prefix size in "Calculates"
-def calculateTimeAW(_msgList, _prefixes, _label):
+def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize):
 
     prefixes = _prefixes
     msglist = _msgList
     label = _label
+    prefixSize = _prefixSize
 
     prefix = {}
     prefixList =[]
 
     time = 0
     find = 0
+    all = 0
+
+    if int(prefixSize) == 0:
+        all = 1
 
     for i in prefixes:
-        for j in msglist:
-            find = 0
-            if i == j["prefix"] and j["type"] == 'a':
-                for k in msglist:
-                    if k["type"] == 'w' and find == 0 and int(k["timestamp"]) >= int(j["timestamp"]):
-                        list = k["prefix"].split(';')
-                        for l in range(0,len(list)-1,2):
-                            if i == list[l]+';'+list[l+1]:
-                                dataA = datetime.fromtimestamp(int(j["timestamp"]))
-                                dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
-                                dataW = datetime.fromtimestamp(int(k["timestamp"]))
-                                dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
-                                time = dW - dA
-                                find = 1
-                                prefixList.append(i)
-                                msglist.remove(j)
-                                msglist.remove(k)
-                                f = open(str(label)+'/reporttimeAW.txt', 'a+')
-                                f.write(str(time)+'\n')
-                                f.close()
+        if (i.split(';')[1] == prefixSize or all == 1):
+            for j in msglist:
+                find = 0
+                if i == j["prefix"] and j["type"] == 'a':
+                    for k in msglist:
+                        if k["type"] == 'w' and find == 0 and int(k["timestamp"]) >= int(j["timestamp"]):
+                            list = k["prefix"].split(';')
+                            for l in range(0,len(list)-1,2):
+                                if i == list[l]+';'+list[l+1]:
+                                    dataA = datetime.fromtimestamp(int(j["timestamp"]))
+                                    dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
+                                    dataW = datetime.fromtimestamp(int(k["timestamp"]))
+                                    dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
+                                    time = dW - dA
+                                    find = 1
+                                    prefixList.append(i)
+                                    msglist.remove(j)
+                                    msglist.remove(k)
+                                    f = open(str(label)+'/reporttimeAW.txt', 'a+')
+                                    f.write(str(time)+'\n')
+                                    f.close()
 
     prefix = {x:prefixList.count(x) for x in set(prefixList)}
 
     return prefix
 
 #calculate the time between an withdrawn and a announcement
-#TODO add prefix size in "Calculates"
-def calculateTimeWA(_msgList, _prefixes, _label):
+def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize):
 
     prefixes = _prefixes
     msglist = _msgList
     label = _label
+    prefixSize = _prefixSize
 
     prefix = {}
     prefixList =[]
 
     time = 0
     find = 0
+    all = 0
+
+    if int(prefixSize) == 0:
+        all = 1
 
     for i in prefixes:
-        for j in msglist:
-            find = 0
-            if j["type"] == 'w':
-                list = j["prefix"].split(';')
-                for l in range(0,len(list)-1,2):
-                    if i == list[l]+';'+list[l+1]:
-                        for k in msglist:
-                            if i == k["prefix"] and k["type"] == 'a' and find == 0 and int(k["timestamp"]) >= int(j["timestamp"]):
-                                dataW = datetime.fromtimestamp(int(j["timestamp"]))
-                                dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
-                                dataA = datetime.fromtimestamp(int(k["timestamp"]))
-                                dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
-                                time = dA - dW
-                                find = 1
-                                prefixList.append(i)
-                                msglist.remove(j)
-                                msglist.remove(k)
-                                f = open(str(label)+'/reporttimeWA.txt', 'a+')
-                                f.write(str(time)+'\n')
-                                f.close()
+        if (i.split(';')[1] == prefixSize or all == 1):
+            for j in msglist:
+                find = 0
+                if j["type"] == 'w':
+                    list = j["prefix"].split(';')
+                    for l in range(0,len(list)-1,2):
+                        if i == list[l]+';'+list[l+1]:
+                            for k in msglist:
+                                if i == k["prefix"] and k["type"] == 'a' and find == 0 and int(k["timestamp"]) >= int(j["timestamp"]):
+                                    dataW = datetime.fromtimestamp(int(j["timestamp"]))
+                                    dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
+                                    dataA = datetime.fromtimestamp(int(k["timestamp"]))
+                                    dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
+                                    time = dA - dW
+                                    find = 1
+                                    prefixList.append(i)
+                                    msglist.remove(j)
+                                    msglist.remove(k)
+                                    f = open(str(label)+'/reporttimeWA.txt', 'a+')
+                                    f.write(str(time)+'\n')
+                                    f.close()
 
     prefix = {x:prefixList.count(x) for x in set(prefixList)}
 
@@ -604,6 +614,7 @@ def calculateChangesASPrefix(_prefixes, _ases, _msglist, _label):
     msglist = _msglist
     label = _label
     ases = _ases
+    prefixSize = _prefixSize
 
     for i in prefixes:
         for j in ases:
@@ -1105,34 +1116,38 @@ def cli():
                     for i in range(0, int(numberDays)):
                         auxlist = txttoMemory(aux[i+2])
                         msglist = msglist + auxlist
-                        print(msglist)
 
                     print("Looking for which ASes sent messages","\n")
                     ASes = countASes(msglist)
-                    print(ASes)
                     print('Looking for which prefix',"\n")
                     prefixes = countPrefix(msglist)
-                    print(prefixes)
                     print('Counting statistics and saving to a txt file',"\n")
                     countStatistics(msglist,ASes,collectorName)
-
 
                 elif "CalculateAW" in action:
                     prefixSize = action.split("CalculateAW(")[1]
                     prefixSize = prefixSize[:-1]
                     print('Calculating the time between an announcement and a withdrawn',"\n")
-                    calculateTimeAW(msglist, prefixes, collectorName)
+                    calculateTimeAW(msglist, prefixes, collectorName, prefixSize)
 
                 elif "CalculateWA" in action:
                     prefixSize = action.split("CalculateWA(")[1]
                     prefixSize = prefixSize[:-1]
                     print('Calculating the time between an withdrawn and a announcement',"\n")
-                    calculateTimeWA(msglist, prefixes, collectorName)
+                    calculateTimeWA(msglist, prefixes, collectorName, prefixSize)
 
                 elif "CalculateChangesASPrefix" in action:
                     prefixSize = action.split("CalculateChangesASPrefix(")[1]
                     prefixSize = prefixSize[:-1]
                     print('Calculating the changes of each (prefix,AS)',"\n")
+                    calculateChangesASPrefix(prefixes,ASes,msglist, collectorName)
+
+                elif "CalculateALL" in action:
+                    prefixSize = action.split("CalculateALL(")[1]
+                    prefixSize = prefixSize[:-1]
+                    print('Calculating the changes of each (prefix,AS)',"\n")
+                    calculateTimeAW(msglist, prefixes, collectorName, prefixSize)
+                    calculateTimeWA(msglist, prefixes, collectorName, prefixSize)
                     calculateChangesASPrefix(prefixes,ASes,msglist, collectorName)
 
                 elif "Plot" in action:
@@ -1172,6 +1187,8 @@ def help():
     print("\t\t example: CalculateWA(prefixSize)")
     print("CalculateChangesASPrefix - calculate how many changes every tupleo(ases,prefix) have ")
     print("\t\t example: CalculateChangesASPrefix(prefixSize)")
+    print("CalculateChangesALL - CalculateAW + CalculateWA + CalculateChangesASPrefix")
+    print("\t\t example: CalculateChangesALL(prefixSize)")
     print("quit - quits BGPstability")
 
 if __name__ == '__main__':
