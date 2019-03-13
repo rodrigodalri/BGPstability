@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import pylab
 import ipaddress
 from collections import defaultdict
+import copy
 
 #AS43252 is decix
 #AS62972 is amsix
@@ -66,13 +67,27 @@ def txttoMemory(_path):
 
     return msglist
 
-def txttoMemory_new(_path):
+#TODO add countStatistics while read to memory
+def txttoMemory_new(_path, _collectorName):
 
     msg = {}
     msgList = []
     asesList = []
     prefixesList = []
     path = _path
+    collectorName = _collectorName
+
+
+    prefixListA =[]
+    prefixListW =[]
+    prefixList =[]
+    countWithdrawn = 0
+    countAnnouncement = 0
+    count = 0
+    totalMSG = 0
+    announcement = 0
+    withdrawn = 0
+
 
     # A, W
     data = defaultdict(pair_of_lists)
@@ -83,6 +98,8 @@ def txttoMemory_new(_path):
         while line:
             type = line.split(";")[0]
             if type == 'w':
+                withdrawn = withdrawn + 1
+
                 timestamp = line.split(";")[1]
                 n_as = line.split(";")[2]
                 list2 = line.split(";")
@@ -99,42 +116,53 @@ def txttoMemory_new(_path):
                         a = 0
                 if prefix[:-1] == ";":
                     prefix = prefix[:-1]
-
-
                 msg = {"type": type, "timestamp": timestamp, "as": n_as, "prefix": prefix}
-
                 data[int(n_as)][1].append(msg)
-
                 list3 = prefix.split(';')
                 for k in range(0,len(list3)-1,2):
                     prefixesList.append(list3[k]+';'+list3[k+1])
+                    prefixList.append(list3[k]+';'+list3[k+1])
+                    prefixListW.append(list3[k]+';'+list3[k+1])
                 asesList.append(int(n_as))
                 msgList.append(msg)
 
-
             else:
+                announcement = announcement + 1
+
                 timestamp = line.split(";")[1]
                 n_as = line.split(";")[2]
                 aspath = line.split(";")[3]
                 prefix = line.split(";")[4] +';'+ line.split(";")[5]
-
                 msg = {"type": type,"timestamp": timestamp,"as": n_as,"aspath": aspath,"prefix": prefix}
-                #TODO or NOT alterar o AS nos casos que sao o route Collector
-                data[int(n_as)][0].append(msg)
 
                 prefixesList.append(prefix)
+                prefixList.append(prefix)
+                prefixListA.append(prefix)
                 if (n_as == '43252' or n_as == '62972'):
                     list4 = aspath.split(',')[0]
                     try:
                         asesList.append(int(list4[2:-1]))
+                        data[int(list4[2:-1])][0].append(msg)
                     except:
                         asesList.append(int(list4[2:-2]))
+                        data[int(list4[2:-2])][0].append(msg)
                 else:
                     asesList.append(int(n_as))
+                    data[int(n_as)][0].append(msg)
                 msgList.append(msg)
 
-
             line = fp.readline()
+
+
+    count = {x:prefixList.count(x) for x in set(prefixList)}
+    countAnnouncement = {x:prefixListA.count(x) for x in set(prefixListA)}
+    countWithdrawn = {x:prefixListW.count(x) for x in set(prefixListW)}
+    count = len(count)
+    countAnnouncement = len(countAnnouncement)
+    countWithdrawn = len(countWithdrawn)
+    totalMSG = announcement + withdrawn
+
+    txtIXP(totalMSG,announcement,withdrawn,count,countAnnouncement,countWithdrawn,collectorName)
 
     return msgList,asesList,prefixesList,data
 
@@ -178,6 +206,17 @@ def txtIXP(_totalMSG, _announcement, _withdrawn, _prefix, _prefixA, _prefixW, _c
     f = open(str(collectorName)+'/reportIXP.txt', 'a+')
     #FORMAT: total_number_of_messages;number_of_announcements;number_of_withdrawns;total_number_of_prefixes;announced_prefixes;withdrawed_prefixes
     f.write(str(totalMSG)+';'+str(announcement)+';'+str(withdrawn)+';'+str(prefix)+';'+str(prefixA)+';'+str(prefixW)+'\n')
+    f.close()
+
+def txtIXP2(_list, _collectorName):
+
+    list = _list
+    collectorName = _collectorName
+
+    f = open(str(collectorName)+'/reportIXP.txt', 'a+')
+    f.write('ASes:'+'\n')
+    for i in list:
+        f.write(str(i)+'\n')
     f.close()
 
 #save in a txt file information about the AS
@@ -307,6 +346,18 @@ def prefixAS(_ASnumber, _msglist):
     countWithdrawn = len(countWithdrawn)
 
     return (count,countAnnouncement,countWithdrawn)
+
+def reportAS(_data, _collectorName):
+
+    data = _data
+    collectorName = _collectorName
+
+    #TODO count prefixes
+    for i in data:
+        msgA = len(data[i][0])
+        msgW = len(data[i][1])
+        txtAS(i,msgA,msgW,0,0,0,collectorName)
+
 #-------------------------------[AS]----------------------------------------------
 
 #------------------------------[PREFIX]-------------------------------------------
@@ -410,8 +461,6 @@ def isAggregate(_prefix1, _prefix2):
     network2 = ipaddress.ip_network(prefix2)
 
     if network1.overlaps(network2):
-        print("isAggregate", "\n")
-        print(prefix1, prefix2)
         return 1
     else:
         return 0
@@ -502,13 +551,14 @@ def countStatistics(_msgList, _ASes, _collectorName):
     txtIXP(totalMSG,announcement,withdrawn,prefix,prefixA,prefixW,collectorName)
 
 #calculate the time between an announcement and a withdrawn
-def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data):
+def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
 
     prefixes = _prefixes
     msglist = _msgList
     label = _label
     prefixSize = _prefixSize
     data = _data
+    asn = _asn
 
     prefix = {}
     prefixList =[]
@@ -519,62 +569,69 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data):
 
     if int(prefixSize) == 0:
         all = 1
-
-    if int(prefixSize) == 0:
-        all = 1
-        f = open(str(label)+'/reporttimeAW.txt', 'a+')
+        path = str(label)+'/reporttimeAW'
+        #f = open(str(label)+'/reporttimeWA.txt', 'a+')
     else:
-        f = open(str(label)+'/reporttimeAW-'+str(prefixSize)+'.txt', 'a+')
+        path = str(label)+'/reporttimeAW-'+str(prefixSize)
+        #f = open(str(label)+'/reporttimeWA-'+str(prefixSize)+'.txt', 'a+')
+
+    if int(asn) != 0:
+        path = path+'-AS'+str(asn)
+
+
+    f = open(path+'.txt', 'a')
 
     for i in data:
-        listA = data[i][0]
-        for j in listA:
-            find = 0
-            preA = j["prefix"]
-            lprefix = preA.split(";")
-            for k in range(0,len(lprefix)-1,2):
-                prefixA = lprefix[k]+';'+lprefix[k+1]
-                test = prefixA.split(";")[1]
-                #print(prefixA)
-                if (prefixSize == test or int(prefixSize) == 0):
-                    listW = data[i][1]
-
-                    if len(listW) == 0:
-                        for m in data:
-                            listW = data[m][1]
+        if(int(i) == int(asn) or int(asn) == 0):
+            listA = data[i][0]
+            for j in listA:
+                find = 0
+                preA = j["prefix"]
+                lprefix = preA.split(";")
+                for k in range(0,len(lprefix)-1,2):
+                    prefixA = lprefix[k]+';'+lprefix[k+1]
+                    test = prefixA.split(";")[1]
+                    if (prefixSize == test or int(prefixSize) == 0):
+                        listW = data[i][1]
+                        if len(listW) == 0:
+                            for m in data:
+                                if len(data[m][0]) == 0:
+                                    listW = data[m][1]
+                                    for l in listW:
+                                        preW = l["prefix"]
+                                        lprefix = preW.split(";")
+                                        for n in range(0,len(lprefix)-1,2):
+                                            prefixW = lprefix[n]+';'+lprefix[n+1]
+                                            test = prefixW.split(";")[1]
+                                            if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
+                                                dataA = datetime.fromtimestamp(int(j["timestamp"]))
+                                                dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
+                                                dataW = datetime.fromtimestamp(int(l["timestamp"]))
+                                                dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
+                                                time = dW - dA
+                                                find = 1
+                                                prefixList.append(i)
+                                                listW.remove(l)
+                                                #listA.remove(j)
+                                                f.write(str(i)+';'+str(prefixA)+';'+str(time)+'\n')
+                        else:
                             for l in listW:
-                                prefixW = l["prefix"]
-                                #print(prefixA)
-                                #print(prefixW)
-                                if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
-                                    #print("entrou len =0")
-                                    dataA = datetime.fromtimestamp(int(j["timestamp"]))
-                                    dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
-                                    dataW = datetime.fromtimestamp(int(l["timestamp"]))
-                                    dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
-                                    time = dW - dA
-                                    find = 1
-                                    prefixList.append(i)
-                                    listW.remove(l)
-                                    #listA.remove(j)
-                                    f.write(str(time)+'\n')
-                    else:
-                        for l in listW:
-                            prefixW = l["prefix"]
-                            #print(prefixA)
-                            #print(prefixW)
-                            if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
-                                #print("entrou")
-                                dataA = datetime.fromtimestamp(int(j["timestamp"]))
-                                dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
-                                dataW = datetime.fromtimestamp(int(l["timestamp"]))
-                                dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
-                                time = dW - dA
-                                find = 1
-                                prefixList.append(i)
-                                listW.remove(l)
-                                #listA.remove(j)
-                                f.write(str(time)+'\n')
+                                preW = l["prefix"]
+                                lprefix = preW.split(";")
+                                for m in range(0,len(lprefix)-1,2):
+                                    prefixW = lprefix[m]+';'+lprefix[m+1]
+                                    test = prefixW.split(";")[1]
+                                    if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
+                                        dataA = datetime.fromtimestamp(int(j["timestamp"]))
+                                        dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
+                                        dataW = datetime.fromtimestamp(int(l["timestamp"]))
+                                        dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
+                                        time = dW - dA
+                                        find = 1
+                                        prefixList.append(i)
+                                        listW.remove(l)
+                                        #listA.remove(j)
+                                        f.write(str(i)+';'+str(prefixA)+';'+str(time)+'\n')
 
     #for i in prefixes:
     #    if (i.split(';')[1] == prefixSize or all == 1):
@@ -604,13 +661,14 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data):
     return prefix
 
 #calculate the time between an withdrawn and a announcement
-def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data):
+def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
 
     prefixes = _prefixes
     msglist = _msgList
     label = _label
     prefixSize = _prefixSize
     data = _data
+    asn = _asn
 
     prefix = {}
     prefixList =[]
@@ -621,33 +679,51 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data):
 
     if int(prefixSize) == 0:
         all = 1
-        f = open(str(label)+'/reporttimeWA.txt', 'a+')
+        path = str(label)+'/reporttimeWA'
+        #f = open(str(label)+'/reporttimeWA.txt', 'a+')
     else:
-        f = open(str(label)+'/reporttimeWA-'+str(prefixSize)+'.txt', 'a+')
+        path = str(label)+'/reporttimeWA-'+str(prefixSize)
+        #f = open(str(label)+'/reporttimeWA-'+str(prefixSize)+'.txt', 'a+')
 
+    if int(asn) != 0:
+        path = path+'-AS'+str(asn)
+
+
+    f = open(path+'.txt', 'a')
 
     for i in data:
-        listW = data[i][1]
-        for j in listW:
-            find = 0
-            preW = j["prefix"]
-            lprefix = preW.split(";")
-            for k in range(0,len(lprefix)-1,2):
-                prefixW = lprefix[k]+';'+lprefix[k+1]
-                test = prefixW.split(";")[1]
-                #print(prefixW)
-                if (prefixSize == test or int(prefixSize) == 0):
-                    listA = data[i][0]
-
-                    if len(listA) == 0:
-                        for m in data:
-                            listA = data[m][0]
+        if(int(i) == int(asn) or int(asn) == 0):
+            listW = data[i][1]
+            for j in listW:
+                find = 0
+                preW = j["prefix"]
+                lprefix = preW.split(";")
+                for k in range(0,len(lprefix)-1,2):
+                    prefixW = lprefix[k]+';'+lprefix[k+1]
+                    test = prefixW.split(";")[1]
+                    if (prefixSize == test or int(prefixSize) == 0):
+                        listA = data[i][0]
+                        if len(listA) == 0:
+                            for m in data:
+                                if len(data[m][1]) == 0:
+                                    listA = data[m][0]
+                                    for l in listA:
+                                        prefixA = l["prefix"]
+                                        if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
+                                            dataW = datetime.fromtimestamp(int(j["timestamp"]))
+                                            dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
+                                            dataA = datetime.fromtimestamp(int(l["timestamp"]))
+                                            dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
+                                            time = dA - dW
+                                            find = 1
+                                            prefixList.append(i)
+                                            #listW.remove(j)
+                                            listA.remove(l)
+                                            f.write(str(i)+';'+str(prefixW)+';'+str(time)+'\n')
+                        else:
                             for l in listA:
                                 prefixA = l["prefix"]
-                                #print(prefixW)
-                                #print(prefixA)
                                 if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
-                                    #print("entrou len=0")
                                     dataW = datetime.fromtimestamp(int(j["timestamp"]))
                                     dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
                                     dataA = datetime.fromtimestamp(int(l["timestamp"]))
@@ -657,27 +733,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data):
                                     prefixList.append(i)
                                     #listW.remove(j)
                                     listA.remove(l)
-                                    #print(data)
-                                    f.write(str(time)+'\n')
-                    else:
-                        for l in listA:
-                            prefixA = l["prefix"]
-                            #print(prefixW)
-                            #print(prefixA)
-                            if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
-                                #print("entrou")
-                                dataW = datetime.fromtimestamp(int(j["timestamp"]))
-                                dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
-                                dataA = datetime.fromtimestamp(int(l["timestamp"]))
-                                dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
-                                time = dA - dW
-                                find = 1
-                                prefixList.append(i)
-                                #listW.remove(j)
-                                listA.remove(l)
-                                #print(data)
-                                f.write(str(time)+'\n')
-
+                                    f.write(str(i)+';'+str(prefixW)+';'+str(time)+'\n')
 
     #for i in prefixes:
     #    if (i.split(';')[1] == prefixSize or all == 1):
@@ -809,6 +865,42 @@ def calculateChangesASPrefix(_prefixes, _ases, _msglist, _label):
             var1 = prefixASChanges(i, j, prefixes, msglist)
             if len(var1) != 0:
                 txtPrefix2(i,j,len(var1),label)
+
+#calculate how many changes every tupleo(ases,prefix) have
+def findPrefixThreshold(_label, _path, _threshold):
+
+    label = _label
+    path = _path
+    threshold = _threshold
+
+    f = open(label+'/reportPrefixThreshold-'+str(threshold)+'.txt', 'a+')
+
+    with open(path) as fp:
+        line = fp.readline()
+        while line:
+            nAs = line.split(";")[0]
+            prefix = line.split(";")[1]+"/"+line.split(";")[2]
+            aux = line.split(";")[3]
+            try:
+                days = aux.split(",")[0]
+                days = int(days[:1])
+                hours = aux.split(",")[1]
+                h = int(hours.split(":")[0])
+                m = int(hours.split(":")[1])
+                s = int(hours.split(":")[2])
+                time = s/60 + m + h*60 + days*24
+            except:
+                h = int(aux.split(":")[0])
+                m = int(aux.split(":")[1])
+                s = int(aux.split(":")[2])
+                time = s/60 + m + h*60
+            print (time)
+            if (time < threshold):
+                f.write(str(prefix)+'\n')
+            line = fp.readline()
+
+    f.close()
+
 #------------------------------[STATISTIC]-------------------------------------------
 
 #------------------------------[PLOT]---------------------------------------------
@@ -958,20 +1050,24 @@ def plotIXPprefix():
     plt.clf()
 
 #plot times between messages AW and WA
-def plotCDF(_type, _threshold):
+def plotCDF(_type, _threshold, _as, _prefix):
 
     type = _type
     threshold = _threshold
+    nAs = _as
+    prefix = _prefix
     count = 0
     timeList1 = []
     timeList2 = []
     timeList3 = []
     timeList4 = []
 
-    path1 = "AMSIX_080418_140418/reporttime"+type+".txt"
-    path2 = "AMSIX_010119_070119/reporttime"+type+".txt"
-    path3 = "DECIX_080418_140418/reporttime"+type+".txt"
-    path4 = "DECIX_010119_070119/reporttime"+type+".txt"
+    #path1 = "AMSIX_080418_140418/reporttime"+type+".txt"
+    #path2 = "AMSIX_010119_070119/reporttime"+type+".txt"
+    #path3 = "DECIX_080418_140418/reporttime"+type+".txt"
+    #path4 = "DECIX_010119_070119/reporttime"+type+".txt"
+
+    path1 = "teste/reporttimeAW.txt"
 
     if type == "WA":
         name = "an Withdrawn and a Announcement"
@@ -983,106 +1079,46 @@ def plotCDF(_type, _threshold):
     if(threshold != 0):
         save = save+"-"+str(threshold)
 
+    if(nAs != 0):
+        save = save+"-AS"+str(nAs)
+
+    if(prefix != ""):
+        save = save+"-prefix"+str(prefix)
+
     with open(path1) as fp1:
+        days = 0
+        readAS = 0
+        readPrefix = ''
+        readTime = ''
         line = fp1.readline()
-        days = 0
         while line:
+            readAS = int(line.split(';')[0])
+            readPrefix = line.split(';')[1] + ';' + line.split(';')[2]
+            readTime = line.split(';')[3]
             try:
-                days = line.split(",")[0]
+                days = readTime.split(",")[0]
                 days = int(days[:1])
-                hours = line.split(",")[1]
+                hours = readTime.split(",")[1]
                 h = int(hours.split(":")[0])
                 m = int(hours.split(":")[1])
                 s = int(hours.split(":")[2])
-                time = m + h*60 + days*24
-                if (time > threshold):
+                time = s/60 + m + h*60 + days*24
+                if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
                     timeList1.append(time)
                 line = fp1.readline()
             except:
-                h = int(line.split(":")[0])
-                m = int(line.split(":")[1])
-                s = int(line.split(":")[2])
-                time = m + h*60
-                if (time > threshold):
+                h = int(readTime.split(":")[0])
+                m = int(readTime.split(":")[1])
+                s = int(readTime.split(":")[2])
+                time = s/60 + m + h*60
+                if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
                     timeList1.append(time)
                 line = fp1.readline()
-
-    with open(path2) as fp2:
-        line = fp2.readline()
-        days = 0
-        while line:
-            try:
-                days = line.split(",")[0]
-                days = int(days[:1])
-                hours = line.split(",")[1]
-                h = int(hours.split(":")[0])
-                m = int(hours.split(":")[1])
-                s = int(hours.split(":")[2])
-                time = m + h*60 + days*24
-                if (time > threshold):
-                    timeList2.append(time)
-                line = fp2.readline()
-            except:
-                h = int(line.split(":")[0])
-                m = int(line.split(":")[1])
-                s = int(line.split(":")[2])
-                time = m + h*60
-                if (time > threshold):
-                    timeList2.append(time)
-                line = fp2.readline()
-
-    with open(path3) as fp3:
-        line = fp3.readline()
-        days = 0
-        while line:
-            try:
-                days = line.split(",")[0]
-                days = int(days[:1])
-                hours = line.split(",")[1]
-                h = int(hours.split(":")[0])
-                m = int(hours.split(":")[1])
-                s = int(hours.split(":")[2])
-                time = m + h*60 + days*24
-                if (time > threshold):
-                    timeList3.append(time)
-                line = fp3.readline()
-            except:
-                h = int(line.split(":")[0])
-                m = int(line.split(":")[1])
-                s = int(line.split(":")[2])
-                time = m + h*60
-                if (time > threshold):
-                    timeList3.append(time)
-                line = fp3.readline()
-
-    with open(path4) as fp4:
-        line = fp4.readline()
-        days = 0
-        while line:
-            try:
-                days = line.split(",")[0]
-                days = int(days[:1])
-                hours = line.split(",")[1]
-                h = int(hours.split(":")[0])
-                m = int(hours.split(":")[1])
-                s = int(hours.split(":")[2])
-                time = m + h*60 + days*24
-                if (time > threshold):
-                    timeList4.append(time)
-                line = fp4.readline()
-            except:
-                h = int(line.split(":")[0])
-                m = int(line.split(":")[1])
-                s = int(line.split(":")[2])
-                time = m + h*60
-                if (time > threshold):
-                    timeList4.append(time)
-                line = fp4.readline()
 
     pylab.plot(np.sort(timeList1),np.arange(len(timeList1))/float(len(timeList1)-1), color='SkyBlue', label="AMSIX_080418_140418 - "+ str(len(timeList1)),  linewidth=2, linestyle='-')
-    pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), color='IndianRed', label="AMSIX_010119_070119 - "+ str(len(timeList2)),  linewidth=2, linestyle='--')
-    pylab.plot(np.sort(timeList3),np.arange(len(timeList3))/float(len(timeList3)-1), color='Chocolate', label="DECIX_080418_140418 - "+ str(len(timeList3)),  linewidth=2, linestyle='-.')
-    pylab.plot(np.sort(timeList4),np.arange(len(timeList4))/float(len(timeList4)-1), color='Orange', label="DECIX_010119_070119 - "+ str(len(timeList4)),  linewidth=2, linestyle=':')
+    #pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), color='IndianRed', label="AMSIX_010119_070119 - "+ str(len(timeList2)),  linewidth=2, linestyle='--')
+    #pylab.plot(np.sort(timeList3),np.arange(len(timeList3))/float(len(timeList3)-1), color='Chocolate', label="DECIX_080418_140418 - "+ str(len(timeList3)),  linewidth=2, linestyle='-.')
+    #pylab.plot(np.sort(timeList4),np.arange(len(timeList4))/float(len(timeList4)-1), color='Orange', label="DECIX_010119_070119 - "+ str(len(timeList4)),  linewidth=2, linestyle=':')
     pylab.title("Time between " + name, loc='center')
     pylab.ylabel("Frequency", fontsize=10)
     pylab.xlabel("Time (min)", fontsize=10)
@@ -1090,8 +1126,8 @@ def plotCDF(_type, _threshold):
     pylab.xlim(0, )
     pylab.ylim(0, 1)
     pylab.legend(loc="best", fontsize=10)
-    pylab.savefig(save+".pdf", dpi=600)
-    pylab.savefig(save+".png", dpi=600)
+    pylab.savefig(save+"TESTE.pdf", dpi=600)
+    pylab.savefig(save+"TESTE.png", dpi=600)
     pylab.clf()
 
 #plot number of changes in aspath
@@ -1201,22 +1237,25 @@ def cli():
         if len(action) > 0:
                 if "TXTtoMem" in action:
                     msglist = []
-                    msglist2 = []
                     aux = action.split("TXTtoMem(")[1]
                     aux = aux[:-1]
                     aux = aux.split(",")
                     collectorName = aux[0]
-                    numberDays = aux[1]
-
+                    #numberDays = aux[1]
+                    path = aux[1]
                     if not os.path.exists(collectorName):
                         os.makedirs(collectorName)
 
-                    for i in range(0, int(numberDays)):
+                    #for i in range(0, int(numberDays)):
                         #auxlist = txttoMemory(aux[i+2])
                         #msglist = msglist + auxlist
-                        auxlist,ases,prefix,data = txttoMemory_new(aux[i+2])
+                    auxlist,ases,prefix,data = txttoMemory_new(path,collectorName)
+                    dataAW = copy.deepcopy(data)
+                    dataWA = copy.deepcopy(data)
 
                     ASes = {x:ases.count(x) for x in set(ases)}
+                    txtIXP2(ASes,collectorName)
+                    print(ASes)
                     prefixes = {x:prefix.count(x) for x in set(prefix)}
 
                     #print("Looking for which ASes sent messages","\n")
@@ -1230,16 +1269,18 @@ def cli():
                     countStatistics(msglist,ASes,collectorName)
 
                 elif "CalculateAW" in action:
-                    prefixSize = action.split("CalculateAW(")[1]
-                    prefixSize = prefixSize[:-1]
+                    aux = action.split("CalculateAW(")[1]
+                    aux = aux[:-1]
+                    prefixSize,asn=aux.split(',')
                     print('Calculating the time between an announcement and a withdrawn',"\n")
-                    calculateTimeAW(msglist, prefixes, collectorName, prefixSize, data)
+                    calculateTimeAW(msglist, prefixes, collectorName, prefixSize, dataAW, asn)
 
                 elif "CalculateWA" in action:
-                    prefixSize = action.split("CalculateWA(")[1]
-                    prefixSize = prefixSize[:-1]
+                    aux = action.split("CalculateWA(")[1]
+                    aux = aux[:-1]
+                    prefixSize,asn=aux.split(',')
                     print('Calculating the time between an withdrawn and a announcement',"\n")
-                    calculateTimeWA(msglist, prefixes, collectorName, prefixSize, data)
+                    calculateTimeWA(msglist, prefixes, collectorName, prefixSize, dataWA, asn)
 
                 elif "CalculateChangesASPrefix" in action:
                     prefixSize = action.split("CalculateChangesASPrefix(")[1]
@@ -1248,12 +1289,18 @@ def cli():
                     calculateChangesASPrefix(prefixes,ASes,msglist, collectorName)
 
                 elif "CalculateALL" in action:
-                    prefixSize = action.split("CalculateALL(")[1]
-                    prefixSize = prefixSize[:-1]
+                    aux = action.split("CalculateALL(")[1]
+                    aux = aux[:-1]
+                    prefixSize,asn=aux.split(',')
                     print('Calculating the changes of each (prefix,AS)',"\n")
-                    calculateTimeWA(msglist, prefixes, collectorName, prefixSize, data)
-                    calculateTimeAW(msglist, prefixes, collectorName, prefixSize, data)
+                    calculateTimeWA(msglist, prefixes, collectorName, prefixSize, dataWA, asn)
+                    calculateTimeAW(msglist, prefixes, collectorName, prefixSize, dataAW, asn)
                     calculateChangesASPrefix(prefixes,ASes,msglist, collectorName)
+
+                elif "FindPrefixThreshold" in action:
+                    threshold = action.split("FindPrefixThreshold(")[1]
+                    threshold = threshold[:-1]
+                    findPrefixThreshold(collectorName,collectorName+"/reporttimeAW.txt",60)
 
                 elif "PlotIXP" in action:
                     print('Ploting IXP informations',"\n")
@@ -1261,12 +1308,14 @@ def cli():
                     plotIXPprefix()
 
                 elif "PlotCDFtimes" in action:
-                    threshold = action.split("TXTtoMem(")[1]
-                    threshold = int(threshold[:-1])
-
+                    aux = action.split("TXTtoMem(")[1]
+                    aux = int(threshold[:-1])
+                    threshold,nas,prefix=aux.split(',')
+                    if (int(prefix) == 0):
+                        prefix = ''
                     print('Ploting times CDF graphics',"\n")
-                    plotCDF("WA",threshold)
-                    plotCDF("AW",threshold)
+                    plotCDF("WA",threshold,int(nas),'')
+                    plotCDF("AW",threshold,int(nas),'')
 
                 elif "plotCDFASPrefix" in action:
                     print('Ploting prefixes CDF graphics',"\n")
@@ -1283,21 +1332,23 @@ def cli():
 def help():
     print("List of BGPstability commands")
     print("TXTtoMem - read the txt files into memory")
-    print("\t example: TXTtoMem(collectorName,numberDays,pathtofile1,pathtofile2...)")
+    print("\t example: TXTtoMem(collectorName,pathtofile)")
     print("CountStatistics - ")
     print("\t example: CountStatistics()")
     print("CalculateAW - calculate the time between an announcement and a withdrawn")
-    print("\t example: CalculateAW(prefixSize)")
+    print("\t example: CalculateAW(prefixSize,ASN)")
     print("CalculateWA - calculate the time between an withdrawn and a announcement")
-    print("\t example: CalculateWA(prefixSize)")
+    print("\t example: CalculateWA(prefixSize,ASN)")
     print("CalculateChangesASPrefix - calculate how many changes every tuple(ases,prefix) have ")
     print("\t example: CalculateChangesASPrefix(prefixSize)")
     print("CalculateChangesALL - CalculateAW + CalculateWA + CalculateChangesASPrefix")
-    print("\t example: CalculateChangesALL(prefixSize)")
+    print("\t example: CalculateChangesALL(prefixSize,ASN)")
+    print("FindPrefixThreshold - ")
+    print("\t example: FindPrefixThreshold(file,threshold)")
     print("PlotIXP - ")
     print("\t example: PlotIXP()")
     print("PlotCDFtimes - ")
-    print("\t example: PlotCDFtimes(threshold)")
+    print("\t example: PlotCDFtimes(threshold,ASN,prefix)")
     print("plotCDFASPrefix - ")
     print("\t example: plotCDFASPrefix()")
     print("quit - quits BGPstability")
