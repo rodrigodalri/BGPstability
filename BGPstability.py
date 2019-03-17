@@ -11,11 +11,11 @@ import pylab
 import ipaddress
 from collections import defaultdict
 import copy
+import time
 
 #AS43252 is decix
 #AS62972 is amsix
 
-#TODO check if you are picking up all the prefixes when there is more than one in the same message
 #TODO some plots are out of date
 
 def pair_of_lists():
@@ -67,7 +67,6 @@ def txttoMemory(_path):
 
     return msglist
 
-#TODO add countStatistics while read to memory
 def txttoMemory_new(_path, _collectorName):
 
     msg = {}
@@ -435,7 +434,6 @@ def msgPrefix(_prefix, _msglist):
     return (countAnnouncement,countWithdrawn)
 
 #list every aspath from this prefix
-#TODO more than one prefix for message
 def msgASPath(_prefix, _msglist):
 
     msglist = _msglist
@@ -591,7 +589,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                 for k in range(0,len(lprefix)-1,2):
                     prefixA = lprefix[k]+';'+lprefix[k+1]
                     test = prefixA.split(";")[1]
-                    if (prefixSize == test or int(prefixSize) == 0):
+                    if (str(prefixSize) == str(test) or int(prefixSize) == 0):
                         listW = data[i][1]
                         if len(listW) == 0:
                             for m in data:
@@ -701,7 +699,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                 for k in range(0,len(lprefix)-1,2):
                     prefixW = lprefix[k]+';'+lprefix[k+1]
                     test = prefixW.split(";")[1]
-                    if (prefixSize == test or int(prefixSize) == 0):
+                    if (str(prefixSize) == str(test) or int(prefixSize) == 0):
                         listA = data[i][0]
                         if len(listA) == 0:
                             for m in data:
@@ -912,10 +910,10 @@ def plotIXPmsg():
     d3 = []
     d4 = []
 
-    path1 = "AMSIX_080418_140418/reportIXP.txt"
-    path2 = "AMSIX_010119_070119/reportIXP.txt"
-    path3 = "DECIX_080418_140418/reportIXP.txt"
-    path4 = "DECIX_010119_070119/reportIXP.txt"
+    path1 = "AMSIX_010119_070119_new/reportIXP.txt"
+    path2 = "AMSIX_080119_140119/reportIXP.txt"
+    path3 = "AMSIX_150119_210119/reportIXP.txt"
+    path4 = "AMSIX_220119_280119/reportIXP.txt"
 
     with open(path1) as fp1:
         line = fp1.readline()
@@ -945,10 +943,10 @@ def plotIXPmsg():
     width = 0.12  # the width of the bars
 
     fig, ax = plt.subplots()
-    rects1 = ax.bar(ind - 2*width, d1, width, color='SkyBlue', label='AMSIX_080418_140418')
-    rects2 = ax.bar(ind - width, d2, width, color='IndianRed', label='AMSIX_010119_070119')
-    rects3 = ax.bar(ind + width, d3, width, color='Chocolate', label='DECIX_080418_140418')
-    rects4 = ax.bar(ind + 2*width, d4, width, color='Orange', label='DECIX_010119_070119')
+    rects1 = ax.bar(ind - 3/2*width, d1, width, color='SkyBlue', label='010119-070119')
+    rects2 = ax.bar(ind - 1/2*width, d2, width, color='IndianRed', label='080119-140119')
+    rects3 = ax.bar(ind + 1/2*width, d3, width, color='Chocolate', label='150119-210119')
+    rects4 = ax.bar(ind + 3/2*width, d4, width, color='Orange', label='220119-280119')
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Number of')
@@ -966,10 +964,10 @@ def plotIXPmsg():
             ax.text(rect.get_x() + rect.get_width()*offset[xpos], 1.01*height,
                     '{}'.format(height), ha=ha[xpos], va='bottom')
 
-    autolabel(rects1, "center")
+    autolabel(rects1, "left")
     autolabel(rects2, "center")
     autolabel(rects3, "center")
-    autolabel(rects4, "center")
+    autolabel(rects4, "right")
 
     plt.show()
     plt.savefig("IXPmsg.pdf", dpi=600)
@@ -984,10 +982,10 @@ def plotIXPprefix():
     d3 = []
     d4 = []
 
-    path1 = "AMSIX_080418_140418/reportIXP.txt"
-    path2 = "AMSIX_010119_070119/reportIXP.txt"
-    path3 = "DECIX_080418_140418/reportIXP.txt"
-    path4 = "DECIX_010119_070119/reportIXP.txt"
+    path1 = "AMSIX_010119_070119_new/reportIXP.txt"
+    path2 = "AMSIX_080119_140119/reportIXP.txt"
+    path3 = "AMSIX_150119_210119/reportIXP.txt"
+    path4 = "AMSIX_220119_280119/reportIXP.txt"
 
     with open(path1) as fp1:
         line = fp1.readline()
@@ -1017,16 +1015,16 @@ def plotIXPprefix():
     width = 0.12  # the width of the bars
 
     fig, ax = plt.subplots()
-    rects1 = ax.bar(ind - 2*width, d1, width, color='SkyBlue', label='AMSIX_080418_140418')
-    rects2 = ax.bar(ind - width, d2, width, color='IndianRed', label='AMSIX_010119_070119')
-    rects3 = ax.bar(ind + width, d3, width, color='Chocolate', label='DECIX_080418_140418')
-    rects4 = ax.bar(ind + 2*width, d4, width, color='Orange', label='DECIX_010119_070119')
+    rects1 = ax.bar(ind - 3/2*width, d1, width, color='SkyBlue', label='010119-070119')
+    rects2 = ax.bar(ind - 1/2*width, d2, width, color='IndianRed', label='080119-140119')
+    rects3 = ax.bar(ind + 1/2*width, d3, width, color='Chocolate', label='150119-210119')
+    rects4 = ax.bar(ind + 3/2*width, d4, width, color='Orange', label='220119-280119')
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Number of')
     ax.set_title('BGP Prefixes' )
     ax.set_xticks(ind)
-    ax.set_xticklabels(('Total Prefixes', 'Prefixes Announceds ', 'Prefixes Withdrawals'))
+    ax.set_xticklabels(('Total Prefixes', 'Prefixes Announced ', 'Prefixes Withdrawals'))
     ax.legend()
 
     def autolabel(rects, xpos='center'):
@@ -1062,12 +1060,10 @@ def plotCDF(_type, _threshold, _as, _prefix):
     timeList3 = []
     timeList4 = []
 
-    #path1 = "AMSIX_080418_140418/reporttime"+type+".txt"
-    #path2 = "AMSIX_010119_070119/reporttime"+type+".txt"
-    #path3 = "DECIX_080418_140418/reporttime"+type+".txt"
-    #path4 = "DECIX_010119_070119/reporttime"+type+".txt"
-
-    path1 = "teste/reporttimeAW.txt"
+    path1 = "AMSIX_010119_070119_new/reporttime"+type+"-AS"+str(nAs)+".txt"
+    path2 = "AMSIX_080119_140119/reporttime"+type+"-AS"+str(nAs)+".txt"
+    path3 = "AMSIX_150119_210119/reporttime"+type+"-AS"+str(nAs)+".txt"
+    path4 = "AMSIX_220119_280119/reporttime"+type+"-AS"+str(nAs)+".txt"
 
     if type == "WA":
         name = "an Withdrawn and a Announcement"
@@ -1115,10 +1111,102 @@ def plotCDF(_type, _threshold, _as, _prefix):
                     timeList1.append(time)
                 line = fp1.readline()
 
-    pylab.plot(np.sort(timeList1),np.arange(len(timeList1))/float(len(timeList1)-1), color='SkyBlue', label="AMSIX_080418_140418 - "+ str(len(timeList1)),  linewidth=2, linestyle='-')
-    #pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), color='IndianRed', label="AMSIX_010119_070119 - "+ str(len(timeList2)),  linewidth=2, linestyle='--')
-    #pylab.plot(np.sort(timeList3),np.arange(len(timeList3))/float(len(timeList3)-1), color='Chocolate', label="DECIX_080418_140418 - "+ str(len(timeList3)),  linewidth=2, linestyle='-.')
-    #pylab.plot(np.sort(timeList4),np.arange(len(timeList4))/float(len(timeList4)-1), color='Orange', label="DECIX_010119_070119 - "+ str(len(timeList4)),  linewidth=2, linestyle=':')
+    with open(path2) as fp2:
+            days = 0
+            readAS = 0
+            readPrefix = ''
+            readTime = ''
+            line = fp2.readline()
+            while line:
+                readAS = int(line.split(';')[0])
+                readPrefix = line.split(';')[1] + ';' + line.split(';')[2]
+                readTime = line.split(';')[3]
+                try:
+                    days = readTime.split(",")[0]
+                    days = int(days[:1])
+                    hours = readTime.split(",")[1]
+                    h = int(hours.split(":")[0])
+                    m = int(hours.split(":")[1])
+                    s = int(hours.split(":")[2])
+                    time = s/60 + m + h*60 + days*24
+                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                        timeList2.append(time)
+                    line = fp2.readline()
+                except:
+                    h = int(readTime.split(":")[0])
+                    m = int(readTime.split(":")[1])
+                    s = int(readTime.split(":")[2])
+                    time = s/60 + m + h*60
+                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                        timeList2.append(time)
+                    line = fp2.readline()
+
+    with open(path3) as fp3:
+            days = 0
+            readAS = 0
+            readPrefix = ''
+            readTime = ''
+            line = fp3.readline()
+            while line:
+                readAS = int(line.split(';')[0])
+                readPrefix = line.split(';')[1] + ';' + line.split(';')[2]
+                readTime = line.split(';')[3]
+                try:
+                    days = readTime.split(",")[0]
+                    days = int(days[:1])
+                    hours = readTime.split(",")[1]
+                    h = int(hours.split(":")[0])
+                    m = int(hours.split(":")[1])
+                    s = int(hours.split(":")[2])
+                    time = s/60 + m + h*60 + days*24
+                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                        timeList3.append(time)
+                    line = fp3.readline()
+                except:
+                    h = int(readTime.split(":")[0])
+                    m = int(readTime.split(":")[1])
+                    s = int(readTime.split(":")[2])
+                    time = s/60 + m + h*60
+                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                        timeList3.append(time)
+                    line = fp3.readline()
+
+    with open(path4) as fp4:
+            days = 0
+            readAS = 0
+            readPrefix = ''
+            readTime = ''
+            line = fp4.readline()
+            while line:
+                readAS = int(line.split(';')[0])
+                readPrefix = line.split(';')[1] + ';' + line.split(';')[2]
+                readTime = line.split(';')[3]
+                try:
+                    days = readTime.split(",")[0]
+                    days = int(days[:1])
+                    hours = readTime.split(",")[1]
+                    h = int(hours.split(":")[0])
+                    m = int(hours.split(":")[1])
+                    s = int(hours.split(":")[2])
+                    time = s/60 + m + h*60 + days*24
+                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                        timeList4.append(time)
+                    line = fp4.readline()
+                except:
+                    h = int(readTime.split(":")[0])
+                    m = int(readTime.split(":")[1])
+                    s = int(readTime.split(":")[2])
+                    time = s/60 + m + h*60
+                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                        timeList4.append(time)
+                    line = fp4.readline()
+
+
+
+    pylab.plot(np.sort(timeList1),np.arange(len(timeList1))/float(len(timeList1)-1), color='SkyBlue', label="010119-070119 - "+ str(len(timeList1)),  linewidth=2, linestyle='-')
+    pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), color='IndianRed', label="080119-140119 - "+ str(len(timeList2)),  linewidth=2, linestyle='--')
+    pylab.plot(np.sort(timeList3),np.arange(len(timeList3))/float(len(timeList3)-1), color='Chocolate', label="150119-210119 - "+ str(len(timeList3)),  linewidth=2, linestyle='-.')
+    pylab.plot(np.sort(timeList4),np.arange(len(timeList4))/float(len(timeList4)-1), color='Orange', label="220119-280119 - "+ str(len(timeList4)),  linewidth=2, linestyle=':')
     pylab.title("Time between " + name, loc='center')
     pylab.ylabel("Frequency", fontsize=10)
     pylab.xlabel("Time (min)", fontsize=10)
@@ -1126,8 +1214,8 @@ def plotCDF(_type, _threshold, _as, _prefix):
     pylab.xlim(0, )
     pylab.ylim(0, 1)
     pylab.legend(loc="best", fontsize=10)
-    pylab.savefig(save+"TESTE.pdf", dpi=600)
-    pylab.savefig(save+"TESTE.png", dpi=600)
+    pylab.savefig("newplots/"+save+".pdf", dpi=600)
+    pylab.savefig("newplots/"+save+".png", dpi=600)
     pylab.clf()
 
 #plot number of changes in aspath
@@ -1255,7 +1343,6 @@ def cli():
 
                     ASes = {x:ases.count(x) for x in set(ases)}
                     txtIXP2(ASes,collectorName)
-                    print(ASes)
                     prefixes = {x:prefix.count(x) for x in set(prefix)}
 
                     #print("Looking for which ASes sent messages","\n")
@@ -1359,4 +1446,5 @@ if __name__ == '__main__':
     #t = threading.Thread(target=cli)
     #threads.append(t)
     #t.start()
+
     cli()
