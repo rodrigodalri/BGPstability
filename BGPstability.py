@@ -1207,7 +1207,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
     pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), color='IndianRed', label="080119-140119 - "+ str(len(timeList2)),  linewidth=2, linestyle='--')
     pylab.plot(np.sort(timeList3),np.arange(len(timeList3))/float(len(timeList3)-1), color='Chocolate', label="150119-210119 - "+ str(len(timeList3)),  linewidth=2, linestyle='-.')
     pylab.plot(np.sort(timeList4),np.arange(len(timeList4))/float(len(timeList4)-1), color='Orange', label="220119-280119 - "+ str(len(timeList4)),  linewidth=2, linestyle=':')
-    pylab.title("Time between " + name, loc='center')
+    pylab.title("Time between " + name + " - AS"+str(nAs), loc='center')
     pylab.ylabel("Frequency", fontsize=10)
     pylab.xlabel("Time (min)", fontsize=10)
     pylab.grid(True)
@@ -1351,6 +1351,9 @@ def cli():
                     #print('Looking for which prefix',"\n")
                     #prefixes = countPrefix(msglist)
 
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 6939)
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 6939)
+
                 elif "Count Statistics" in action:
                     print('Counting statistics and saving to a txt file',"\n")
                     countStatistics(msglist,ASes,collectorName)
@@ -1446,5 +1449,4 @@ if __name__ == '__main__':
     #t = threading.Thread(target=cli)
     #threads.append(t)
     #t.start()
-
     cli()
