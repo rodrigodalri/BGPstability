@@ -116,7 +116,8 @@ def txttoMemory_new(_path, _collectorName):
                 if prefix[:-1] == ";":
                     prefix = prefix[:-1]
                 msg = {"type": type, "timestamp": timestamp, "as": n_as, "prefix": prefix}
-                data[int(n_as)][1].append(msg)
+                if(isMsgNew(data,int(n_as),msg)):
+                    data[int(n_as)][1].append(msg)
                 list3 = prefix.split(';')
                 for k in range(0,len(list3)-1,2):
                     prefixesList.append(list3[k]+';'+list3[k+1])
@@ -141,13 +142,16 @@ def txttoMemory_new(_path, _collectorName):
                     list4 = aspath.split(',')[0]
                     try:
                         asesList.append(int(list4[2:-1]))
-                        data[int(list4[2:-1])][0].append(msg)
+                        if(isMsgNew(data,int(list4[2:-1]),msg)):
+                            data[int(list4[2:-1])][0].append(msg)
                     except:
                         asesList.append(int(list4[2:-2]))
-                        data[int(list4[2:-2])][0].append(msg)
+                        if(isMsgNew(data,int(list4[2:-2]),msg)):
+                            data[int(list4[2:-2])][0].append(msg)
                 else:
                     asesList.append(int(n_as))
-                    data[int(n_as)][0].append(msg)
+                    if(isMsgNew(data,int(n_as),msg)):
+                        data[int(n_as)][0].append(msg)
                 msgList.append(msg)
 
             line = fp.readline()
@@ -164,6 +168,53 @@ def txttoMemory_new(_path, _collectorName):
     txtIXP(totalMSG,announcement,withdrawn,count,countAnnouncement,countWithdrawn,collectorName)
 
     return msgList,asesList,prefixesList,data
+
+def isMsgNew(_data, _nas, _msg):
+
+    data = _data
+    nas = _nas
+    msg = _msg
+    new = 0
+    timestamp = 0
+
+    if int(nas) in data.keys():
+
+        #announcement message
+        if (msg["type"] == 'a'):
+            #run in list of announcements
+            for i in data[nas][0]:
+                if (i["prefix"] == msg["prefix"]):
+                    if len(data[nas][1]) > 0:
+                        #run in list of Withdrawns
+                        for j in data[nas][1]:
+                            #highes timestamp
+                            if (j["prefix"] == msg["prefix"] and int(j["timestamp"]) > timestamp):
+                                timestamp = j["timestamp"]
+                            else:
+                                timestamp = timestamp
+
+                        if (int(msg["timestamp"])>timestamp):
+                            new = 1
+                        else:
+                            new = 0
+                    else:
+                        new = 0
+
+                else:
+                    new = 1
+
+
+
+        #withdrawn message
+        else:
+
+
+            new=1
+
+    else:
+        new = 1
+
+    return new
 
 #save in a txt file information about the prefix
 def txtPrefix(_prefix, _numASes, _numChanges, _label):
@@ -1060,10 +1111,10 @@ def plotCDF(_type, _threshold, _as, _prefix):
     timeList3 = []
     timeList4 = []
 
-    path1 = "AMSIX_010119_070119_new/reporttime"+type+"-AS"+str(nAs)+".txt"
-    path2 = "AMSIX_080119_140119/reporttime"+type+"-AS"+str(nAs)+".txt"
-    path3 = "AMSIX_150119_210119/reporttime"+type+"-AS"+str(nAs)+".txt"
-    path4 = "AMSIX_220119_280119/reporttime"+type+"-AS"+str(nAs)+".txt"
+    path1 = "AMSIX_010119_070119_new/reporttime"+type+".txt"
+    path2 = "AMSIX_080119_140119/reporttime"+type+".txt"
+    path3 = "AMSIX_150119_210119/reporttime"+type+".txt"
+    path4 = "AMSIX_220119_280119/reporttime"+type+".txt"
 
     if type == "WA":
         name = "an Withdrawn and a Announcement"
@@ -1202,12 +1253,11 @@ def plotCDF(_type, _threshold, _as, _prefix):
                     line = fp4.readline()
 
 
-
     pylab.plot(np.sort(timeList1),np.arange(len(timeList1))/float(len(timeList1)-1), color='SkyBlue', label="010119-070119 - "+ str(len(timeList1)),  linewidth=2, linestyle='-')
     pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), color='IndianRed', label="080119-140119 - "+ str(len(timeList2)),  linewidth=2, linestyle='--')
     pylab.plot(np.sort(timeList3),np.arange(len(timeList3))/float(len(timeList3)-1), color='Chocolate', label="150119-210119 - "+ str(len(timeList3)),  linewidth=2, linestyle='-.')
     pylab.plot(np.sort(timeList4),np.arange(len(timeList4))/float(len(timeList4)-1), color='Orange', label="220119-280119 - "+ str(len(timeList4)),  linewidth=2, linestyle=':')
-    pylab.title("Time between " + name + " - AS"+str(nAs), loc='center')
+    pylab.title("Time between " + name, loc='center')
     pylab.ylabel("Frequency", fontsize=10)
     pylab.xlabel("Time (min)", fontsize=10)
     pylab.grid(True)
@@ -1341,6 +1391,8 @@ def cli():
                     dataAW = copy.deepcopy(data)
                     dataWA = copy.deepcopy(data)
 
+                    print(data)
+
                     ASes = {x:ases.count(x) for x in set(ases)}
                     txtIXP2(ASes,collectorName)
                     prefixes = {x:prefix.count(x) for x in set(prefix)}
@@ -1350,9 +1402,6 @@ def cli():
 
                     #print('Looking for which prefix',"\n")
                     #prefixes = countPrefix(msglist)
-
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 6939)
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 6939)
 
                 elif "Count Statistics" in action:
                     print('Counting statistics and saving to a txt file',"\n")
@@ -1449,4 +1498,6 @@ if __name__ == '__main__':
     #t = threading.Thread(target=cli)
     #threads.append(t)
     #t.start()
+    #plotCDF("WA",180,int(0),'')
+    #plotCDF("AW",180,int(0),'')
     cli()
