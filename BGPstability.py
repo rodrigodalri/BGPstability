@@ -169,13 +169,16 @@ def txttoMemory_new(_path, _collectorName):
 
     return msgList,asesList,prefixesList,data
 
+#TODO
 def isMsgNew(_data, _nas, _msg):
 
     data = _data
     nas = _nas
     msg = _msg
+    find = 0
     new = 0
-    timestamp = 0
+    timestampW = 0
+    timestampA = 0
 
     if int(nas) in data.keys():
 
@@ -184,33 +187,87 @@ def isMsgNew(_data, _nas, _msg):
             #run in list of announcements
             for i in data[nas][0]:
                 if (i["prefix"] == msg["prefix"]):
-                    if len(data[nas][1]) > 0:
+                    find = 1
+                    if len(data[nas][1]) > 0 or msg["as"] == str(nas):
                         #run in list of Withdrawns
                         for j in data[nas][1]:
-                            #highes timestamp
-                            if (j["prefix"] == msg["prefix"] and int(j["timestamp"]) > timestamp):
-                                timestamp = j["timestamp"]
+                            #highest timestamp W
+                            if (j["prefix"] == msg["prefix"] and int(j["timestamp"]) > int(timestampW)):
+                                timestampW = int(j["timestamp"])
                             else:
-                                timestamp = timestamp
-
-                        if (int(msg["timestamp"])>timestamp):
+                                timestampW = timestampW
+                        for l in data[nas][0]:
+                            #highest timestamp A
+                            if (l["prefix"] == msg["prefix"] and int(l["timestamp"]) > int(timestampA)):
+                                timestampA = int(l["timestamp"])
+                            else:
+                                timestampA = timestampA
+                        if (int(msg["timestamp"])>timestampW and timestampW > timestampA):
                             new = 1
                         else:
                             new = 0
+                    #route collector = AS
                     else:
-                        new = 0
-
-                else:
-                    new = 1
-
-
+                        if len(data[int(msg["as"])][1]) > 0:
+                            #run in list of Withdrawns
+                            for k in data[int(msg["as"])][1]:
+                                #highest timestamp W
+                                if (str(k["prefix"]) == str(msg["prefix"]) and int(k["timestamp"]) > int(timestampW)):
+                                    timestampW = int(k["timestamp"])
+                                else:
+                                    timestampW = timestampW
+                            for j in data[nas][0]:
+                                #highest timestamp A
+                                if (str(j["prefix"]) == str(msg["prefix"]) and int(j["timestamp"]) > int(timestampA)):
+                                    timestampA = int(j["timestamp"])
+                                else:
+                                    timestampA = timestampA
+                            if (int(msg["timestamp"])>int(timestampW) and timestampW > timestampA):
+                                new = 1
+                            else:
+                                new = 0
+            if (find == 0):
+                new = 1
 
         #withdrawn message
         else:
+            if(len(data[nas][0]) > 0):
+                print(msg["prefix"])
+                for i in data[nas][1]:
+                    if (i["prefix"] == msg["prefix"]):
+                        find = 1
+                        for k in data[nas][0]:
+                            if (str(k["prefix"]) == str(msg["prefix"]) and int(k["timestamp"]) > int(timestampA)):
+                                timestampA = int(k["timestamp"])
+                            else:
+                                timestampA = timestampA
+                        for j in data[nas][1]:
+                            if (str(j["prefix"]) == str(msg["prefix"]) and int(j["timestamp"]) > int(timestampW)):
+                                timestampW = int(j["timestamp"])
+                            else:
+                                timestampW = timestampW
+                        if (int(msg["timestamp"])>int(timestampW) and timestampA > timestampW):
+                            new = 1
+                        else:
+                            new = 0
+                        print(new)
+
+                if (find == 0):
+                    new = 1
+
+            #TODO
+            #route collector = AS
+            else:
 
 
-            new=1
 
+
+
+
+
+                new = 1
+
+    #first msg of AS
     else:
         new = 1
 
@@ -915,14 +972,18 @@ def calculateChangesASPrefix(_prefixes, _ases, _msglist, _label):
             if len(var1) != 0:
                 txtPrefix2(i,j,len(var1),label)
 
-#calculate how many changes every tupleo(ases,prefix) have
-def findPrefixThreshold(_label, _path, _threshold):
+def findPrefixThreshold(_label, _path, _threshold, _type):
 
     label = _label
     path = _path
     threshold = _threshold
-
-    f = open(label+'/reportPrefixThreshold-'+str(threshold)+'.txt', 'a+')
+    type = _type
+    path = path+".txt"
+    if type == 0:
+        typepath = "AW"
+    else:
+        typepath = "WA"
+    f = open(label+'/reportPrefixThreshold-'+str(threshold)+typepath+'.txt', 'a+')
 
     with open(path) as fp:
         line = fp.readline()
@@ -961,10 +1022,10 @@ def plotIXPmsg():
     d3 = []
     d4 = []
 
-    path1 = "AMSIX_010119_070119_new/reportIXP.txt"
-    path2 = "AMSIX_080119_140119/reportIXP.txt"
-    path3 = "AMSIX_150119_210119/reportIXP.txt"
-    path4 = "AMSIX_220119_280119/reportIXP.txt"
+    path1 = "DECIX_010119_070119_new/reportIXP.txt"
+    path2 = "DECIX_080119_140119/reportIXP.txt"
+    path3 = "DECIX_150119_210119/reportIXP.txt"
+    path4 = "DECIX_220119_280119/reportIXP.txt"
 
     with open(path1) as fp1:
         line = fp1.readline()
@@ -1033,10 +1094,10 @@ def plotIXPprefix():
     d3 = []
     d4 = []
 
-    path1 = "AMSIX_010119_070119_new/reportIXP.txt"
-    path2 = "AMSIX_080119_140119/reportIXP.txt"
-    path3 = "AMSIX_150119_210119/reportIXP.txt"
-    path4 = "AMSIX_220119_280119/reportIXP.txt"
+    path1 = "DECIX_010119_070119_new/reportIXP.txt"
+    path2 = "DECIX_080119_140119/reportIXP.txt"
+    path3 = "DECIX_150119_210119/reportIXP.txt"
+    path4 = "DECIX_220119_280119/reportIXP.txt"
 
     with open(path1) as fp1:
         line = fp1.readline()
@@ -1104,7 +1165,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
     type = _type
     threshold = _threshold
     nAs = _as
-    prefix = _prefix
+    prefix = int(_prefix)
     count = 0
     timeList1 = []
     timeList2 = []
@@ -1129,7 +1190,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
     if(nAs != 0):
         save = save+"-AS"+str(nAs)
 
-    if(prefix != ""):
+    if(prefix != 50):
         save = save+"-prefix"+str(prefix)
 
     with open(path1) as fp1:
@@ -1140,7 +1201,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
         line = fp1.readline()
         while line:
             readAS = int(line.split(';')[0])
-            readPrefix = line.split(';')[1] + ';' + line.split(';')[2]
+            readPrefix = int(line.split(';')[2])
             readTime = line.split(';')[3]
             try:
                 days = readTime.split(",")[0]
@@ -1170,7 +1231,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
             line = fp2.readline()
             while line:
                 readAS = int(line.split(';')[0])
-                readPrefix = line.split(';')[1] + ';' + line.split(';')[2]
+                readPrefix = int(line.split(';')[2])
                 readTime = line.split(';')[3]
                 try:
                     days = readTime.split(",")[0]
@@ -1200,7 +1261,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
             line = fp3.readline()
             while line:
                 readAS = int(line.split(';')[0])
-                readPrefix = line.split(';')[1] + ';' + line.split(';')[2]
+                readPrefix = int(line.split(';')[2])
                 readTime = line.split(';')[3]
                 try:
                     days = readTime.split(",")[0]
@@ -1230,7 +1291,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
             line = fp4.readline()
             while line:
                 readAS = int(line.split(';')[0])
-                readPrefix = line.split(';')[1] + ';' + line.split(';')[2]
+                readPrefix = int(line.split(';')[2])
                 readTime = line.split(';')[3]
                 try:
                     days = readTime.split(",")[0]
@@ -1252,7 +1313,6 @@ def plotCDF(_type, _threshold, _as, _prefix):
                         timeList4.append(time)
                     line = fp4.readline()
 
-
     pylab.plot(np.sort(timeList1),np.arange(len(timeList1))/float(len(timeList1)-1), color='SkyBlue', label="010119-070119 - "+ str(len(timeList1)),  linewidth=2, linestyle='-')
     pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), color='IndianRed', label="080119-140119 - "+ str(len(timeList2)),  linewidth=2, linestyle='--')
     pylab.plot(np.sort(timeList3),np.arange(len(timeList3))/float(len(timeList3)-1), color='Chocolate', label="150119-210119 - "+ str(len(timeList3)),  linewidth=2, linestyle='-.')
@@ -1264,8 +1324,8 @@ def plotCDF(_type, _threshold, _as, _prefix):
     pylab.xlim(0, )
     pylab.ylim(0, 1)
     pylab.legend(loc="best", fontsize=10)
-    pylab.savefig("newplots/"+save+".pdf", dpi=600)
-    pylab.savefig("newplots/"+save+".png", dpi=600)
+    pylab.savefig("AMSIX_newplots/"+save+".pdf", dpi=600)
+    pylab.savefig("AMSIX_newplots/"+save+".png", dpi=600)
     pylab.clf()
 
 #plot number of changes in aspath
@@ -1480,7 +1540,7 @@ def help():
     print("\t example: CalculateWA(prefixSize,ASN)")
     print("CalculateChangesASPrefix - calculate how many changes every tuple(ases,prefix) have ")
     print("\t example: CalculateChangesASPrefix(prefixSize)")
-    print("CalculateChangesALL - CalculateAW + CalculateWA + CalculateChangesASPrefix")
+    print("CalculateALL - CalculateAW + CalculateWA + CalculateChangesASPrefix")
     print("\t example: CalculateChangesALL(prefixSize,ASN)")
     print("FindPrefixThreshold - ")
     print("\t example: FindPrefixThreshold(file,threshold)")
@@ -1493,11 +1553,19 @@ def help():
     print("quit - quits BGPstability")
 
 if __name__ == '__main__':
-    #main()
-    #threads = []
-    #t = threading.Thread(target=cli)
-    #threads.append(t)
-    #t.start()
-    #plotCDF("WA",180,int(0),'')
-    #plotCDF("AW",180,int(0),'')
-    cli()
+
+    #for i in range(0,49):
+    #    plotCDF("WA",0,0,i)
+    #    plotCDF("AW",0,0,i)
+    #plotIXPmsg()
+    #plotIXPprefix()
+    #cli()
+
+    findPrefixThreshold("AMSIX_010119_070119_new","AMSIX_010119_070119_new/reporttimeAW",5,0)
+    findPrefixThreshold("AMSIX_010119_070119_new","AMSIX_010119_070119_new/reporttimeWA",5,1)
+    findPrefixThreshold("AMSIX_080119_140119","AMSIX_080119_140119/reporttimeAW",5,0)
+    findPrefixThreshold("AMSIX_080119_140119","AMSIX_080119_140119/reporttimeWA",5,1)
+    findPrefixThreshold("AMSIX_150119_210119","AMSIX_150119_210119/reporttimeAW",5,0)
+    findPrefixThreshold("AMSIX_150119_210119","AMSIX_150119_210119/reporttimeWA",5,1)
+    findPrefixThreshold("AMSIX_220119_280119","AMSIX_220119_280119/reporttimeAW",5,0)
+    findPrefixThreshold("AMSIX_220119_280119","AMSIX_220119_280119/reporttimeWA",5,1)
