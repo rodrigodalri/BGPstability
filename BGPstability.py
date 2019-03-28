@@ -75,6 +75,7 @@ def txttoMemory_new(_path, _collectorName):
     prefixesList = []
     path = _path
     collectorName = _collectorName
+    specialCase = {}
 
 
     prefixListA =[]
@@ -116,7 +117,7 @@ def txttoMemory_new(_path, _collectorName):
                 if prefix[:-1] == ";":
                     prefix = prefix[:-1]
                 msg = {"type": type, "timestamp": timestamp, "as": n_as, "prefix": prefix}
-                if(isMsgNew(data,int(n_as),msg)):
+                if(isMsgNew(data,int(n_as),msg,specialCase)):
                     data[int(n_as)][1].append(msg)
                 list3 = prefix.split(';')
                 for k in range(0,len(list3)-1,2):
@@ -142,15 +143,17 @@ def txttoMemory_new(_path, _collectorName):
                     list4 = aspath.split(',')[0]
                     try:
                         asesList.append(int(list4[2:-1]))
-                        if(isMsgNew(data,int(list4[2:-1]),msg)):
+                        if(isMsgNew(data,int(list4[2:-1]),msg,specialCase)):
+                            specialCase[str(prefix)] = int(list4[2:-1])
                             data[int(list4[2:-1])][0].append(msg)
                     except:
                         asesList.append(int(list4[2:-2]))
-                        if(isMsgNew(data,int(list4[2:-2]),msg)):
+                        if(isMsgNew(data,int(list4[2:-2]),msg,specialCase)):
+                            specialCase[str(prefix)] = int(list4[2:-2])
                             data[int(list4[2:-2])][0].append(msg)
                 else:
                     asesList.append(int(n_as))
-                    if(isMsgNew(data,int(n_as),msg)):
+                    if(isMsgNew(data,int(n_as),msg,specialCase)):
                         data[int(n_as)][0].append(msg)
                 msgList.append(msg)
 
@@ -169,12 +172,12 @@ def txttoMemory_new(_path, _collectorName):
 
     return msgList,asesList,prefixesList,data
 
-#TODO
-def isMsgNew(_data, _nas, _msg):
+def isMsgNew(_data, _nas, _msg, _specialCase):
 
     data = _data
     nas = _nas
     msg = _msg
+    specialCase = _specialCase
     find = 0
     new = 0
     timestampW = 0
@@ -232,7 +235,6 @@ def isMsgNew(_data, _nas, _msg):
         #withdrawn message
         else:
             if(len(data[nas][0]) > 0):
-                print(msg["prefix"])
                 for i in data[nas][1]:
                     if (i["prefix"] == msg["prefix"]):
                         find = 1
@@ -250,22 +252,32 @@ def isMsgNew(_data, _nas, _msg):
                             new = 1
                         else:
                             new = 0
-                        print(new)
-
                 if (find == 0):
                     new = 1
 
-            #TODO
             #route collector = AS
             else:
-
-
-
-
-
-
-
-                new = 1
+                if msg["prefix"] in specialCase.keys():
+                    realAS = specialCase[msg["prefix"]]
+                    for i in data[nas][1]:
+                        if (i["prefix"] == msg["prefix"]):
+                            find = 1
+                            for k in data[realAS][0]:
+                                if (str(k["prefix"]) == str(msg["prefix"]) and int(k["timestamp"]) > int(timestampA)):
+                                    timestampA = int(k["timestamp"])
+                                else:
+                                    timestampA = timestampA
+                            for j in data[nas][1]:
+                                if (str(j["prefix"]) == str(msg["prefix"]) and int(j["timestamp"]) > int(timestampW)):
+                                    timestampW = int(j["timestamp"])
+                                else:
+                                    timestampW = timestampW
+                            if (int(msg["timestamp"])>int(timestampW) and timestampA > timestampW):
+                                new = 1
+                            else:
+                                new = 0
+                    if (find == 0):
+                        new = 1
 
     #first msg of AS
     else:
@@ -1178,7 +1190,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
     path4 = "AMSIX_220119_280119/reporttime"+type+".txt"
 
     if type == "WA":
-        name = "an Withdrawn and a Announcement"
+        name = "a Withdrawn and an Announcement"
         save = "timeWA"
     else:
         name = "an Announcement and a Withdrawn"
@@ -1434,6 +1446,8 @@ def cli():
         action = input("BGPstability: ")
         if len(action) > 0:
                 if "TXTtoMem" in action:
+                    announcement = 0
+                    withdrawn = 0
                     msglist = []
                     aux = action.split("TXTtoMem(")[1]
                     aux = aux[:-1]
@@ -1452,6 +1466,15 @@ def cli():
                     dataWA = copy.deepcopy(data)
 
                     print(data)
+
+                    for i in data:
+                        announcement = len(data[i][0]) + announcement
+                        withdrawn = len(data[i][1]) + withdrawn
+
+                    print("announcements:")
+                    print(announcement)
+                    print("Withdrawals:")
+                    print(withdrawn)
 
                     ASes = {x:ases.count(x) for x in set(ases)}
                     txtIXP2(ASes,collectorName)
@@ -1478,7 +1501,7 @@ def cli():
                     aux = action.split("CalculateWA(")[1]
                     aux = aux[:-1]
                     prefixSize,asn=aux.split(',')
-                    print('Calculating the time between an withdrawn and a announcement',"\n")
+                    print('Calculating the time between a withdrawn and an announcement',"\n")
                     calculateTimeWA(msglist, prefixes, collectorName, prefixSize, dataWA, asn)
 
                 elif "CalculateChangesASPrefix" in action:
@@ -1536,7 +1559,7 @@ def help():
     print("\t example: CountStatistics()")
     print("CalculateAW - calculate the time between an announcement and a withdrawn")
     print("\t example: CalculateAW(prefixSize,ASN)")
-    print("CalculateWA - calculate the time between an withdrawn and a announcement")
+    print("CalculateWA - calculate the time between a withdrawn and an announcement")
     print("\t example: CalculateWA(prefixSize,ASN)")
     print("CalculateChangesASPrefix - calculate how many changes every tuple(ases,prefix) have ")
     print("\t example: CalculateChangesASPrefix(prefixSize)")
@@ -1559,13 +1582,4 @@ if __name__ == '__main__':
     #    plotCDF("AW",0,0,i)
     #plotIXPmsg()
     #plotIXPprefix()
-    #cli()
-
-    findPrefixThreshold("AMSIX_010119_070119_new","AMSIX_010119_070119_new/reporttimeAW",5,0)
-    findPrefixThreshold("AMSIX_010119_070119_new","AMSIX_010119_070119_new/reporttimeWA",5,1)
-    findPrefixThreshold("AMSIX_080119_140119","AMSIX_080119_140119/reporttimeAW",5,0)
-    findPrefixThreshold("AMSIX_080119_140119","AMSIX_080119_140119/reporttimeWA",5,1)
-    findPrefixThreshold("AMSIX_150119_210119","AMSIX_150119_210119/reporttimeAW",5,0)
-    findPrefixThreshold("AMSIX_150119_210119","AMSIX_150119_210119/reporttimeWA",5,1)
-    findPrefixThreshold("AMSIX_220119_280119","AMSIX_220119_280119/reporttimeAW",5,0)
-    findPrefixThreshold("AMSIX_220119_280119","AMSIX_220119_280119/reporttimeWA",5,1)
+    cli()
