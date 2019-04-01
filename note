@@ -14,6 +14,13 @@ WA -> 2087,93 s = 34,79 min
 AW ->  916,49 s = 15,27 min
 
 --------------------------------------------------------------------------------
+TXTtoMem(DECIX_010119_070119_new,decix-190101-190107.txt)
+TXTtoMem(DECIX_080119_140119,decix-190108-190114.txt)
+TXTtoMem(DECIX_150119_210119,decix-190115-190121.txt)
+TXTtoMem(DECIX_220119_280119,decix-190122-190128.txt)
+
+
+
 TXTtoMem(AMSIX_010119_070119_withoutdmsg,amsix-190101-190107.txt)
 TXTtoMem(AMSIX_080119_140119_withoutdmsg,amsix-190108-190114.txt)
 TXTtoMem(AMSIX_150119_210119_withoutdmsg,amsix-190115-190121.txt)
