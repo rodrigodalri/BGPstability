@@ -684,6 +684,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
     time = 0
     find = 0
     all = 0
+    isAggregate = 0
 
     if int(prefixSize) == 0:
         all = 1
@@ -704,6 +705,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
             listA = data[i][0]
             for j in listA:
                 find = 0
+                isAggregate = 0
                 preA = j["prefix"]
                 lprefix = preA.split(";")
                 for k in range(0,len(lprefix)-1,2):
@@ -721,7 +723,8 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                         for n in range(0,len(lprefix)-1,2):
                                             prefixW = lprefix[n]+';'+lprefix[n+1]
                                             test = prefixW.split(";")[1]
-                                            if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
+                                            isAggregate = isAggregate(prefixA,prefixW)
+                                            if((prefixA == prefixW or isAggregate) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
                                                 dataA = datetime.fromtimestamp(int(j["timestamp"]))
                                                 dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
                                                 dataW = datetime.fromtimestamp(int(l["timestamp"]))
@@ -731,7 +734,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                                 prefixList.append(i)
                                                 listW.remove(l)
                                                 #listA.remove(j)
-                                                f.write(str(i)+';'+str(prefixA)+';'+str(time)+'\n')
+                                                f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(isAggregate)+'\n')
                         else:
                             for l in listW:
                                 preW = l["prefix"]
@@ -739,7 +742,8 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                 for m in range(0,len(lprefix)-1,2):
                                     prefixW = lprefix[m]+';'+lprefix[m+1]
                                     test = prefixW.split(";")[1]
-                                    if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
+                                    isAggregate = isAggregate(prefixA,prefixW)
+                                    if((prefixA == prefixW or isAggregate) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
                                         dataA = datetime.fromtimestamp(int(j["timestamp"]))
                                         dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
                                         dataW = datetime.fromtimestamp(int(l["timestamp"]))
@@ -749,7 +753,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                         prefixList.append(i)
                                         listW.remove(l)
                                         #listA.remove(j)
-                                        f.write(str(i)+';'+str(prefixA)+';'+str(time)+'\n')
+                                        f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(isAggregate)+'\n')
 
     #for i in prefixes:
     #    if (i.split(';')[1] == prefixSize or all == 1):
@@ -794,6 +798,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
     time = 0
     find = 0
     all = 0
+    isAggregate = 0
 
     if int(prefixSize) == 0:
         all = 1
@@ -814,6 +819,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
             listW = data[i][1]
             for j in listW:
                 find = 0
+                isAggregate = 0
                 preW = j["prefix"]
                 lprefix = preW.split(";")
                 for k in range(0,len(lprefix)-1,2):
@@ -827,7 +833,8 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                     listA = data[m][0]
                                     for l in listA:
                                         prefixA = l["prefix"]
-                                        if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
+                                        isAggregate = isAggregate(prefixA,prefixW)
+                                        if((prefixA == prefixW or isAggregate) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
                                             dataW = datetime.fromtimestamp(int(j["timestamp"]))
                                             dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
                                             dataA = datetime.fromtimestamp(int(l["timestamp"]))
@@ -837,11 +844,12 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                             prefixList.append(i)
                                             #listW.remove(j)
                                             listA.remove(l)
-                                            f.write(str(i)+';'+str(prefixW)+';'+str(time)+'\n')
+                                            f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(isAggregate)+'\n')
                         else:
                             for l in listA:
                                 prefixA = l["prefix"]
-                                if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
+                                isAggregate = isAggregate(prefixA,prefixW)
+                                if((prefixA == prefixW or isAggregate) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
                                     dataW = datetime.fromtimestamp(int(j["timestamp"]))
                                     dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
                                     dataA = datetime.fromtimestamp(int(l["timestamp"]))
@@ -851,7 +859,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                     prefixList.append(i)
                                     #listW.remove(j)
                                     listA.remove(l)
-                                    f.write(str(i)+';'+str(prefixW)+';'+str(time)+'\n')
+                                    f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(isAggregate)+'\n')
 
     #for i in prefixes:
     #    if (i.split(';')[1] == prefixSize or all == 1):
@@ -1458,6 +1466,10 @@ def cli():
                     if not os.path.exists(collectorName):
                         os.makedirs(collectorName)
 
+                    log = time.time()
+                    log2 = time.ctime(log)
+                    f = open('LOG'+str(collectorName)+'.txt', 'a+')
+                    f.write(str(log2)+'\n')
                     #for i in range(0, int(numberDays)):
                         #auxlist = txttoMemory(aux[i+2])
                         #msglist = msglist + auxlist
@@ -1465,16 +1477,22 @@ def cli():
                     dataAW = copy.deepcopy(data)
                     dataWA = copy.deepcopy(data)
 
-                    print(data)
+                    #print(data)
 
                     for i in data:
                         announcement = len(data[i][0]) + announcement
                         withdrawn = len(data[i][1]) + withdrawn
 
+                    log = time.time()
+                    log2 = time.ctime(log)
+                    f.write(str(log2)+'\n')
+
                     print("announcements:")
                     print(announcement)
                     print("Withdrawals:")
                     print(withdrawn)
+
+                    txtIXP(announcement+withdrawn,announcement,withdrawn,0,0,0,collectorName)
 
                     ASes = {x:ases.count(x) for x in set(ases)}
                     txtIXP2(ASes,collectorName)
@@ -1485,6 +1503,84 @@ def cli():
 
                     #print('Looking for which prefix',"\n")
                     #prefixes = countPrefix(msglist)
+
+
+                    f.write(str(15169)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 15169)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 15169)
+
+
+                    f.write(str(32899)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 32899)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 32899)
+
+
+                    f.write(str(10310)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 10310)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 10310)
+
+
+                    f.write(str(22822)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 22822)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 22822)
+
+
+                    f.write(str(42)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 42)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 42)
+
+
+                    f.write(str(23467)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 23467)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 23467)
+
+
+                    f.write(str(32748)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 32748)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 32748)
+
+
+                    f.write(str(16524)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 16524)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 16524)
+
+
+                    f.write(str(2381)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 2381)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 2381)
+
+
+                    f.write(str(20940)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 20940)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 20940)
+
+
+                    f.write(str(6507)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 6507)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 6507)
+
+
+                    f.write(str(23473)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 23473)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 23473)
+
+
+                    f.write(str(394738)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 394738)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 394738)
+
+                    f.write(str(19255)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 19255)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 19255)
+
+                    f.write(str(62972)+'\n')
+                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 62972)
+                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 62972)
+
+                    log = time.time()
+                    log2 = time.ctime(log)
+                    f.write(str(log2)+'\n')
+                    f.close()
 
                 elif "Count Statistics" in action:
                     print('Counting statistics and saving to a txt file',"\n")
