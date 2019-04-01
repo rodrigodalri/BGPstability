@@ -1031,9 +1031,28 @@ def findPrefixThreshold(_label, _path, _threshold, _type):
 
     f.close()
 
+
+#TODO
+def wichPrefixHasChanged():
+    #read file of report and count wich prefix apear and how much time
+
+    return 0
+
+#TODO
+def averageTimeByPrefix():
+    #calculate the average time for each prefix
+
+    return 0
+
+#TODO
+def howManyPrefixesHaveChanged():
+    #calculate how many prefixes have changed and what change
+
+    return 0
+
 #------------------------------[STATISTIC]-------------------------------------------
 
-#------------------------------[PLOT]---------------------------------------------
+#------------------------------[PLOT]------------------------------------------------
 #plot information about the IXP
 def plotIXPmsg():
 
@@ -1446,6 +1465,12 @@ def printASes(_listASNs, _date):
     plt.savefig("figures/amsixASes"+date+".png", dpi=600)
     plt.show()
     plt.clf()
+
+#TODO
+def plotTimeSeries():
+    #plot time series of life and death of each prefix
+    
+    return 0
 #------------------------------[PLOT]---------------------------------------------
 
 def cli():
