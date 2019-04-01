@@ -684,7 +684,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
     time = 0
     find = 0
     all = 0
-    isAggregate = 0
+    #isAggregate = 0
 
     if int(prefixSize) == 0:
         all = 1
@@ -723,8 +723,8 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                         for n in range(0,len(lprefix)-1,2):
                                             prefixW = lprefix[n]+';'+lprefix[n+1]
                                             test = prefixW.split(";")[1]
-                                            isAggregate = isAggregate(prefixA,prefixW)
-                                            if((prefixA == prefixW or isAggregate) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
+                                            #isAggregate = isAggregate(prefixA,prefixW)
+                                            if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
                                                 dataA = datetime.fromtimestamp(int(j["timestamp"]))
                                                 dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
                                                 dataW = datetime.fromtimestamp(int(l["timestamp"]))
@@ -734,7 +734,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                                 prefixList.append(i)
                                                 listW.remove(l)
                                                 #listA.remove(j)
-                                                f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(isAggregate)+'\n')
+                                                f.write(str(i)+';'+str(prefixA)+';'+str(time)+'\n')
                         else:
                             for l in listW:
                                 preW = l["prefix"]
@@ -742,8 +742,8 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                 for m in range(0,len(lprefix)-1,2):
                                     prefixW = lprefix[m]+';'+lprefix[m+1]
                                     test = prefixW.split(";")[1]
-                                    isAggregate = isAggregate(prefixA,prefixW)
-                                    if((prefixA == prefixW or isAggregate) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
+                                    #isAggregate = isAggregate(prefixA,prefixW)
+                                    if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
                                         dataA = datetime.fromtimestamp(int(j["timestamp"]))
                                         dA = datetime.strptime(str(dataA), "%Y-%m-%d %H:%M:%S")
                                         dataW = datetime.fromtimestamp(int(l["timestamp"]))
@@ -753,7 +753,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                         prefixList.append(i)
                                         listW.remove(l)
                                         #listA.remove(j)
-                                        f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(isAggregate)+'\n')
+                                        f.write(str(i)+';'+str(prefixA)+';'+str(time)+'\n')
 
     #for i in prefixes:
     #    if (i.split(';')[1] == prefixSize or all == 1):
@@ -798,7 +798,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
     time = 0
     find = 0
     all = 0
-    isAggregate = 0
+    #isAggregate = 0
 
     if int(prefixSize) == 0:
         all = 1
@@ -833,8 +833,8 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                     listA = data[m][0]
                                     for l in listA:
                                         prefixA = l["prefix"]
-                                        isAggregate = isAggregate(prefixA,prefixW)
-                                        if((prefixA == prefixW or isAggregate) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
+                                        #isAggregate = isAggregate(prefixA,prefixW)
+                                        if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
                                             dataW = datetime.fromtimestamp(int(j["timestamp"]))
                                             dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
                                             dataA = datetime.fromtimestamp(int(l["timestamp"]))
@@ -844,12 +844,12 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                             prefixList.append(i)
                                             #listW.remove(j)
                                             listA.remove(l)
-                                            f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(isAggregate)+'\n')
+                                            f.write(str(i)+';'+str(prefixW)+';'+str(time)+'\n')
                         else:
                             for l in listA:
                                 prefixA = l["prefix"]
-                                isAggregate = isAggregate(prefixA,prefixW)
-                                if((prefixA == prefixW or isAggregate) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
+                                #isAggregate = isAggregate(prefixA,prefixW)
+                                if((prefixA == prefixW or isAggregate(prefixA,prefixW)) and find == 0 and int(l["timestamp"]) >= int(j["timestamp"])):
                                     dataW = datetime.fromtimestamp(int(j["timestamp"]))
                                     dW = datetime.strptime(str(dataW), "%Y-%m-%d %H:%M:%S")
                                     dataA = datetime.fromtimestamp(int(l["timestamp"]))
@@ -859,7 +859,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                     prefixList.append(i)
                                     #listW.remove(j)
                                     listA.remove(l)
-                                    f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(isAggregate)+'\n')
+                                    f.write(str(i)+';'+str(prefixW)+';'+str(time)+'\n')
 
     #for i in prefixes:
     #    if (i.split(';')[1] == prefixSize or all == 1):
@@ -1469,7 +1469,7 @@ def printASes(_listASNs, _date):
 #TODO
 def plotTimeSeries():
     #plot time series of life and death of each prefix
-    
+
     return 0
 #------------------------------[PLOT]---------------------------------------------
 
