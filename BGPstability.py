@@ -76,6 +76,8 @@ def txttoMemory_new(_path, _collectorName):
     path = _path
     collectorName = _collectorName
     specialCase = {}
+    highTimestampA = {}
+    highTimestampW = {}
 
 
     prefixListA =[]
@@ -117,8 +119,9 @@ def txttoMemory_new(_path, _collectorName):
                 if prefix[:-1] == ";":
                     prefix = prefix[:-1]
                 msg = {"type": type, "timestamp": timestamp, "as": n_as, "prefix": prefix}
-                if(isMsgNew(data,int(n_as),msg,specialCase)):
+                if(isMsgNew_new(data,int(n_as),msg,specialCase,highTimestampA,highTimestampW)):
                     data[int(n_as)][1].append(msg)
+                    highTimestampW[str(prefix)] = int(timestamp)
                 list3 = prefix.split(';')
                 for k in range(0,len(list3)-1,2):
                     prefixesList.append(list3[k]+';'+list3[k+1])
@@ -129,13 +132,11 @@ def txttoMemory_new(_path, _collectorName):
 
             else:
                 announcement = announcement + 1
-
                 timestamp = line.split(";")[1]
                 n_as = line.split(";")[2]
                 aspath = line.split(";")[3]
                 prefix = line.split(";")[4] +';'+ line.split(";")[5]
                 msg = {"type": type,"timestamp": timestamp,"as": n_as,"aspath": aspath,"prefix": prefix}
-
                 prefixesList.append(prefix)
                 prefixList.append(prefix)
                 prefixListA.append(prefix)
@@ -143,22 +144,29 @@ def txttoMemory_new(_path, _collectorName):
                     list4 = aspath.split(',')[0]
                     try:
                         asesList.append(int(list4[2:-1]))
-                        if(isMsgNew(data,int(list4[2:-1]),msg,specialCase)):
+                        if(isMsgNew_new(data,int(list4[2:-1]),msg,specialCase,highTimestampA,highTimestampW)):
                             specialCase[str(prefix)] = int(list4[2:-1])
+                            highTimestampA[str(prefix)] = int(timestamp)
                             data[int(list4[2:-1])][0].append(msg)
                     except:
                         asesList.append(int(list4[2:-2]))
-                        if(isMsgNew(data,int(list4[2:-2]),msg,specialCase)):
+                        if(isMsgNew_new(data,int(list4[2:-2]),msg,specialCase,highTimestampA,highTimestampW)):
                             specialCase[str(prefix)] = int(list4[2:-2])
+                            highTimestampA[str(prefix)] = int(timestamp)
                             data[int(list4[2:-2])][0].append(msg)
                 else:
                     asesList.append(int(n_as))
-                    if(isMsgNew(data,int(n_as),msg,specialCase)):
+                    if(isMsgNew_new(data,int(n_as),msg,specialCase,highTimestampA,highTimestampW)):
                         data[int(n_as)][0].append(msg)
+                        highTimestampA[str(prefix)] = int(timestamp)
+
                 msgList.append(msg)
 
             line = fp.readline()
 
+    print(specialCase)
+    print(highTimestampA)
+    print(highTimestampW)
 
     count = {x:prefixList.count(x) for x in set(prefixList)}
     countAnnouncement = {x:prefixListA.count(x) for x in set(prefixListA)}
@@ -283,6 +291,47 @@ def isMsgNew(_data, _nas, _msg, _specialCase):
     else:
         new = 1
 
+    return new
+
+def isMsgNew_new(_data, _nas, _msg, _specialCase, _highTimestampA, _highTimestampW):
+
+    data = _data
+    nas = _nas
+    msg = _msg
+    specialCase = _specialCase
+    highTimestampA = _highTimestampA
+    highTimestampW = _highTimestampW
+    timestampW = 0
+    timestampA = 0
+    new = 0
+
+    if msg["prefix"] in highTimestampA.keys():
+        timestampA = int(highTimestampA[msg["prefix"]])
+    if msg["prefix"] in highTimestampW.keys():
+        timestampW = int(highTimestampW[msg["prefix"]])
+
+
+    #announcement message
+    if msg["type"] == 'a':
+        if timestampA > 0:
+            if timestampW > timestampA and int(msg["timestamp"]) > timestampW:
+                new = 1
+            else:
+                new = 0
+        else:
+            new = 1
+
+    #withdrawn message
+    else:
+        if timestampW > 0:
+            if timestampA > timestampW and int(msg["timestamp"]) > timestampA:
+                new = 1
+            else:
+                new = 0
+        else:
+            new = 1
+
+    #print(new)
     return new
 
 #save in a txt file information about the prefix
@@ -734,7 +783,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                                 prefixList.append(i)
                                                 listW.remove(l)
                                                 #listA.remove(j)
-                                                f.write(str(i)+';'+str(prefixA)+';'+str(time)+'\n')
+                                                f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+'\n')
                         else:
                             for l in listW:
                                 preW = l["prefix"]
@@ -753,7 +802,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                         prefixList.append(i)
                                         listW.remove(l)
                                         #listA.remove(j)
-                                        f.write(str(i)+';'+str(prefixA)+';'+str(time)+'\n')
+                                        f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+'\n')
 
     #for i in prefixes:
     #    if (i.split(';')[1] == prefixSize or all == 1):
@@ -844,7 +893,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                             prefixList.append(i)
                                             #listW.remove(j)
                                             listA.remove(l)
-                                            f.write(str(i)+';'+str(prefixW)+';'+str(time)+'\n')
+                                            f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+'\n')
                         else:
                             for l in listA:
                                 prefixA = l["prefix"]
@@ -859,7 +908,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                     prefixList.append(i)
                                     #listW.remove(j)
                                     listA.remove(l)
-                                    f.write(str(i)+';'+str(prefixW)+';'+str(time)+'\n')
+                                    f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+'\n')
 
     #for i in prefixes:
     #    if (i.split(';')[1] == prefixSize or all == 1):
@@ -1032,23 +1081,68 @@ def findPrefixThreshold(_label, _path, _threshold, _type):
     f.close()
 
 
-#TODO
-def wichPrefixHasChanged():
-    #read file of report and count wich prefix apear and how much time
+#read file of report and count wich prefix apear and how much time
+def wichPrefixHasChanged(_path):
 
-    return 0
+    path = _path
+    prefixList = []
 
-#TODO
-def averageTimeByPrefix():
-    #calculate the average time for each prefix
+    with open(path) as fp:
+        line = fp.readline()
+        while line:
+            prefix = line.split(';')[1] + '/' + line.split(';')[2]
+            prefixList.append(prefix)
+            line = fp.readline()
 
-    return 0
+    prefixes = {x:prefixList.count(x) for x in set(prefixList)}
+    #print(len(prefixes))
 
-#TODO
-def howManyPrefixesHaveChanged():
-    #calculate how many prefixes have changed and what change
+    return prefixes, len(prefixes)
 
-    return 0
+#calculate the average time for each prefix
+def averageTimeByPrefix(_path, _prefix):
+
+    path = _path
+    timeList = []
+    prefix = _prefix
+    averageTime = 0
+
+    with open(path) as fp:
+        line = fp.readline()
+        while line:
+            if prefix == line.split(';')[1] +';'+ line.split(';')[2]:
+                time = line.split(';')[3]
+                try:
+                    day = time.split(',')[0]
+                    day = int(day[:1])
+                    rest = time.split(',')[1]
+                    hour = int(rest.split(':')[0])
+                    min = int(rest.split(':')[1])
+                    sec = int(rest.split(':')[2])
+                    total = sec/60 + min + hour*60 + day*24*60
+                    timeList.append(total)
+                    line = fp.readline()
+
+                except:
+                    hour = int(time.split(":")[0])
+                    min = int(time.split(":")[1])
+                    sec = int(time.split(":")[2])
+                    total = sec/60 + min + hour*60
+                    timeList.append(total)
+                    line = fp.readline()
+            else:
+                line = fp.readline()
+
+    for i in timeList:
+        averageTime = averageTime + i
+
+    averageTime = averageTime/len(timeList)
+
+    #print(averageTime)
+
+    return averageTime
+
+
 
 #------------------------------[STATISTIC]-------------------------------------------
 
@@ -1249,7 +1343,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
                 h = int(hours.split(":")[0])
                 m = int(hours.split(":")[1])
                 s = int(hours.split(":")[2])
-                time = s/60 + m + h*60 + days*24
+                time = s/60 + m + h*60 + days*24*60
                 if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
                     timeList1.append(time)
                 line = fp1.readline()
@@ -1279,7 +1373,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
                     h = int(hours.split(":")[0])
                     m = int(hours.split(":")[1])
                     s = int(hours.split(":")[2])
-                    time = s/60 + m + h*60 + days*24
+                    time = s/60 + m + h*60 + days*24*60
                     if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
                         timeList2.append(time)
                     line = fp2.readline()
@@ -1309,7 +1403,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
                     h = int(hours.split(":")[0])
                     m = int(hours.split(":")[1])
                     s = int(hours.split(":")[2])
-                    time = s/60 + m + h*60 + days*24
+                    time = s/60 + m + h*60 + days*24*60
                     if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
                         timeList3.append(time)
                     line = fp3.readline()
@@ -1339,7 +1433,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
                     h = int(hours.split(":")[0])
                     m = int(hours.split(":")[1])
                     s = int(hours.split(":")[2])
-                    time = s/60 + m + h*60 + days*24
+                    time = s/60 + m + h*60 + days*24*60
                     if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
                         timeList4.append(time)
                     line = fp4.readline()
@@ -1466,11 +1560,73 @@ def printASes(_listASNs, _date):
     plt.show()
     plt.clf()
 
-#TODO
-def plotTimeSeries():
-    #plot time series of life and death of each prefix
+#plot time series of life and death of each prefix
+def plotTimeSeries(_pathAW, _pathWA, _prefix):
 
-    return 0
+    pathAW = _pathAW
+    pathWA = _pathWA
+    prefix = _prefix
+    timeListAW = []
+    timeListWA = []
+
+    with open(pathAW) as fp:
+        line = fp.readline()
+        while line:
+            if prefix == line.split(';')[1] +';'+ line.split(';')[2]:
+                time = line.split(';')[3]
+                try:
+                    day = time.split(',')[0]
+                    day = int(day[:1])
+                    rest = time.split(',')[1]
+                    hour = int(rest.split(':')[0])
+                    min = int(rest.split(':')[1])
+                    sec = int(rest.split(':')[2])
+                    total = sec/60 + min + hour*60 + day*24*60
+                    timeListAW.append(total)
+                    line = fp.readline()
+
+                except:
+                    hour = int(time.split(":")[0])
+                    min = int(time.split(":")[1])
+                    sec = int(time.split(":")[2])
+                    total = sec/60 + min + hour*60
+                    timeListAW.append(total)
+                    line = fp.readline()
+            else:
+                line = fp.readline()
+
+    with open(pathWA) as fp:
+        line = fp.readline()
+        while line:
+            if prefix == line.split(';')[1] +';'+ line.split(';')[2]:
+                time = line.split(';')[3]
+                try:
+                    day = time.split(',')[0]
+                    day = int(day[:1])
+                    rest = time.split(',')[1]
+                    hour = int(rest.split(':')[0])
+                    min = int(rest.split(':')[1])
+                    sec = int(rest.split(':')[2])
+                    total = sec/60 + min + hour*60 + day*24*60
+                    timeListWA.append(total)
+                    line = fp.readline()
+
+                except:
+                    hour = int(time.split(":")[0])
+                    min = int(time.split(":")[1])
+                    sec = int(time.split(":")[2])
+                    total = sec/60 + min + hour*60
+                    timeListWA.append(total)
+                    line = fp.readline()
+            else:
+                line = fp.readline()
+
+    #TODO
+
+
+
+
+
 #------------------------------[PLOT]---------------------------------------------
 
 def cli():
@@ -1502,7 +1658,7 @@ def cli():
                     dataAW = copy.deepcopy(data)
                     dataWA = copy.deepcopy(data)
 
-                    #print(data)
+                    print(data)
 
                     for i in data:
                         announcement = len(data[i][0]) + announcement
@@ -1698,9 +1854,7 @@ def help():
 
 if __name__ == '__main__':
 
-    #for i in range(0,49):
-    #    plotCDF("WA",0,0,i)
-    #    plotCDF("AW",0,0,i)
-    #plotIXPmsg()
-    #plotIXPprefix()
+
+    #wichPrefixHasChanged('AMSIX_010119_070119_new/reporttimeAW.txt')
+    #averageTimeByPrefix('AMSIX_010119_070119_new/reporttimeAW.txt','104.237.191.0;24')
     cli()
