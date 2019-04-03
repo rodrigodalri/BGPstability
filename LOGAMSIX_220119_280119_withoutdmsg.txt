@@ -1,0 +1,52 @@
+Tue Apr  2 14:48:54 2019
+Tue Apr  2 16:24:45 2019
+15169
+Start - read txt into memory - Wed Apr  3 10:26:55 2019
+Stop - read txt into memory - Wed Apr  3 12:01:37 2019
+Start - CalculateALL - Wed Apr  3 12:42:03 2019
+15169
+AW
+WA
+32899
+AW
+WA
+10310
+AW
+WA
+22822
+AW
+WA
+42
+AW
+WA
+23467
+AW
+WA
+32748
+AW
+WA
+16524
+AW
+WA
+2381
+AW
+WA
+20940
+AW
+WA
+6507
+AW
+WA
+23473
+AW
+WA
+394738
+AW
+WA
+19255
+AW
+WA
+62972
+AW
+WA
+Stop - CalculateALL - Wed Apr  3 12:42:09 2019
