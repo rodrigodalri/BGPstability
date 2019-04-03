@@ -164,9 +164,9 @@ def txttoMemory_new(_path, _collectorName):
 
             line = fp.readline()
 
-    print(specialCase)
-    print(highTimestampA)
-    print(highTimestampW)
+    #print(specialCase)
+    #print(highTimestampA)
+    #print(highTimestampW)
 
     count = {x:prefixList.count(x) for x in set(prefixList)}
     countAnnouncement = {x:prefixListA.count(x) for x in set(prefixListA)}
@@ -754,7 +754,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
             listA = data[i][0]
             for j in listA:
                 find = 0
-                isAggregate = 0
+                #isAggregate = 0
                 preA = j["prefix"]
                 lprefix = preA.split(";")
                 for k in range(0,len(lprefix)-1,2):
@@ -868,7 +868,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
             listW = data[i][1]
             for j in listW:
                 find = 0
-                isAggregate = 0
+                #isAggregate = 0
                 preW = j["prefix"]
                 lprefix = preW.split(";")
                 for k in range(0,len(lprefix)-1,2):
@@ -1650,7 +1650,7 @@ def cli():
                     log = time.time()
                     log2 = time.ctime(log)
                     f = open('LOG'+str(collectorName)+'.txt', 'a+')
-                    f.write(str(log2)+'\n')
+                    f.write("Start - read txt into memory - " + str(log2)+'\n')
                     #for i in range(0, int(numberDays)):
                         #auxlist = txttoMemory(aux[i+2])
                         #msglist = msglist + auxlist
@@ -1658,7 +1658,7 @@ def cli():
                     dataAW = copy.deepcopy(data)
                     dataWA = copy.deepcopy(data)
 
-                    print(data)
+                    #print(data)
 
                     for i in data:
                         announcement = len(data[i][0]) + announcement
@@ -1666,7 +1666,7 @@ def cli():
 
                     log = time.time()
                     log2 = time.ctime(log)
-                    f.write(str(log2)+'\n')
+                    f.write("Stop - read txt into memory - " + str(log2)+'\n')
 
                     print("announcements:")
                     print(announcement)
@@ -1685,82 +1685,115 @@ def cli():
                     #print('Looking for which prefix',"\n")
                     #prefixes = countPrefix(msglist)
 
+                    log = time.time()
+                    log2 = time.ctime(log)
+                    f.write("Start - CalculateALL - " + str(log2)+'\n')
 
                     f.write(str(15169)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 15169)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 15169)
 
 
                     f.write(str(32899)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 32899)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 32899)
 
 
                     f.write(str(10310)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 10310)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 10310)
 
 
                     f.write(str(22822)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 22822)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 22822)
 
 
                     f.write(str(42)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 42)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 42)
 
 
                     f.write(str(23467)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 23467)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 23467)
 
 
                     f.write(str(32748)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 32748)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 32748)
 
 
                     f.write(str(16524)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 16524)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 16524)
 
 
                     f.write(str(2381)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 2381)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 2381)
 
 
                     f.write(str(20940)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 20940)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 20940)
 
 
                     f.write(str(6507)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 6507)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 6507)
 
 
                     f.write(str(23473)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 23473)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 23473)
 
 
                     f.write(str(394738)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 394738)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 394738)
 
                     f.write(str(19255)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 19255)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 19255)
 
                     f.write(str(62972)+'\n')
+                    f.write("AW"+'\n')
                     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 62972)
+                    f.write("WA"+'\n')
                     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 62972)
 
                     log = time.time()
                     log2 = time.ctime(log)
-                    f.write(str(log2)+'\n')
+                    f.write("Stop - CalculateALL - " + str(log2)+'\n')
                     f.close()
 
                 elif "Count Statistics" in action:
