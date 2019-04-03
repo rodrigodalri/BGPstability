@@ -41,7 +41,7 @@ def main():
                             for withdrawn in m.bgp.msg.withdrawn:
                                 prefix = withdrawn.prefix
                                 leng = withdrawn.plen
-                                g = open(outputfile+str(n_as)+'.txt', 'a+')
+                                g = open(outputfile+"-AS"+str(n_as)+'.txt', 'a+')
                                 f.write(str(prefix)+';'+str(leng)+';')
                                 g.write(str(prefix)+';'+str(leng)+';'+'\n')
                                 g.close()
@@ -61,7 +61,7 @@ def main():
                                             prefix = withdrawn.prefix
                                             leng = withdrawn.plen
                                             #f = open(outputfile, 'a+')
-                                            g = open(outputfile+str(n_as)+'.txt', 'a+')
+                                            g = open(outputfile+"-AS"+str(n_as)+'.txt', 'a+')
                                             f.write('w;'+str(timestamp)+';'+str(n_as)+';'+str(prefix)+';'+str(leng)+';'+'\n')
                                             g.write('w;'+str(timestamp)+';'+str(n_as)+';'+str(prefix)+';'+str(leng)+';'+'\n')
                                             g.close()
@@ -88,7 +88,7 @@ def main():
                                             prefix = nlri.prefix
                                             leng = nlri.plen
                                             #f = open(outputfile, 'a+')
-                                            g = open(outputfile+str(n_as)+'.txt', 'a+')
+                                            g = open(outputfile+"-AS"+str(n_as)+'.txt', 'a+')
                                             f.write('a;'+str(timestamp)+';'+str(n_as)+';'+str(as_path)+';'+str(prefix)+';'+str(leng)+';'+'\n')
                                             g.write('a;'+str(timestamp)+';'+str(n_as)+';'+str(as_path)+';'+str(prefix)+';'+str(leng)+';'+'\n')
                                             g.close()
@@ -110,7 +110,7 @@ def main():
                                 prefix = nlri.prefix
                                 leng = nlri.plen
                                 #f = open(outputfile, 'a+')
-                                g = open(outputfile+str(n_as)+'.txt', 'a+')
+                                g = open(outputfile+"-AS"+str(n_as)+'.txt', 'a+')
                                 g.write('a;'+str(timestamp)+';'+str(n_as)+';'+str(as_path)+';'+str(prefix)+';'+str(leng)+';')
                                 f.write('a;'+str(timestamp)+';'+str(n_as)+';'+str(as_path)+';'+str(prefix)+';'+str(leng)+';')
                                 g.close()
