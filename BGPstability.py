@@ -13,6 +13,12 @@ from collections import defaultdict
 import copy
 import time
 
+import plotly.plotly as py
+import plotly.graph_objs as go
+
+import pandas as pd
+
+
 #AS43252 is decix
 #AS62972 is amsix
 
@@ -1110,7 +1116,7 @@ def averageTimeByPrefix(_path, _prefix):
     with open(path) as fp:
         line = fp.readline()
         while line:
-            if prefix == line.split(';')[1] +';'+ line.split(';')[2]:
+            if prefix == line.split(';')[1] +'/'+ line.split(';')[2]:
                 time = line.split(';')[3]
                 try:
                     day = time.split(',')[0]
@@ -1136,13 +1142,115 @@ def averageTimeByPrefix(_path, _prefix):
     for i in timeList:
         averageTime = averageTime + i
 
-    averageTime = averageTime/len(timeList)
+    if len(timeList) != 0:
+        averageTime = averageTime/len(timeList)
 
     #print(averageTime)
 
     return averageTime
 
+def fixthenamelater():
+    f = open('AMSIX_010119_070119_new2/reportPrefixesAW.txt', 'a+')
+    f.write('\n'+'AMSIX_010119_070119 - AW'+'\n')
+    a,b = wichPrefixHasChanged('AMSIX_010119_070119_new2/reporttimeAW.txt')
+    f.write('Number of prefixes: '+str(b)+'\n')
+    f.write('averageTimes'+'\n')
+    for i in a:
+        c = averageTimeByPrefix('AMSIX_010119_070119_new2/reporttimeAW.txt',i)
+        f.write(i+': '+str(c)+'\n')
+    f.close()
 
+    f = open('AMSIX_010119_070119_new2/reportPrefixesWA.txt', 'a+')
+    f.write('\n'+'AMSIX_010119_070119 - WA'+'\n')
+    a,b = wichPrefixHasChanged('AMSIX_010119_070119_new2/reporttimeWA.txt')
+    f.write('Number of prefixes: '+str(b)+'\n')
+    f.write('averageTimes'+'\n')
+    for i in a:
+        c = averageTimeByPrefix('AMSIX_010119_070119_new2/reporttimeWA.txt',i)
+        f.write(i+': '+str(c)+'\n')
+    f.close()
+
+    f = open('AMSIX_080119_140119_new2/reportPrefixesAW.txt', 'a+')
+    f.write('\n'+'AMSIX_080119_140119 - AW'+'\n')
+    a,b = wichPrefixHasChanged('AMSIX_080119_140119_new2/reporttimeAW.txt')
+    f.write('Number of prefixes: '+str(b)+'\n')
+    f.write('averageTimes'+'\n')
+    for i in a:
+        c = averageTimeByPrefix('AMSIX_080119_140119_new2/reporttimeAW.txt',i)
+        f.write(i+': '+str(c)+'\n')
+    f.close()
+
+    f = open('AMSIX_080119_140119_new2/reportPrefixesWA.txt', 'a+')
+    f.write('\n'+'AMSIX_080119_140119 - WA'+'\n')
+    a,b = wichPrefixHasChanged('AMSIX_080119_140119_new2/reporttimeWA.txt')
+    f.write('Number of prefixes: '+str(b)+'\n')
+    f.write('averageTimes'+'\n')
+    for i in a:
+        c = averageTimeByPrefix('AMSIX_080119_140119_new2/reporttimeWA.txt',i)
+        f.write(i+': '+str(c)+'\n')
+    f.close()
+
+    f = open('AMSIX_150119_210119_new2/reportPrefixesAW.txt', 'a+')
+    f.write('\n'+'AMSIX_150119_210119 - AW'+'\n')
+    a,b = wichPrefixHasChanged('AMSIX_150119_210119_new2/reporttimeAW.txt')
+    f.write('Number of prefixes: '+str(b)+'\n')
+    f.write('averageTimes'+'\n')
+    for i in a:
+        c = averageTimeByPrefix('AMSIX_150119_210119_new2/reporttimeAW.txt',i)
+        f.write(i+': '+str(c)+'\n')
+    f.close()
+
+    f = open('AMSIX_150119_210119_new2/reportPrefixesWA.txt', 'a+')
+    f.write('\n'+'AMSIX_150119_210119 - WA'+'\n')
+    a,b = wichPrefixHasChanged('AMSIX_150119_210119_new2/reporttimeWA.txt')
+    f.write('Number of prefixes: '+str(b)+'\n')
+    f.write('averageTimes'+'\n')
+    for i in a:
+        c = averageTimeByPrefix('AMSIX_150119_210119_new2/reporttimeWA.txt',i)
+        f.write(i+': '+str(c)+'\n')
+    f.close()
+
+    f = open('AMSIX_220119_280119_new2/reportPrefixesAW.txt', 'a+')
+    f.write('\n'+'AMSIX_220119_280119 - AW'+'\n')
+    a,b = wichPrefixHasChanged('AMSIX_220119_280119_new2/reporttimeAW.txt')
+    f.write('Number of prefixes: '+str(b)+'\n')
+    f.write('averageTimes'+'\n')
+    for i in a:
+        c = averageTimeByPrefix('AMSIX_220119_280119_new2/reporttimeAW.txt',i)
+        f.write(i+': '+str(c)+'\n')
+    f.close()
+
+    f = open('AMSIX_220119_280119_new2/reportPrefixesWA.txt', 'a+')
+    f.write('\n'+'AMSIX_220119_280119 - WA'+'\n')
+    a,b = wichPrefixHasChanged('AMSIX_220119_280119_new2/reporttimeWA.txt')
+    f.write('Number of prefixes: '+str(b)+'\n')
+    f.write('averageTimes'+'\n')
+    for i in a:
+        c = averageTimeByPrefix('AMSIX_220119_280119_new2/reporttimeWA.txt',i)
+        f.write(i+': '+str(c)+'\n')
+    f.close()
+
+def fixthenamelater2():
+    tamanho = 0
+    listtimes = []
+    with open('AMSIX_220119_280119_new2/reportPrefixesWA.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listtimes.append(float(line.split(': ')[1]))
+            line = fp.readline()
+    #print(tamanho)
+    #print(sum(listtimes)/len(listtimes))
+
+    listtimes.sort()
+    print(listtimes[len(listtimes)-1])
+    print(listtimes[len(listtimes)-2])
+    print(listtimes[len(listtimes)-3])
+    print(listtimes[len(listtimes)-4])
+    print(listtimes[len(listtimes)-5])
 
 #------------------------------[STATISTIC]-------------------------------------------
 
@@ -1560,6 +1668,7 @@ def printASes(_listASNs, _date):
     plt.show()
     plt.clf()
 
+#TODO
 #plot time series of life and death of each prefix
 def plotTimeSeries(_pathAW, _pathWA, _prefix):
 
@@ -1620,12 +1729,6 @@ def plotTimeSeries(_pathAW, _pathWA, _prefix):
                     line = fp.readline()
             else:
                 line = fp.readline()
-
-    #TODO
-
-
-
-
 
 #------------------------------[PLOT]---------------------------------------------
 
@@ -1689,107 +1792,6 @@ def cli():
                     log2 = time.ctime(log)
                     f.write("Start - CalculateALL - " + str(log2)+'\n')
 
-                    f.write(str(15169)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 15169)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 15169)
-
-
-                    f.write(str(32899)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 32899)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 32899)
-
-
-                    f.write(str(10310)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 10310)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 10310)
-
-
-                    f.write(str(22822)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 22822)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 22822)
-
-
-                    f.write(str(42)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 42)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 42)
-
-
-                    f.write(str(23467)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 23467)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 23467)
-
-
-                    f.write(str(32748)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 32748)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 32748)
-
-
-                    f.write(str(16524)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 16524)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 16524)
-
-
-                    f.write(str(2381)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 2381)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 2381)
-
-
-                    f.write(str(20940)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 20940)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 20940)
-
-
-                    f.write(str(6507)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 6507)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 6507)
-
-
-                    f.write(str(23473)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 23473)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 23473)
-
-
-                    f.write(str(394738)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 394738)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 394738)
-
-                    f.write(str(19255)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 19255)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 19255)
-
-                    f.write(str(62972)+'\n')
-                    f.write("AW"+'\n')
-                    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, 62972)
-                    f.write("WA"+'\n')
-                    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, 62972)
 
                     log = time.time()
                     log2 = time.ctime(log)
@@ -1888,6 +1890,16 @@ def help():
 if __name__ == '__main__':
 
 
-    #wichPrefixHasChanged('AMSIX_010119_070119_new/reporttimeAW.txt')
-    #averageTimeByPrefix('AMSIX_010119_070119_new/reporttimeAW.txt','104.237.191.0;24')
-    cli()
+    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeAW', 30, 0)
+    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeWA', 30, 1)
+    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeAW', 5, 0)
+    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeWA', 5, 1)
+    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeAW', 2, 0)
+    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeWA', 2, 1)
+    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeAW', 1, 0)
+    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeWA', 1, 1)
+    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeAW', 0.5, 1)
+    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeWA', 0.5, 0)
+
+    #cli()
+)
