@@ -12,12 +12,10 @@ import ipaddress
 from collections import defaultdict
 import copy
 import time
-
 import plotly.plotly as py
 import plotly.graph_objs as go
-
 import pandas as pd
-
+import matplotlib.dates as mdates
 
 #AS43252 is decix
 #AS62972 is amsix
@@ -1668,67 +1666,66 @@ def printASes(_listASNs, _date):
     plt.show()
     plt.clf()
 
-#TODO
 #plot time series of life and death of each prefix
-def plotTimeSeries(_pathAW, _pathWA, _prefix):
+def plotLifeTime(_path, _prefix, _startTimestamp, _stopTimestamp):
 
-    pathAW = _pathAW
-    pathWA = _pathWA
+    path = _path
     prefix = _prefix
-    timeListAW = []
-    timeListWA = []
+    startTimestamp = _startTimestamp
+    stopTimestamp = _stopTimestamp
+    names = []
+    dates = []
 
-    with open(pathAW) as fp:
+    save = path.split('/')[0]
+    #prefix = '104.237.191.0/24'
+
+    #with open("AMSIX_010119_070119_new2/reporttimeAW-AS15169.txt") as fp:
+    with open(path) as fp:
         line = fp.readline()
         while line:
-            if prefix == line.split(';')[1] +';'+ line.split(';')[2]:
-                time = line.split(';')[3]
-                try:
-                    day = time.split(',')[0]
-                    day = int(day[:1])
-                    rest = time.split(',')[1]
-                    hour = int(rest.split(':')[0])
-                    min = int(rest.split(':')[1])
-                    sec = int(rest.split(':')[2])
-                    total = sec/60 + min + hour*60 + day*24*60
-                    timeListAW.append(total)
-                    line = fp.readline()
+            if prefix == line.split(';')[1] + '/' + line.split(';')[2]:
+                dates.append(line.split(';')[4])
+                names.append("A")
+                dates.append(line.split(';')[5])
+                names.append("W")
+            line = fp.readline()
 
-                except:
-                    hour = int(time.split(":")[0])
-                    min = int(time.split(":")[1])
-                    sec = int(time.split(":")[2])
-                    total = sec/60 + min + hour*60
-                    timeListAW.append(total)
-                    line = fp.readline()
-            else:
-                line = fp.readline()
+    dates = [datetime.fromtimestamp(int(ii)) for ii in dates]
+    #dates = [datetime.strptime(((datetime.fromtimestamp(1546300809)).strftime('%Y-%m-%d %H:%M:%S')), '%Y-%m-%d %H:%M:%S') for ii in dates]
 
-    with open(pathWA) as fp:
-        line = fp.readline()
-        while line:
-            if prefix == line.split(';')[1] +';'+ line.split(';')[2]:
-                time = line.split(';')[3]
-                try:
-                    day = time.split(',')[0]
-                    day = int(day[:1])
-                    rest = time.split(',')[1]
-                    hour = int(rest.split(':')[0])
-                    min = int(rest.split(':')[1])
-                    sec = int(rest.split(':')[2])
-                    total = sec/60 + min + hour*60 + day*24*60
-                    timeListWA.append(total)
-                    line = fp.readline()
+    levels = np.array([-1, 1])
+    fig, ax = plt.subplots(figsize=(15, 4))
 
-                except:
-                    hour = int(time.split(":")[0])
-                    min = int(time.split(":")[1])
-                    sec = int(time.split(":")[2])
-                    total = sec/60 + min + hour*60
-                    timeListWA.append(total)
-                    line = fp.readline()
-            else:
-                line = fp.readline()
+    #start = min(dates)
+    start = datetime.fromtimestamp(startTimestamp)
+    #stop = max(dates)
+    stop = datetime.fromtimestamp(stopTimestamp)
+
+    ax.plot((start, stop), (0, 0), 'k', alpha=.5)
+
+    for ii, (iname, idate) in enumerate(zip(names, dates)):
+        level = levels[ii % 2]
+        vert = 'top' if level < 0 else 'bottom'
+
+        ax.scatter(idate, 0, s=100, facecolor='w', edgecolor='k', zorder=9999)
+        if vert == 'top':
+            ax.plot((idate, idate), (0, level), c='b', alpha=.7)
+        else:
+            ax.plot((idate, idate), (0, level), c='r', alpha=.7)
+        ax.text(idate, level, iname,
+                horizontalalignment='right', verticalalignment=vert, fontsize=10,
+                backgroundcolor=(1., 1., 1., .3))
+    ax.set(title="PREFIX LIFETIME - " + prefix)
+
+    ax.get_xaxis().set_major_locator(mdates.HourLocator(interval=6))
+    ax.get_xaxis().set_major_formatter(mdates.DateFormatter("%d/%m/%Y - %H:%M"))
+    fig.autofmt_xdate()
+
+    plt.setp((ax.get_yticklabels() + ax.get_yticklines() + list(ax.spines.values())), visible=False)
+    plt.show()
+    #plt.savefig(save+"/lifetime-"+prefix+".pdf", dpi=600)
+    #plt.savefig(save+"/lifetime-"+prefix+".png", dpi=600)
+    plt.clf()
 
 #------------------------------[PLOT]---------------------------------------------
 
@@ -1902,4 +1899,3 @@ if __name__ == '__main__':
     #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeWA', 0.5, 0)
 
     #cli()
-)
