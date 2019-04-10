@@ -12,10 +12,9 @@ import ipaddress
 from collections import defaultdict
 import copy
 import time
-import plotly.plotly as py
-import plotly.graph_objs as go
-import pandas as pd
 import matplotlib.dates as mdates
+import matplotlib.dates as mdates
+plt.rcParams.update({'figure.max_open_warning': 0})
 
 #AS43252 is decix
 #AS62972 is amsix
@@ -1250,6 +1249,12 @@ def fixthenamelater2():
     print(listtimes[len(listtimes)-4])
     print(listtimes[len(listtimes)-5])
 
+    print(listtimes[0])
+    print(listtimes[1])
+    print(listtimes[2])
+    print(listtimes[3])
+    print(listtimes[4])
+
 #------------------------------[STATISTIC]-------------------------------------------
 
 #------------------------------[PLOT]------------------------------------------------
@@ -1675,7 +1680,7 @@ def plotLifeTime(_path, _prefix, _startTimestamp, _stopTimestamp):
     stopTimestamp = _stopTimestamp
     names = []
     dates = []
-
+    print(prefix)
     save = path.split('/')[0]
     #prefix = '104.237.191.0/24'
 
@@ -1694,7 +1699,7 @@ def plotLifeTime(_path, _prefix, _startTimestamp, _stopTimestamp):
     #dates = [datetime.strptime(((datetime.fromtimestamp(1546300809)).strftime('%Y-%m-%d %H:%M:%S')), '%Y-%m-%d %H:%M:%S') for ii in dates]
 
     levels = np.array([-1, 1])
-    fig, ax = plt.subplots(figsize=(15, 4))
+    fig, ax = plt.subplots(figsize=(15, 5))
 
     #start = min(dates)
     start = datetime.fromtimestamp(startTimestamp)
@@ -1722,9 +1727,10 @@ def plotLifeTime(_path, _prefix, _startTimestamp, _stopTimestamp):
     fig.autofmt_xdate()
 
     plt.setp((ax.get_yticklabels() + ax.get_yticklines() + list(ax.spines.values())), visible=False)
-    plt.show()
-    #plt.savefig(save+"/lifetime-"+prefix+".pdf", dpi=600)
-    #plt.savefig(save+"/lifetime-"+prefix+".png", dpi=600)
+    #plt.show()
+    prefix = prefix.replace('/',';')
+    plt.savefig(save+"/lifetime-"+prefix+".pdf", dpi=600)
+    plt.savefig(save+"/lifetime-"+prefix+".png", dpi=600)
     plt.clf()
 
 #------------------------------[PLOT]---------------------------------------------
@@ -1899,3 +1905,31 @@ if __name__ == '__main__':
     #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeWA', 0.5, 0)
 
     #cli()
+
+    #listASes = ['42','2381','10310','15169','19255','20940','22822','23467','23473','32748','62972','394738']
+    #for i in listASes:
+    #    prefixes,b = wichPrefixHasChanged('AMSIX_010119_070119_new2/reporttimeAW-AS'+i+'.txt')
+    #    if len(prefixes) != 0:
+    #        for j in prefixes:
+    #            plotLifeTime('AMSIX_010119_070119_new2/reporttimeAW-AS'+i+'.txt', j, 1546300800, 1546905599)
+
+    listASes = ['2381','10310','15169','19255','20940','22822','23473','32748','62972','394738']
+    for i in listASes:
+        prefixes,b = wichPrefixHasChanged('AMSIX_080119_140119_new2/reporttimeAW-AS'+i+'.txt')
+        if len(prefixes) != 0:
+            for j in prefixes:
+                plotLifeTime('AMSIX_080119_140119_new2/reporttimeAW-AS'+i+'.txt', j,1546905600,1547510399)
+
+    listASes = ['2381','10310','13335','15169','20940','22822','23473','32748','35788']
+    for i in listASes:
+        prefixes,b = wichPrefixHasChanged('AMSIX_150119_210119_new2/reporttimeAW-AS'+i+'.txt')
+        if len(prefixes) != 0:
+            for j in prefixes:
+                plotLifeTime('AMSIX_150119_210119_new2/reporttimeAW-AS'+i+'.txt', j,1547510400,1548115199)
+
+    listASes = ['2381','10310','12200','13335','15169','20940','22822','23473','32748','62972']
+    for i in listASes:
+        prefixes,b = wichPrefixHasChanged('AMSIX_220119_280119_new2/reporttimeAW-AS'+i+'.txt')
+        if len(prefixes) != 0:
+            for j in prefixes:
+                plotLifeTime('AMSIX_220119_280119_new2/reporttimeAW-AS'+i+'.txt', j,1548115200,1548719999)
