@@ -1,24 +1,23 @@
 #!/usr/bin/env python
 import os
 import sys
+import copy
 import json
-import threading
-import subprocess
-from datetime import *
-import numpy as np
-import matplotlib.pyplot as plt
+import time
 import pylab
 import ipaddress
+import threading
+import subprocess
+import numpy as np
+from datetime import *
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from collections import defaultdict
-import copy
-import time
-import matplotlib.dates as mdates
-import matplotlib.dates as mdates
+
 plt.rcParams.update({'figure.max_open_warning': 0})
 
 #AS43252 is decix
 #AS62972 is amsix
-
 #TODO some plots are out of date
 
 def pair_of_lists():
@@ -407,7 +406,6 @@ def txtAS(_label, _msgA, _msgW, _prefix, _prefixA, _prefixW, _collectorName):
     f.write(str(msgA+msgW)+';'+str(msgA)+';'+str(msgW)+';'+str(prefix)+';'+str(prefixA)+';'+str(prefixW)+'\n')
     f.close()
 #-----------------------------[FILE]----------------------------------------------
-
 #-------------------------------[AS]----------------------------------------------
 #count ASes and number of occurrences
 def countASes(_msglist):
@@ -530,7 +528,6 @@ def reportAS(_data, _collectorName):
         txtAS(i,msgA,msgW,0,0,0,collectorName)
 
 #-------------------------------[AS]----------------------------------------------
-
 #------------------------------[PREFIX]-------------------------------------------
 #count the number of prefixes of IXP
 def prefixIXP(_msglist):
@@ -694,7 +691,6 @@ def prefixASChanges(_prefix, _asn, _prefixes, _msglist):
 
     return({y:changesList.count(y) for y in set(changesList)})
 #------------------------------[PREFIX]-------------------------------------------
-
 #------------------------------[STATISTIC]-------------------------------------------
 #count statistics about IXP and ASes and save to a txt file
 def countStatistics(_msgList, _ASes, _collectorName):
@@ -1083,7 +1079,6 @@ def findPrefixThreshold(_label, _path, _threshold, _type):
 
     f.close()
 
-
 #read file of report and count wich prefix apear and how much time
 def wichPrefixHasChanged(_path):
 
@@ -1146,91 +1141,55 @@ def averageTimeByPrefix(_path, _prefix):
 
     return averageTime
 
-def fixthenamelater():
-    f = open('AMSIX_010119_070119_new2/reportPrefixesAW.txt', 'a+')
-    f.write('\n'+'AMSIX_010119_070119 - AW'+'\n')
-    a,b = wichPrefixHasChanged('AMSIX_010119_070119_new2/reporttimeAW.txt')
+#return the most repeated prefix of IPv4 or IPv6
+def mostRepeatedPrefix(_path, _version):
+
+    path = _path
+    version = int(_version)
+
+    prefix = {}
+    prefixList =[]
+
+    with open(path) as fp:
+        line = fp.readline()
+        while line:
+            prefix = line.split('\n')[0]
+            if ipaddress.ip_network(prefix).version == version:
+                prefixList.append(prefix)
+            line = fp.readline()
+
+    prefix = {x:prefixList.count(x) for x in set(prefixList)}
+
+    print(prefix)
+
+    print(max(set(prefixList), key=prefixList.count))
+
+    return(max(set(prefixList), key=prefixList.count))
+
+#calculate the average time by each prefix
+def calculateAverageTimebyPrefix(_path):
+    path = _path
+    save = path.split('/')[0]
+
+    f = open(save+'/reportPrefixesAW.txt', 'a+')
+    f.write('\n'+'AMSIX_010119_070119'+'\n')
+    a,b = wichPrefixHasChanged(path)
     f.write('Number of prefixes: '+str(b)+'\n')
     f.write('averageTimes'+'\n')
     for i in a:
-        c = averageTimeByPrefix('AMSIX_010119_070119_new2/reporttimeAW.txt',i)
+        c = averageTimeByPrefix(path,i)
         f.write(i+': '+str(c)+'\n')
     f.close()
 
-    f = open('AMSIX_010119_070119_new2/reportPrefixesWA.txt', 'a+')
-    f.write('\n'+'AMSIX_010119_070119 - WA'+'\n')
-    a,b = wichPrefixHasChanged('AMSIX_010119_070119_new2/reporttimeWA.txt')
-    f.write('Number of prefixes: '+str(b)+'\n')
-    f.write('averageTimes'+'\n')
-    for i in a:
-        c = averageTimeByPrefix('AMSIX_010119_070119_new2/reporttimeWA.txt',i)
-        f.write(i+': '+str(c)+'\n')
-    f.close()
-
-    f = open('AMSIX_080119_140119_new2/reportPrefixesAW.txt', 'a+')
-    f.write('\n'+'AMSIX_080119_140119 - AW'+'\n')
-    a,b = wichPrefixHasChanged('AMSIX_080119_140119_new2/reporttimeAW.txt')
-    f.write('Number of prefixes: '+str(b)+'\n')
-    f.write('averageTimes'+'\n')
-    for i in a:
-        c = averageTimeByPrefix('AMSIX_080119_140119_new2/reporttimeAW.txt',i)
-        f.write(i+': '+str(c)+'\n')
-    f.close()
-
-    f = open('AMSIX_080119_140119_new2/reportPrefixesWA.txt', 'a+')
-    f.write('\n'+'AMSIX_080119_140119 - WA'+'\n')
-    a,b = wichPrefixHasChanged('AMSIX_080119_140119_new2/reporttimeWA.txt')
-    f.write('Number of prefixes: '+str(b)+'\n')
-    f.write('averageTimes'+'\n')
-    for i in a:
-        c = averageTimeByPrefix('AMSIX_080119_140119_new2/reporttimeWA.txt',i)
-        f.write(i+': '+str(c)+'\n')
-    f.close()
-
-    f = open('AMSIX_150119_210119_new2/reportPrefixesAW.txt', 'a+')
-    f.write('\n'+'AMSIX_150119_210119 - AW'+'\n')
-    a,b = wichPrefixHasChanged('AMSIX_150119_210119_new2/reporttimeAW.txt')
-    f.write('Number of prefixes: '+str(b)+'\n')
-    f.write('averageTimes'+'\n')
-    for i in a:
-        c = averageTimeByPrefix('AMSIX_150119_210119_new2/reporttimeAW.txt',i)
-        f.write(i+': '+str(c)+'\n')
-    f.close()
-
-    f = open('AMSIX_150119_210119_new2/reportPrefixesWA.txt', 'a+')
-    f.write('\n'+'AMSIX_150119_210119 - WA'+'\n')
-    a,b = wichPrefixHasChanged('AMSIX_150119_210119_new2/reporttimeWA.txt')
-    f.write('Number of prefixes: '+str(b)+'\n')
-    f.write('averageTimes'+'\n')
-    for i in a:
-        c = averageTimeByPrefix('AMSIX_150119_210119_new2/reporttimeWA.txt',i)
-        f.write(i+': '+str(c)+'\n')
-    f.close()
-
-    f = open('AMSIX_220119_280119_new2/reportPrefixesAW.txt', 'a+')
-    f.write('\n'+'AMSIX_220119_280119 - AW'+'\n')
-    a,b = wichPrefixHasChanged('AMSIX_220119_280119_new2/reporttimeAW.txt')
-    f.write('Number of prefixes: '+str(b)+'\n')
-    f.write('averageTimes'+'\n')
-    for i in a:
-        c = averageTimeByPrefix('AMSIX_220119_280119_new2/reporttimeAW.txt',i)
-        f.write(i+': '+str(c)+'\n')
-    f.close()
-
-    f = open('AMSIX_220119_280119_new2/reportPrefixesWA.txt', 'a+')
-    f.write('\n'+'AMSIX_220119_280119 - WA'+'\n')
-    a,b = wichPrefixHasChanged('AMSIX_220119_280119_new2/reporttimeWA.txt')
-    f.write('Number of prefixes: '+str(b)+'\n')
-    f.write('averageTimes'+'\n')
-    for i in a:
-        c = averageTimeByPrefix('AMSIX_220119_280119_new2/reporttimeWA.txt',i)
-        f.write(i+': '+str(c)+'\n')
-    f.close()
 
 def fixthenamelater2():
     tamanho = 0
     listtimes = []
-    with open('AMSIX_220119_280119_new2/reportPrefixesWA.txt') as fp:
+    #listPaths = [,'AMSIX_220119_280119_new2/reportPrefixesWA.txt']
+
+
+    print('AMSIX_220119_280119_new2/reportPrefixesAW.txt')
+    with open('AMSIX_220119_280119_new2/reportPrefixesAW.txt') as fp:
         line = fp.readline()
         line = fp.readline()
         tamanho = line.split(': ')[1]
@@ -1239,9 +1198,10 @@ def fixthenamelater2():
         while line:
             listtimes.append(float(line.split(': ')[1]))
             line = fp.readline()
-    #print(tamanho)
-    #print(sum(listtimes)/len(listtimes))
-
+    print('tamanho')
+    print(tamanho)
+    print('média')
+    print(sum(listtimes)/len(listtimes))
     listtimes.sort()
     print(listtimes[len(listtimes)-1])
     print(listtimes[len(listtimes)-2])
@@ -1255,8 +1215,37 @@ def fixthenamelater2():
     print(listtimes[3])
     print(listtimes[4])
 
-#------------------------------[STATISTIC]-------------------------------------------
+def fixthenamelater3():
+    #falta para 6939
+    listASes = ['6939']
+    for i in listASes:
+        prefixes,b = wichPrefixHasChanged('AMSIX_010119_070119_new2/reporttimeAW-AS'+i+'.txt')
+        if len(prefixes) != 0:
+            for j in prefixes:
+                plotLifeTime('AMSIX_010119_070119_new2/reporttimeAW-AS'+i+'.txt', j, 1546300800, 1546905599)
 
+    listASes = ['6939']
+    for i in listASes:
+        prefixes,b = wichPrefixHasChanged('AMSIX_080119_140119_new2/reporttimeAW-AS'+i+'.txt')
+        if len(prefixes) != 0:
+            for j in prefixes:
+                plotLifeTime('AMSIX_080119_140119_new2/reporttimeAW-AS'+i+'.txt', j,1546905600,1547510399)
+
+    listASes = ['6939']
+    for i in listASes:
+        prefixes,b = wichPrefixHasChanged('AMSIX_150119_210119_new2/reporttimeAW-AS'+i+'.txt')
+        if len(prefixes) != 0:
+            for j in prefixes:
+                plotLifeTime('AMSIX_150119_210119_new2/reporttimeAW-AS'+i+'.txt', j,1547510400,1548115199)
+
+    listASes = ['6939']
+    for i in listASes:
+        prefixes,b = wichPrefixHasChanged('AMSIX_220119_280119_new2/reporttimeAW-AS'+i+'.txt')
+        if len(prefixes) != 0:
+            for j in prefixes:
+                plotLifeTime('AMSIX_220119_280119_new2/reporttimeAW-AS'+i+'.txt', j,1548115200,1548719999)
+
+#------------------------------[STATISTIC]-------------------------------------------
 #------------------------------[PLOT]------------------------------------------------
 #plot information about the IXP
 def plotIXPmsg():
@@ -1727,12 +1716,11 @@ def plotLifeTime(_path, _prefix, _startTimestamp, _stopTimestamp):
     fig.autofmt_xdate()
 
     plt.setp((ax.get_yticklabels() + ax.get_yticklines() + list(ax.spines.values())), visible=False)
-    #plt.show()
+    plt.show()
     prefix = prefix.replace('/',';')
-    plt.savefig(save+"/lifetime-"+prefix+".pdf", dpi=600)
-    plt.savefig(save+"/lifetime-"+prefix+".png", dpi=600)
+    #plt.savefig(save+"/lifetime-"+prefix+".pdf", dpi=600)
+    #plt.savefig(save+"/lifetime-"+prefix+".png", dpi=600)
     plt.clf()
-
 #------------------------------[PLOT]---------------------------------------------
 
 def cli():
@@ -1893,43 +1881,4 @@ def help():
 if __name__ == '__main__':
 
 
-    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeAW', 30, 0)
-    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeWA', 30, 1)
-    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeAW', 5, 0)
-    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeWA', 5, 1)
-    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeAW', 2, 0)
-    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeWA', 2, 1)
-    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeAW', 1, 0)
-    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeWA', 1, 1)
-    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeAW', 0.5, 1)
-    #findPrefixThreshold('AMSIX_220119_280119_new2', 'AMSIX_220119_280119_new2/reporttimeWA', 0.5, 0)
-
-    #cli()
-
-    #listASes = ['42','2381','10310','15169','19255','20940','22822','23467','23473','32748','62972','394738']
-    #for i in listASes:
-    #    prefixes,b = wichPrefixHasChanged('AMSIX_010119_070119_new2/reporttimeAW-AS'+i+'.txt')
-    #    if len(prefixes) != 0:
-    #        for j in prefixes:
-    #            plotLifeTime('AMSIX_010119_070119_new2/reporttimeAW-AS'+i+'.txt', j, 1546300800, 1546905599)
-
-    listASes = ['2381','10310','15169','19255','20940','22822','23473','32748','62972','394738']
-    for i in listASes:
-        prefixes,b = wichPrefixHasChanged('AMSIX_080119_140119_new2/reporttimeAW-AS'+i+'.txt')
-        if len(prefixes) != 0:
-            for j in prefixes:
-                plotLifeTime('AMSIX_080119_140119_new2/reporttimeAW-AS'+i+'.txt', j,1546905600,1547510399)
-
-    listASes = ['2381','10310','13335','15169','20940','22822','23473','32748','35788']
-    for i in listASes:
-        prefixes,b = wichPrefixHasChanged('AMSIX_150119_210119_new2/reporttimeAW-AS'+i+'.txt')
-        if len(prefixes) != 0:
-            for j in prefixes:
-                plotLifeTime('AMSIX_150119_210119_new2/reporttimeAW-AS'+i+'.txt', j,1547510400,1548115199)
-
-    listASes = ['2381','10310','12200','13335','15169','20940','22822','23473','32748','62972']
-    for i in listASes:
-        prefixes,b = wichPrefixHasChanged('AMSIX_220119_280119_new2/reporttimeAW-AS'+i+'.txt')
-        if len(prefixes) != 0:
-            for j in prefixes:
-                plotLifeTime('AMSIX_220119_280119_new2/reporttimeAW-AS'+i+'.txt', j,1548115200,1548719999)
+    cli()
