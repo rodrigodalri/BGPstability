@@ -23,6 +23,7 @@ def pair_of_lists():
     return [[], []]
 
 #-----------------------------[FILE]----------------------------------------------
+# "_new" functions are more efficient versions
 #read the txt file into memory
 def txttoMemory(_path):
 
@@ -68,6 +69,7 @@ def txttoMemory(_path):
 
     return msglist
 
+#read the txt file into memory
 def txttoMemory_new(_path, _collectorName):
 
     msg = {}
@@ -181,6 +183,7 @@ def txttoMemory_new(_path, _collectorName):
 
     return msgList,asesList,prefixesList,data
 
+#test if msg is not duplicated
 def isMsgNew(_data, _nas, _msg, _specialCase):
 
     data = _data
@@ -294,6 +297,7 @@ def isMsgNew(_data, _nas, _msg, _specialCase):
 
     return new
 
+#test if msg is not duplicated
 def isMsgNew_new(_data, _nas, _msg, _specialCase, _highTimestampA, _highTimestampW):
 
     data = _data
@@ -377,6 +381,7 @@ def txtIXP(_totalMSG, _announcement, _withdrawn, _prefix, _prefixA, _prefixW, _c
     f.write(str(totalMSG)+';'+str(announcement)+';'+str(withdrawn)+';'+str(prefix)+';'+str(prefixA)+';'+str(prefixW)+'\n')
     f.close()
 
+#save in a txt file information about the IXP
 def txtIXP2(_list, _collectorName):
 
     list = _list
@@ -515,6 +520,7 @@ def prefixAS(_ASnumber, _msglist):
 
     return (count,countAnnouncement,countWithdrawn)
 
+#count the number of msg
 def reportAS(_data, _collectorName):
 
     data = _data
@@ -525,7 +531,6 @@ def reportAS(_data, _collectorName):
         msgA = len(data[i][0])
         msgW = len(data[i][1])
         txtAS(i,msgA,msgW,0,0,0,collectorName)
-
 #-------------------------------[AS]----------------------------------------------
 #------------------------------[PREFIX]-------------------------------------------
 #count the number of prefixes of IXP
@@ -1039,6 +1044,7 @@ def calculateChangesASPrefix(_prefixes, _ases, _msglist, _label):
             if len(var1) != 0:
                 txtPrefix2(i,j,len(var1),label)
 
+#find the cases inside the threshold
 def findPrefixThreshold(_label, _path, _threshold, _type):
 
     label = _label
@@ -1180,6 +1186,7 @@ def calculateAverageTimebyPrefix(_path):
         f.write(i+': '+str(c)+'\n')
     f.close()
 
+#list the prefixes with the highest times
 def highestTimes(_path):
 
     path = _path
@@ -1623,7 +1630,7 @@ def printASes(_listASNs, _date):
     plt.show()
     plt.clf()
 
-#plot time series of life and death of each prefix
+#plot time series of life and death of a prefix
 def plotLifeTime(_path, _prefix, _startTimestamp, _stopTimestamp):
 
     path = _path
@@ -1685,6 +1692,7 @@ def plotLifeTime(_path, _prefix, _startTimestamp, _stopTimestamp):
     #plt.savefig(save+"/lifetime-"+prefix+".png", dpi=600)
     plt.clf()
 
+#plot time series of life and death of each prefix
 def plotLifeTimeforEveryprefix(_nAS, _path, _timestamp1, _timestamp2):
 
     nAS = _nAS
@@ -1820,6 +1828,10 @@ def cli():
                 elif "plotCDFASPrefix" in action:
                     print('Ploting prefixes CDF graphics',"\n")
                     plotCDFASPrefix()
+
+                elif "teste" in action:
+                    #TODO add new functionalits on menu
+                    return 0
 
                 elif "help" in action:
                     help()
