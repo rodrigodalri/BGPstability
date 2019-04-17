@@ -13,7 +13,6 @@ from datetime import *
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from collections import defaultdict
-
 plt.rcParams.update({'figure.max_open_warning': 0})
 
 #AS43252 is decix
@@ -1181,15 +1180,15 @@ def calculateAverageTimebyPrefix(_path):
         f.write(i+': '+str(c)+'\n')
     f.close()
 
+def highestTimes(_path):
 
-def fixthenamelater2():
+    path = _path
+
     tamanho = 0
     listtimes = []
-    #listPaths = [,'AMSIX_220119_280119_new2/reportPrefixesWA.txt']
 
-
-    print('AMSIX_220119_280119_new2/reportPrefixesAW.txt')
-    with open('AMSIX_220119_280119_new2/reportPrefixesAW.txt') as fp:
+    print(path)
+    with open(path) as fp:
         line = fp.readline()
         line = fp.readline()
         tamanho = line.split(': ')[1]
@@ -1203,48 +1202,12 @@ def fixthenamelater2():
     print('média')
     print(sum(listtimes)/len(listtimes))
     listtimes.sort()
+
     print(listtimes[len(listtimes)-1])
     print(listtimes[len(listtimes)-2])
     print(listtimes[len(listtimes)-3])
     print(listtimes[len(listtimes)-4])
     print(listtimes[len(listtimes)-5])
-
-    print(listtimes[0])
-    print(listtimes[1])
-    print(listtimes[2])
-    print(listtimes[3])
-    print(listtimes[4])
-
-def fixthenamelater3():
-    #falta para 6939
-    listASes = ['6939']
-    for i in listASes:
-        prefixes,b = wichPrefixHasChanged('AMSIX_010119_070119_new2/reporttimeAW-AS'+i+'.txt')
-        if len(prefixes) != 0:
-            for j in prefixes:
-                plotLifeTime('AMSIX_010119_070119_new2/reporttimeAW-AS'+i+'.txt', j, 1546300800, 1546905599)
-
-    listASes = ['6939']
-    for i in listASes:
-        prefixes,b = wichPrefixHasChanged('AMSIX_080119_140119_new2/reporttimeAW-AS'+i+'.txt')
-        if len(prefixes) != 0:
-            for j in prefixes:
-                plotLifeTime('AMSIX_080119_140119_new2/reporttimeAW-AS'+i+'.txt', j,1546905600,1547510399)
-
-    listASes = ['6939']
-    for i in listASes:
-        prefixes,b = wichPrefixHasChanged('AMSIX_150119_210119_new2/reporttimeAW-AS'+i+'.txt')
-        if len(prefixes) != 0:
-            for j in prefixes:
-                plotLifeTime('AMSIX_150119_210119_new2/reporttimeAW-AS'+i+'.txt', j,1547510400,1548115199)
-
-    listASes = ['6939']
-    for i in listASes:
-        prefixes,b = wichPrefixHasChanged('AMSIX_220119_280119_new2/reporttimeAW-AS'+i+'.txt')
-        if len(prefixes) != 0:
-            for j in prefixes:
-                plotLifeTime('AMSIX_220119_280119_new2/reporttimeAW-AS'+i+'.txt', j,1548115200,1548719999)
-
 #------------------------------[STATISTIC]-------------------------------------------
 #------------------------------[PLOT]------------------------------------------------
 #plot information about the IXP
@@ -1721,6 +1684,18 @@ def plotLifeTime(_path, _prefix, _startTimestamp, _stopTimestamp):
     #plt.savefig(save+"/lifetime-"+prefix+".pdf", dpi=600)
     #plt.savefig(save+"/lifetime-"+prefix+".png", dpi=600)
     plt.clf()
+
+def plotLifeTimeforEveryprefix(_nAS, _path, _timestamp1, _timestamp2):
+
+    nAS = _nAS
+    path = _path
+    timestamp1 = _timestamp1
+    timestamp2 = _timestamp2
+
+    prefixes,b = wichPrefixHasChanged(path)
+    if len(prefixes) != 0:
+        for j in prefixes:
+            plotLifeTime(path, j,timestamp1,timestamp2)
 #------------------------------[PLOT]---------------------------------------------
 
 def cli():
@@ -1879,6 +1854,5 @@ def help():
     print("quit - quits BGPstability")
 
 if __name__ == '__main__':
-
 
     cli()
