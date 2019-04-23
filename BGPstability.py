@@ -709,6 +709,24 @@ def prefixASChanges(_prefix, _asn, _prefixes, _msglist):
                     changesList.append(j.split(':')[2])
 
     return({y:changesList.count(y) for y in set(changesList)})
+
+def checkReachability(_prefixes):
+
+    prefixes = _prefixes
+
+    totalv4 = 0
+    totalv6 = 0
+
+    for i in prefixes:
+        i = i.replace(";", "/")
+        network = ipaddress.ip_network(i)
+
+        if network.version == 4:
+            totalv4 = totalv4 + network.num_addresses
+        else:
+            totalv6 = totalv6 + network.num_addresses
+
+    return totalv4,totalv6
 #------------------------------[PREFIX]-------------------------------------------
 #------------------------------[STATISTIC]-------------------------------------------
 #count statistics about IXP and ASes and save to a txt file
@@ -1273,6 +1291,93 @@ def highestTimes(_path):
     print(listtimes[len(listtimes)-3])
     print(listtimes[len(listtimes)-4])
     print(listtimes[len(listtimes)-5])
+
+def diffTable():
+
+    listPrefix1 = []
+    listPrefix2 = []
+    listPrefix3 = []
+    listPrefix4 = []
+
+    with open('AMSIX_010119_070119_new2/reportPrefixesWA.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listPrefix1.append(line.split(':')[0])
+            line = fp.readline()
+
+    with open('AMSIX_080119_140119_new2/reportPrefixesWA.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listPrefix2.append(line.split(':')[0])
+            line = fp.readline()
+
+    with open('AMSIX_150119_210119_new2/reportPrefixesWA.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listPrefix3.append(line.split(':')[0])
+            line = fp.readline()
+
+    with open('AMSIX_220119_280119_new2/reportPrefixesWA.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listPrefix4.append(line.split(':')[0])
+            line = fp.readline()
+
+    one_two = len(set(listPrefix1) - set(listPrefix2))
+    one_three = len(set(listPrefix1) - set(listPrefix3))
+    one_four = len(set(listPrefix1) - set(listPrefix4))
+    one = len(set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4))
+
+    two_one = len(set(listPrefix2) - set(listPrefix1))
+    two_three = len(set(listPrefix2) - set(listPrefix3))
+    two_four = len(set(listPrefix2) - set(listPrefix4))
+    two = len(set(listPrefix2) - set(listPrefix1) - set(listPrefix3) - set(listPrefix4))
+
+    three_one = len(set(listPrefix3) - set(listPrefix1))
+    three_two = len(set(listPrefix3) - set(listPrefix2))
+    three_four = len(set(listPrefix3) - set(listPrefix4))
+    three = len(set(listPrefix3) - set(listPrefix1) - set(listPrefix2) - set(listPrefix4))
+
+    four_one = len(set(listPrefix4) - set(listPrefix1))
+    four_two = len(set(listPrefix4) - set(listPrefix2))
+    four_three = len(set(listPrefix4) - set(listPrefix3))
+    four = len(set(listPrefix4) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3))
+
+    print(one_two)
+    print(one_three)
+    print(one_four)
+    print(one)
+
+    print(two_one)
+    print(two_three)
+    print(two_four)
+    print(two)
+
+    print(three_one)
+    print(three_two)
+    print(three_four)
+    print(three)
+
+    print(four_one)
+    print(four_two)
+    print(four_three)
+    print(four)
 #------------------------------[STATISTIC]-------------------------------------------
 #------------------------------[PLOT]------------------------------------------------
 #plot information about the IXP
@@ -1814,7 +1919,14 @@ def cli():
                     ASes = {x:ases.count(x) for x in set(ases)}
                     txtIXP2(ASes,collectorName)
                     prefixes = {x:prefix.count(x) for x in set(prefix)}
-                    print(prefies)
+                    #print(prefixes)
+
+                    numberv4, numberv6 = checkReachability(prefixes)
+                    print("num IPv4:")
+                    print(numberv4)
+                    print("num IPv6:")
+                    print(numberv6)
+
                     #TODO: check path changes
                     #TODO: check reachability on this prefixes
 
@@ -1933,3 +2045,5 @@ def help():
 if __name__ == '__main__':
 
     cli()
+
+    #diffTable()
