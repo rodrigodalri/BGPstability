@@ -4,16 +4,16 @@ import sys
 import copy
 import json
 import time
-import pylab
+#import pylab
 import ipaddress
 import threading
 import subprocess
-import numpy as np
+#import numpy as np
 from datetime import *
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
+#import matplotlib.pyplot as plt
+#import matplotlib.dates as mdates
 from collections import defaultdict
-plt.rcParams.update({'figure.max_open_warning': 0})
+#plt.rcParams.update({'figure.max_open_warning': 0})
 
 #AS43252 is decix
 #AS62972 is amsix
@@ -635,7 +635,7 @@ def isAggregate(_prefix1, _prefix2):
     #TODO:
     #1 > 2 return 1
     #2 > 1 return 2
-    print('entrou')
+    #print('entrou')
 
     #if network1.overlaps(network2):
     #    return 1
@@ -709,24 +709,6 @@ def prefixASChanges(_prefix, _asn, _prefixes, _msglist):
                     changesList.append(j.split(':')[2])
 
     return({y:changesList.count(y) for y in set(changesList)})
-
-def checkReachability(_prefixes):
-
-    prefixes = _prefixes
-
-    totalv4 = 0
-    totalv6 = 0
-
-    for i in prefixes:
-        i = i.replace(";", "/")
-        network = ipaddress.ip_network(i)
-
-        if network.version == 4:
-            totalv4 = totalv4 + network.num_addresses
-        else:
-            totalv6 = totalv6 + network.num_addresses
-
-    return totalv4,totalv6
 #------------------------------[PREFIX]-------------------------------------------
 #------------------------------[STATISTIC]-------------------------------------------
 #count statistics about IXP and ASes and save to a txt file
@@ -1160,7 +1142,7 @@ def findPrefixThreshold(_label, _path, _threshold, _type):
                 m = int(aux.split(":")[1])
                 s = int(aux.split(":")[2])
                 time = s/60 + m + h*60
-            #print (time)
+            print (time)
             if (time < threshold):
                 f.write(str(prefix)+'\n')
             line = fp.readline()
@@ -1254,14 +1236,13 @@ def mostRepeatedPrefix(_path, _version):
 
     return(max(set(prefixList), key=prefixList.count))
 
-#TODO: menu
 #calculate the average time by each prefix
 def calculateAverageTimebyPrefix(_path):
     path = _path
     save = path.split('/')[0]
 
-    f = open(save+'/reportPrefixesWA.txt', 'a+')
-    f.write('\n'+'LINIX_'+'\n')
+    f = open(save+'/reportPrefixesAW.txt', 'a+')
+    f.write('\n'+'AMSIX_010119_070119'+'\n')
     a,b = wichPrefixHasChanged(path)
     f.write('Number of prefixes: '+str(b)+'\n')
     f.write('averageTimes'+'\n')
@@ -1299,93 +1280,6 @@ def highestTimes(_path):
     print(listtimes[len(listtimes)-3])
     print(listtimes[len(listtimes)-4])
     print(listtimes[len(listtimes)-5])
-
-def diffTable():
-
-    listPrefix1 = []
-    listPrefix2 = []
-    listPrefix3 = []
-    listPrefix4 = []
-
-    with open('LINIX_010119_070119_new/reportPrefixesAW.txt') as fp:
-        line = fp.readline()
-        line = fp.readline()
-        tamanho = line.split(': ')[1]
-        line = fp.readline()
-        line = fp.readline()
-        while line:
-            listPrefix1.append(line.split(':')[0])
-            line = fp.readline()
-
-    with open('LINIX_080119_140119_new/reportPrefixesAW.txt') as fp:
-        line = fp.readline()
-        line = fp.readline()
-        tamanho = line.split(': ')[1]
-        line = fp.readline()
-        line = fp.readline()
-        while line:
-            listPrefix2.append(line.split(':')[0])
-            line = fp.readline()
-
-    with open('LINIX_150119_210119_new/reportPrefixesAW.txt') as fp:
-        line = fp.readline()
-        line = fp.readline()
-        tamanho = line.split(': ')[1]
-        line = fp.readline()
-        line = fp.readline()
-        while line:
-            listPrefix3.append(line.split(':')[0])
-            line = fp.readline()
-
-    with open('LINIX_220119_280119_new/reportPrefixesAW.txt') as fp:
-        line = fp.readline()
-        line = fp.readline()
-        tamanho = line.split(': ')[1]
-        line = fp.readline()
-        line = fp.readline()
-        while line:
-            listPrefix4.append(line.split(':')[0])
-            line = fp.readline()
-
-    one_two = len(set(listPrefix1) - set(listPrefix2))
-    one_three = len(set(listPrefix1) - set(listPrefix3))
-    one_four = len(set(listPrefix1) - set(listPrefix4))
-    one = len(set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4))
-
-    two_one = len(set(listPrefix2) - set(listPrefix1))
-    two_three = len(set(listPrefix2) - set(listPrefix3))
-    two_four = len(set(listPrefix2) - set(listPrefix4))
-    two = len(set(listPrefix2) - set(listPrefix1) - set(listPrefix3) - set(listPrefix4))
-
-    three_one = len(set(listPrefix3) - set(listPrefix1))
-    three_two = len(set(listPrefix3) - set(listPrefix2))
-    three_four = len(set(listPrefix3) - set(listPrefix4))
-    three = len(set(listPrefix3) - set(listPrefix1) - set(listPrefix2) - set(listPrefix4))
-
-    four_one = len(set(listPrefix4) - set(listPrefix1))
-    four_two = len(set(listPrefix4) - set(listPrefix2))
-    four_three = len(set(listPrefix4) - set(listPrefix3))
-    four = len(set(listPrefix4) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3))
-
-    print(one_two)
-    print(one_three)
-    print(one_four)
-    print(one)
-
-    print(two_one)
-    print(two_three)
-    print(two_four)
-    print(two)
-
-    print(three_one)
-    print(three_two)
-    print(three_four)
-    print(three)
-
-    print(four_one)
-    print(four_two)
-    print(four_three)
-    print(four)
 #------------------------------[STATISTIC]-------------------------------------------
 #------------------------------[PLOT]------------------------------------------------
 #plot information about the IXP
@@ -1895,6 +1789,14 @@ def cli():
                     if not os.path.exists(collectorName):
                         os.makedirs(collectorName)
 
+                    #log = time.time()
+                    #log2 = time.ctime(log)
+                    #f = open('LOG'+str(collectorName)+'.txt', 'a+')
+                    #f.write("Start - read txt into memory - " + str(log2)+'\n')
+                    #for i in range(0, int(numberDays)):
+                        #auxlist = txttoMemory(aux[i+2])
+                        #msglist = msglist + auxlist
+
                     auxlist,ases,prefix,data = txttoMemory_new(path,collectorName)
                     dataAW = copy.deepcopy(data)
                     dataWA = copy.deepcopy(data)
@@ -1905,7 +1807,10 @@ def cli():
                         announcement = len(data[i][0]) + announcement
                         withdrawn = len(data[i][1]) + withdrawn
 
-                    
+                    #log = time.time()
+                    #log2 = time.ctime(log)
+                    #f.write("Stop - read txt into memory - " + str(log2)+'\n')
+
                     print("announcements:")
                     print(announcement)
                     print("Withdrawals:")
@@ -1916,21 +1821,28 @@ def cli():
                     ASes = {x:ases.count(x) for x in set(ases)}
                     txtIXP2(ASes,collectorName)
                     prefixes = {x:prefix.count(x) for x in set(prefix)}
-                    #print(prefixes)
-
-                    numberv4, numberv6 = checkReachability(prefixes)
-                    print("num IPv4:")
-                    print(numberv4)
-                    print("num IPv6:")
-                    print(numberv6)
-
+                    print(prefies)
                     #TODO: check path changes
+                    #TODO: check reachability on this prefixes
+
+
+
 
                     #print("Looking for which ASes sent messages","\n")
                     #ASes = countASes(msglist)
 
                     #print('Looking for which prefix',"\n")
                     #prefixes = countPrefix(msglist)
+
+                    #log = time.time()
+                    #log2 = time.ctime(log)
+                    #f.write("Start - CalculateALL - " + str(log2)+'\n')
+
+
+                    #log = time.time()
+                    #log2 = time.ctime(log)
+                    #f.write("Stop - CalculateALL - " + str(log2)+'\n')
+                    #f.close()
 
                 elif "Count Statistics" in action:
                     print('Counting statistics and saving to a txt file',"\n")
@@ -1991,12 +1903,6 @@ def cli():
 
                 elif "teste" in action:
                     #TODO add new functionalits on menu
-                    #plotLifeTimeforEveryprefix
-                    #findPrefixThreshold
-                    #calculateAverageTimebyPrefix
-                    #mostRepeatedPrefix
-                    #highestTimes
-                    #diffTable
                     return 0
 
                 elif "help" in action:
@@ -2033,49 +1939,48 @@ def help():
 
 if __name__ == '__main__':
 
-    cli()
-    #calculateAverageTimebyPrefix("LINIX_010119_070119_new/reporttimeWA.txt")
-    #calculateAverageTimebyPrefix("LINIX_080119_140119_new/reporttimeWA.txt")
-    #calculateAverageTimebyPrefix("LINIX_150119_210119_new/reporttimeWA.txt")
-    #calculateAverageTimebyPrefix("LINIX_220119_280119_new/reporttimeWA.txt")
-    #diffTable()
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeAW",0.5,0)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeWA",0.5,1)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeAW",1,0)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeWA",1,1)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeAW",2,0)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeWA",2,1)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeAW",5,0)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeWA",5,1)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeAW",30,0)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeWA",30,1)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeAW",0.5,0)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeWA",0.5,1)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeAW",1,0)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeWA",1,1)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeAW",2,0)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeWA",2,1)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeAW",5,0)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeWA",5,1)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeAW",30,0)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeWA",30,1)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeAW",0.5,0)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeWA",0.5,1)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeAW",1,0)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeWA",1,1)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeAW",2,0)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeWA",2,1)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeAW",5,0)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeWA",5,1)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeAW",30,0)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeWA",30,1)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeAW",0.5,0)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeWA",0.5,1)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeAW",1,0)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeWA",1,1)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeAW",2,0)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeWA",2,1)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeAW",5,0)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeWA",5,1)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeAW",30,0)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeWA",30,1)
+
+    #wichPrefixHasChanged('AMSIX_010119_070119_new/reporttimeAW.txt')
+    #averageTimeByPrefix('AMSIX_010119_070119_new/reporttimeAW.txt','104.237.191.0;24')
+    #cli()
+    announcement = 0
+    withdrawn = 0
+    msglist = []
+
+    collectorName = sys.argv[1]
+    path = sys.argv[2]
+    numberas = sys.argv[3]
+
+    print(collectorName)
+    print(path)
+    print(numberas)
+
+    if not os.path.exists(collectorName):
+        os.makedirs(collectorName)
+
+    auxlist,ases,prefix,data = txttoMemory_new(path,collectorName)
+    dataAW = copy.deepcopy(data)
+    dataWA = copy.deepcopy(data)
+
+    for i in data:
+        announcement = len(data[i][0]) + announcement
+        withdrawn = len(data[i][1]) + withdrawn
+
+    print("announcements:")
+    print(announcement)
+    print("Withdrawals:")
+    print(withdrawn)
+
+    txtIXP(announcement+withdrawn,announcement,withdrawn,0,0,0,collectorName)
+
+    ASes = {x:ases.count(x) for x in set(ases)}
+    txtIXP2(ASes,collectorName)
+    prefixes = {x:prefix.count(x) for x in set(prefix)}
+
+
+    calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, int(numberas))
+    calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, int(numberas))
+
+
+
+    os._exit(1)
