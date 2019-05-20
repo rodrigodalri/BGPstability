@@ -17,6 +17,8 @@ from collections import defaultdict
 
 #AS43252 is decix
 #AS62972 is amsix
+#AS24115 is equinix
+#AS8714 is equinix
 #TODO some plots are out of date
 
 def pair_of_lists():
@@ -709,6 +711,24 @@ def prefixASChanges(_prefix, _asn, _prefixes, _msglist):
                     changesList.append(j.split(':')[2])
 
     return({y:changesList.count(y) for y in set(changesList)})
+
+def checkReachability(_prefixes):
+
+    prefixes = _prefixes
+
+    totalv4 = 0
+    totalv6 = 0
+
+    for i in prefixes:
+        i = i.replace(";", "/")
+        network = ipaddress.ip_network(i)
+
+        if network.version == 4:
+            totalv4 = totalv4 + network.num_addresses
+        else:
+            totalv6 = totalv6 + network.num_addresses
+
+    return totalv4,totalv6
 #------------------------------[PREFIX]-------------------------------------------
 #------------------------------[STATISTIC]-------------------------------------------
 #count statistics about IXP and ASes and save to a txt file
@@ -809,7 +829,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                                 #listA.remove(j)
                                                 #print(test)
                                                 f = open(path+'.txt', 'a')
-                                                f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(test)+'\n')
+                                                f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(j["aspath"])+';'+str(test)+'\n')
                                                 f.close()
                         else:
                             for l in listW:
@@ -837,7 +857,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                         #listA.remove(j)
                                         #print(test)
                                         f = open(path+'.txt', 'a')
-                                        f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(test)+'\n')
+                                        f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(j["aspath"])+';'+str(test)+'\n')
                                         f.close()
 
     #for i in prefixes:
@@ -938,7 +958,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
 
                                             #print(test)
                                             f = open(path+'.txt', 'a')
-                                            f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(test)+'\n')
+                                            f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(l["aspath"])+';'+str(test)+'\n')
                                             f.close()
                         else:
                             for l in listA:
@@ -961,7 +981,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                     listA.remove(l)
                                     #print(test)
                                     f = open(path+'.txt', 'a')
-                                    f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(test)+'\n')
+                                    f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(l["aspath"])+';'+str(test)+'\n')
                                     f.close()
     #for i in prefixes:
     #    if (i.split(';')[1] == prefixSize or all == 1):
@@ -1121,7 +1141,7 @@ def findPrefixThreshold(_label, _path, _threshold, _type):
         typepath = "AW"
     else:
         typepath = "WA"
-    f = open(label+'/reportPrefixThreshold-'+str(threshold)+typepath+'.txt', 'a+')
+    f = open(label+'/reportPrefixThreshold-'+str(threshold)+typepath+'-NEW.txt', 'a+')
 
     with open(path) as fp:
         line = fp.readline()
@@ -1142,7 +1162,7 @@ def findPrefixThreshold(_label, _path, _threshold, _type):
                 m = int(aux.split(":")[1])
                 s = int(aux.split(":")[2])
                 time = s/60 + m + h*60
-            print (time)
+            #print (time)
             if (time < threshold):
                 f.write(str(prefix)+'\n')
             line = fp.readline()
@@ -1236,13 +1256,14 @@ def mostRepeatedPrefix(_path, _version):
 
     return(max(set(prefixList), key=prefixList.count))
 
+#TODO: menu
 #calculate the average time by each prefix
 def calculateAverageTimebyPrefix(_path):
     path = _path
     save = path.split('/')[0]
 
-    f = open(save+'/reportPrefixesAW.txt', 'a+')
-    f.write('\n'+'AMSIX_010119_070119'+'\n')
+    f = open(save+'/reportPrefixesWA.txt', 'a+')
+    f.write('\n'+'LINIX_'+'\n')
     a,b = wichPrefixHasChanged(path)
     f.write('Number of prefixes: '+str(b)+'\n')
     f.write('averageTimes'+'\n')
@@ -1280,6 +1301,93 @@ def highestTimes(_path):
     print(listtimes[len(listtimes)-3])
     print(listtimes[len(listtimes)-4])
     print(listtimes[len(listtimes)-5])
+
+def diffTable():
+
+    listPrefix1 = []
+    listPrefix2 = []
+    listPrefix3 = []
+    listPrefix4 = []
+
+    with open('LINIX_010119_070119_new/reportPrefixesAW.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listPrefix1.append(line.split(':')[0])
+            line = fp.readline()
+
+    with open('LINIX_080119_140119_new/reportPrefixesAW.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listPrefix2.append(line.split(':')[0])
+            line = fp.readline()
+
+    with open('LINIX_150119_210119_new/reportPrefixesAW.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listPrefix3.append(line.split(':')[0])
+            line = fp.readline()
+
+    with open('LINIX_220119_280119_new/reportPrefixesAW.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listPrefix4.append(line.split(':')[0])
+            line = fp.readline()
+
+    one_two = len(set(listPrefix1) - set(listPrefix2))
+    one_three = len(set(listPrefix1) - set(listPrefix3))
+    one_four = len(set(listPrefix1) - set(listPrefix4))
+    one = len(set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4))
+
+    two_one = len(set(listPrefix2) - set(listPrefix1))
+    two_three = len(set(listPrefix2) - set(listPrefix3))
+    two_four = len(set(listPrefix2) - set(listPrefix4))
+    two = len(set(listPrefix2) - set(listPrefix1) - set(listPrefix3) - set(listPrefix4))
+
+    three_one = len(set(listPrefix3) - set(listPrefix1))
+    three_two = len(set(listPrefix3) - set(listPrefix2))
+    three_four = len(set(listPrefix3) - set(listPrefix4))
+    three = len(set(listPrefix3) - set(listPrefix1) - set(listPrefix2) - set(listPrefix4))
+
+    four_one = len(set(listPrefix4) - set(listPrefix1))
+    four_two = len(set(listPrefix4) - set(listPrefix2))
+    four_three = len(set(listPrefix4) - set(listPrefix3))
+    four = len(set(listPrefix4) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3))
+
+    print(one_two)
+    print(one_three)
+    print(one_four)
+    print(one)
+
+    print(two_one)
+    print(two_three)
+    print(two_four)
+    print(two)
+
+    print(three_one)
+    print(three_two)
+    print(three_four)
+    print(three)
+
+    print(four_one)
+    print(four_two)
+    print(four_three)
+    print(four)
 #------------------------------[STATISTIC]-------------------------------------------
 #------------------------------[PLOT]------------------------------------------------
 #plot information about the IXP
@@ -1458,7 +1566,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
     if(nAs != 0):
         save = save+"-AS"+str(nAs)
 
-    if(prefix != 50):
+    if(prefix != 0):
         save = save+"-prefix"+str(prefix)
 
     with open(path1) as fp1:
@@ -1656,6 +1764,114 @@ def plotCDFASPrefix():
     pylab.savefig(save+".png", dpi=600)
     pylab.clf()
 
+#plot number of changes in aspath
+def plotCDFShortLivedEvent(_type, _threshold, _as, _prefix):
+
+    type = _type
+    threshold = _threshold
+    nAs = _as
+    prefix = int(_prefix)
+    count = 0
+
+    path1 = "AMSIX_010119_070119_new/reporttime"+type+".txt"
+    print(path1)
+    changesList1 = []
+    changesList2 = []
+    changesList3 = []
+    #changesList4 = []
+    count = 0
+
+    if type == "WA":
+        save = "ShortLivedEvent-WA"
+    else:
+        save = "ShortLivedEvent-AW"
+
+    if(threshold != 0):
+        save = save+"-"+str(threshold)
+
+    if(nAs != 0):
+        save = save+"-AS"+str(nAs)
+
+    if(prefix != 0):
+        save = save+"-prefix"+str(prefix)
+
+    with open(path1) as fp:
+        days = 0
+        readAS = 0
+        readPrefix = ''
+        readTime = ''
+        line = fp.readline()
+        while line:
+            print(line)
+            readAS = int(line.split(';')[0])
+            readPrefix = int(line.split(';')[2])
+            readTime = line.split(';')[3]
+            aux = int(line.split(";")[7])
+            #print(aux)
+            try:
+                days = readTime.split(",")[0]
+                days = int(days[:1])
+                hours = readTime.split(",")[1]
+                h = int(hours.split(":")[0])
+                m = int(hours.split(":")[1])
+                s = int(hours.split(":")[2])
+                time = s/60 + m + h*60 + days*24*60
+                print(time)
+                print('time')
+                if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                    if aux == 0:
+                        print('entrou0')
+                        changesList1.append(time)
+                    if aux == 1:
+                        print('entrou1')
+                        changesList2.append(time)
+                    if aux == 2:
+                        print('entrou2')
+                        changesList3.append(time)
+                line = fp.readline()
+            except:
+                h = int(readTime.split(":")[0])
+                m = int(readTime.split(":")[1])
+                s = int(readTime.split(":")[2])
+                time = s/60 + m + h*60
+                print(time)
+                print('time')
+                if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                    if aux == 0:
+                        print('entrou0')
+                        changesList1.append(time)
+                    if aux == 1:
+                        print('entrou1')
+                        changesList2.append(time)
+                    if aux == 2:
+                        print('entrou2')
+                        changesList3.append(time)
+                line = fp.readline()
+        line = fp.readline()
+
+
+    print(len(changesList1))
+    print(len(changesList2))
+    print(len(changesList3))
+
+    pylab.plot(np.sort(changesList1),np.arange(len(changesList1))/float(len(changesList1)-1), color='SkyBlue', label='exact match - ' + str(len(changesList1)),  linewidth=2, linestyle='-')
+    pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), color='IndianRed', label='disaggregation - ' + str(len(changesList2)),  linewidth=2, linestyle='--')
+    pylab.plot(np.sort(changesList3),np.arange(len(changesList3))/float(len(changesList3)-1), color='Chocolate', label='aggregation - ' + str(len(changesList3)),  linewidth=2, linestyle='-.')
+    #pylab.plot(np.sort(changesList4),np.arange(len(changesList4))/float(len(changesList4)-1), color='Orange', label='DECIX_010119_070119 - ' + str(len(changesList4)),  linewidth=2, linestyle=':')
+    pylab.title("Test Plot", loc='center')
+    pylab.ylabel("Frequency", fontsize=10)
+    pylab.xlabel("Time (min)", fontsize=10)
+    pylab.grid(True)
+    #plt.xticks(np.arange(min(changesList2), max(changesList2)+1, 1.0))
+    pylab.xlim(0, )
+    pylab.ylim(0, 1)
+    pylab.legend(loc="best", fontsize=12)
+    plt.show()
+    #pylab.savefig(save+".pdf", dpi=600)
+    #pylab.savefig(save+".png", dpi=600)
+    pylab.clf()
+
+
 #TODO fix
 #plot ASes information
 def printASes(_listASNs, _date):
@@ -1789,14 +2005,6 @@ def cli():
                     if not os.path.exists(collectorName):
                         os.makedirs(collectorName)
 
-                    #log = time.time()
-                    #log2 = time.ctime(log)
-                    #f = open('LOG'+str(collectorName)+'.txt', 'a+')
-                    #f.write("Start - read txt into memory - " + str(log2)+'\n')
-                    #for i in range(0, int(numberDays)):
-                        #auxlist = txttoMemory(aux[i+2])
-                        #msglist = msglist + auxlist
-
                     auxlist,ases,prefix,data = txttoMemory_new(path,collectorName)
                     dataAW = copy.deepcopy(data)
                     dataWA = copy.deepcopy(data)
@@ -1806,10 +2014,6 @@ def cli():
                     for i in data:
                         announcement = len(data[i][0]) + announcement
                         withdrawn = len(data[i][1]) + withdrawn
-
-                    #log = time.time()
-                    #log2 = time.ctime(log)
-                    #f.write("Stop - read txt into memory - " + str(log2)+'\n')
 
                     print("announcements:")
                     print(announcement)
@@ -1821,28 +2025,21 @@ def cli():
                     ASes = {x:ases.count(x) for x in set(ases)}
                     txtIXP2(ASes,collectorName)
                     prefixes = {x:prefix.count(x) for x in set(prefix)}
-                    print(prefies)
+                    #print(prefixes)
+
+                    numberv4, numberv6 = checkReachability(prefixes)
+                    print("num IPv4:")
+                    print(numberv4)
+                    print("num IPv6:")
+                    print(numberv6)
+
                     #TODO: check path changes
-                    #TODO: check reachability on this prefixes
-
-
-
 
                     #print("Looking for which ASes sent messages","\n")
                     #ASes = countASes(msglist)
 
                     #print('Looking for which prefix',"\n")
                     #prefixes = countPrefix(msglist)
-
-                    #log = time.time()
-                    #log2 = time.ctime(log)
-                    #f.write("Start - CalculateALL - " + str(log2)+'\n')
-
-
-                    #log = time.time()
-                    #log2 = time.ctime(log)
-                    #f.write("Stop - CalculateALL - " + str(log2)+'\n')
-                    #f.close()
 
                 elif "Count Statistics" in action:
                     print('Counting statistics and saving to a txt file',"\n")
@@ -1903,6 +2100,12 @@ def cli():
 
                 elif "teste" in action:
                     #TODO add new functionalits on menu
+                    #plotLifeTimeforEveryprefix
+                    #findPrefixThreshold
+                    #calculateAverageTimebyPrefix
+                    #mostRepeatedPrefix
+                    #highestTimes
+                    #diffTable
                     return 0
 
                 elif "help" in action:

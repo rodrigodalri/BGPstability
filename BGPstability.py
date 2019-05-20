@@ -17,6 +17,8 @@ plt.rcParams.update({'figure.max_open_warning': 0})
 
 #AS43252 is decix
 #AS62972 is amsix
+#AS24115 is equinix
+#AS8714 is equinix
 #TODO some plots are out of date
 
 def pair_of_lists():
@@ -635,7 +637,7 @@ def isAggregate(_prefix1, _prefix2):
     #TODO:
     #1 > 2 return 1
     #2 > 1 return 2
-    print('entrou')
+    #print('entrou')
 
     #if network1.overlaps(network2):
     #    return 1
@@ -827,7 +829,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                                 #listA.remove(j)
                                                 #print(test)
                                                 f = open(path+'.txt', 'a')
-                                                f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(test)+'\n')
+                                                f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(j["aspath"])+';'+str(test)+'\n')
                                                 f.close()
                         else:
                             for l in listW:
@@ -855,7 +857,7 @@ def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                         #listA.remove(j)
                                         #print(test)
                                         f = open(path+'.txt', 'a')
-                                        f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(test)+'\n')
+                                        f.write(str(i)+';'+str(prefixA)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(j["aspath"])+';'+str(test)+'\n')
                                         f.close()
 
     #for i in prefixes:
@@ -956,7 +958,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
 
                                             #print(test)
                                             f = open(path+'.txt', 'a')
-                                            f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(test)+'\n')
+                                            f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(l["aspath"])+';'+str(test)+'\n')
                                             f.close()
                         else:
                             for l in listA:
@@ -979,7 +981,7 @@ def calculateTimeWA(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
                                     listA.remove(l)
                                     #print(test)
                                     f = open(path+'.txt', 'a')
-                                    f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(test)+'\n')
+                                    f.write(str(i)+';'+str(prefixW)+';'+str(time)+';'+str(j["timestamp"])+';'+str(l["timestamp"])+';'+str(l["aspath"])+';'+str(test)+'\n')
                                     f.close()
     #for i in prefixes:
     #    if (i.split(';')[1] == prefixSize or all == 1):
@@ -1139,7 +1141,7 @@ def findPrefixThreshold(_label, _path, _threshold, _type):
         typepath = "AW"
     else:
         typepath = "WA"
-    f = open(label+'/reportPrefixThreshold-'+str(threshold)+typepath+'.txt', 'a+')
+    f = open(label+'/reportPrefixThreshold-'+str(threshold)+typepath+'-NEW.txt', 'a+')
 
     with open(path) as fp:
         line = fp.readline()
@@ -1564,7 +1566,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
     if(nAs != 0):
         save = save+"-AS"+str(nAs)
 
-    if(prefix != 50):
+    if(prefix != 0):
         save = save+"-prefix"+str(prefix)
 
     with open(path1) as fp1:
@@ -1762,6 +1764,96 @@ def plotCDFASPrefix():
     pylab.savefig(save+".png", dpi=600)
     pylab.clf()
 
+#plot number of changes in aspath
+def plotCDFShortLivedEvent(_type, _threshold, _as, _prefix):
+
+    type = _type
+    threshold = _threshold
+    nAs = _as
+    prefix = int(_prefix)
+    count = 0
+
+    path1 = "AMSIX_010119_070119_new/reporttime"+type+".txt"
+    changesList1 = []
+    changesList2 = []
+    changesList3 = []
+    #changesList4 = []
+    count = 0
+
+    if type == "WA":
+        save = "ShortLivedEvent-WA"
+    else:
+        save = "ShortLivedEvent-AW"
+
+    if(threshold != 0):
+        save = save+"-"+str(threshold)
+
+    if(nAs != 0):
+        save = save+"-AS"+str(nAs)
+
+    if(prefix != 0):
+        save = save+"-prefix"+str(prefix)
+
+    with open(path1) as fp:
+        days = 0
+        readAS = 0
+        readPrefix = ''
+        readTime = ''
+        line = fp.readline()
+        while line:
+            print(line)
+            readAS = int(line.split(';')[0])
+            readPrefix = int(line.split(';')[2])
+            readTime = line.split(';')[3]
+            aux = int(line.split(";")[7])
+            try:
+                days = readTime.split(",")[0]
+                days = int(days[:1])
+                hours = readTime.split(",")[1]
+                h = int(hours.split(":")[0])
+                m = int(hours.split(":")[1])
+                s = int(hours.split(":")[2])
+                time = s/60 + m + h*60 + days*24*60
+                if (time < threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                    if aux == 0:
+                        changesList1.append(time)
+                    if aux == 1:
+                        changesList2.append(time)
+                    if aux == 2:
+                        changesList3.append(time)
+                line = fp.readline()
+            except:
+                h = int(readTime.split(":")[0])
+                m = int(readTime.split(":")[1])
+                s = int(readTime.split(":")[2])
+                time = s/60 + m + h*60
+                if (time < threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                    if aux == 0:
+                        changesList1.append(time)
+                    if aux == 1:
+                        changesList2.append(time)
+                    if aux == 2:
+                        changesList3.append(time)
+                line = fp.readline()
+        line = fp.readline()
+
+    pylab.plot(np.sort(changesList1),np.arange(len(changesList1))/float(len(changesList1)-1), color='SkyBlue', label='exact match - ' + str(len(changesList1)),  linewidth=2, linestyle='-')
+    pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), color='IndianRed', label='disaggregation - ' + str(len(changesList2)),  linewidth=2, linestyle='--')
+    pylab.plot(np.sort(changesList3),np.arange(len(changesList3))/float(len(changesList3)-1), color='Chocolate', label='aggregation - ' + str(len(changesList3)),  linewidth=2, linestyle='-.')
+    #pylab.plot(np.sort(changesList4),np.arange(len(changesList4))/float(len(changesList4)-1), color='Orange', label='DECIX_010119_070119 - ' + str(len(changesList4)),  linewidth=2, linestyle=':')
+    pylab.title(save, loc='center')
+    pylab.ylabel("Frequency", fontsize=10)
+    pylab.xlabel("Time (min)", fontsize=10)
+    pylab.grid(True)
+    #plt.xticks(np.arange(min(changesList2), max(changesList2)+1, 1.0))
+    pylab.xlim(0, )
+    pylab.ylim(0, 1)
+    pylab.legend(loc="best", fontsize=12)
+    plt.show()
+    #pylab.savefig(save+".pdf", dpi=600)
+    #pylab.savefig(save+".png", dpi=600)
+    pylab.clf()
+
 #TODO fix
 #plot ASes information
 def printASes(_listASNs, _date):
@@ -1905,7 +1997,6 @@ def cli():
                         announcement = len(data[i][0]) + announcement
                         withdrawn = len(data[i][1]) + withdrawn
 
-                    
                     print("announcements:")
                     print(announcement)
                     print("Withdrawals:")
@@ -1928,7 +2019,6 @@ def cli():
 
                     #print("Looking for which ASes sent messages","\n")
                     #ASes = countASes(msglist)
-
                     #print('Looking for which prefix',"\n")
                     #prefixes = countPrefix(msglist)
 
@@ -2033,49 +2123,18 @@ def help():
 
 if __name__ == '__main__':
 
-    cli()
+    plotCDFShortLivedEvent('WA', 1, 0, 0)
+    #cli()
     #calculateAverageTimebyPrefix("LINIX_010119_070119_new/reporttimeWA.txt")
     #calculateAverageTimebyPrefix("LINIX_080119_140119_new/reporttimeWA.txt")
     #calculateAverageTimebyPrefix("LINIX_150119_210119_new/reporttimeWA.txt")
     #calculateAverageTimebyPrefix("LINIX_220119_280119_new/reporttimeWA.txt")
     #diffTable()
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeAW",0.5,0)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeWA",0.5,1)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeAW",1,0)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeWA",1,1)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeAW",2,0)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeWA",2,1)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeAW",5,0)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeWA",5,1)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeAW",30,0)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeWA",30,1)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeAW",0.5,0)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeWA",0.5,1)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeAW",1,0)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeWA",1,1)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeAW",2,0)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeWA",2,1)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeAW",5,0)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeWA",5,1)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeAW",30,0)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeWA",30,1)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeAW",0.5,0)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeWA",0.5,1)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeAW",1,0)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeWA",1,1)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeAW",2,0)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeWA",2,1)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeAW",5,0)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeWA",5,1)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeAW",30,0)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeWA",30,1)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeAW",0.5,0)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeWA",0.5,1)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeAW",1,0)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeWA",1,1)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeAW",2,0)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeWA",2,1)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeAW",5,0)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeWA",5,1)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeAW",30,0)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeWA",30,1)
+    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeAW",0.25,0)
+    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeWA",0.25,1)
+    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeAW",0.25,0)
+    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeWA",0.25,1)
+    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeAW",0.25,0)
+    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeWA",0.25,1)
+    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeAW",0.25,0)
+    #indPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeWA",0.25,1)
