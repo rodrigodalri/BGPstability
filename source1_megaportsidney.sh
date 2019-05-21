@@ -1,0 +1,37 @@
+#!/bin/bash
+
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS2381.txt 2381
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS4648.txt 4648
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS7490.txt 7490
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS7598.txt 7598
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS8075.txt 8075
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS9268.txt 9268
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS9749.txt 9749
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS13335.txt 13335
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS15169.txt 15169
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS17559.txt 17559
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS17766.txt 17766
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS20473.txt 20473
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS23913.txt 23913
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS26415.txt 26415
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS32934.txt 32934
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS36236.txt 36236
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS38622.txt 38622
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS38790.txt 38790
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS38883.txt 38883
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS45102.txt 45102
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS45177.txt 45177
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS55555.txt 55555
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS58511.txt 58511
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS58941.txt 58941
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS63920.txt 63920
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS63956.txt 63956
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS64098.txt 64098
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS131270.txt 131270
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS132331.txt 132331
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS132405.txt 132405
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS133612.txt 133612
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS133934.txt 133934
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS134697.txt 134697
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS135294.txt 135294
+python3 run.py MEGAPORTSYD_week1 data_parsed_TCC/megaport-syd-190401-190407-AS394354.txt 394354
