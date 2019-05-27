@@ -185,6 +185,29 @@ def txttoMemory_new(_path, _collectorName):
 
     return msgList,asesList,prefixesList,data
 
+def txttoMemory_shortlived(_path):
+
+    msg = {}
+    msglist = []
+    path = _path
+
+    with open(path) as fp:
+        line = fp.readline()
+
+        while line:
+            n_as = line.split(";")[0]
+            prefix = line.split(";")[1] +'/'+ line.split(";")[2]
+            time = line.split(";")[3]
+            timestamp1 = line.split(";")[4]
+            aspath = line.split(";")[6]
+            msg = {"as": n_as,"time": time,"aspath": aspath, "timestamp1": timestamp1, "prefix": prefix}
+            msglist.append(msg)
+
+            line = fp.readline()
+
+    return msglist
+
+
 #test if msg is not duplicated
 def isMsgNew(_data, _nas, _msg, _specialCase):
 
@@ -754,6 +777,44 @@ def countStatistics(_msgList, _ASes, _collectorName):
 
     prefix,prefixA,prefixW = prefixIXP(msglist)
     txtIXP(totalMSG,announcement,withdrawn,prefix,prefixA,prefixW,collectorName)
+
+def calculateAA():
+
+    save = 'JPIX_week1/teste.txt'
+    path = ''
+    prefix = ''
+    find = 0
+
+    msglist = txttoMemory_shortlived('JPIX_week1/reporttimeAW-AS4788.txt')
+
+    for i in msglist:
+        prefix = i['prefix']
+        path = ''
+        prefix = ''
+        test = 0
+        find = 0
+        for j in msglist:
+            prefix2 = j['prefix']
+            if i['timestamp1'] < j['timestamp1'] and i['as'] == j['as'] and find == 0:
+                if i['prefix'] == j['prefix']:
+                    prefix = 'sameprefix'
+                else:
+                    test = isAggregate(i['prefix'],j['prefix'])
+                    if test == 1:
+                        prefix = 'dagreg'
+                    if test == 2:
+                        prefix = 'agreg'
+                if i['aspath'] == j['aspath']:
+                    path = 'samepath'
+                else:
+                    path = 'diffpath'
+                if prefix != '':
+                    find = 1
+                    f = open(save, 'a')
+                    f.write(str(i["as"])+';'+str(i["prefix"])+';'+str(i["time"])+';'+str(prefix)+';'+str(path)+'\n')
+                    f.close()
+                    msglist.remove(i)
+
 
 #calculate the time between an announcement and a withdrawn
 def calculateTimeAW(_msgList, _prefixes, _label, _prefixSize, _data, _asn):
@@ -2123,7 +2184,8 @@ def help():
 
 if __name__ == '__main__':
 
-    plotCDFShortLivedEvent('WA', 1, 0, 0)
+    calculateAA()
+    #plotCDFShortLivedEvent('WA', 1, 0, 0)
     #cli()
     #calculateAverageTimebyPrefix("LINIX_010119_070119_new/reporttimeWA.txt")
     #calculateAverageTimebyPrefix("LINIX_080119_140119_new/reporttimeWA.txt")
