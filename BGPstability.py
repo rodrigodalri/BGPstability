@@ -207,7 +207,6 @@ def txttoMemory_shortlived(_path):
 
     return msglist
 
-
 #test if msg is not duplicated
 def isMsgNew(_data, _nas, _msg, _specialCase):
 
@@ -778,14 +777,16 @@ def countStatistics(_msgList, _ASes, _collectorName):
     prefix,prefixA,prefixW = prefixIXP(msglist)
     txtIXP(totalMSG,announcement,withdrawn,prefix,prefixA,prefixW,collectorName)
 
-def calculateAA():
+def calculateAA(_path, _save):
 
-    save = 'JPIX_week1/teste.txt'
+    #save = 'JPIX_week1/teste.txt'
+    save = _save
     path = ''
     prefix = ''
     find = 0
 
-    msglist = txttoMemory_shortlived('JPIX_week1/reporttimeAW-AS4788.txt')
+    #msglist = txttoMemory_shortlived('JPIX_week1/reporttimeAW-AS4788.txt')
+    msglist = txttoMemory_shortlived(_path)
 
     for i in msglist:
         prefix = i['prefix']
@@ -1324,7 +1325,7 @@ def calculateAverageTimebyPrefix(_path):
     save = path.split('/')[0]
 
     f = open(save+'/reportPrefixesWA.txt', 'a+')
-    f.write('\n'+'LINIX_'+'\n')
+    f.write('\n'+'JPIX_'+'\n')
     a,b = wichPrefixHasChanged(path)
     f.write('Number of prefixes: '+str(b)+'\n')
     f.write('averageTimes'+'\n')
@@ -2184,19 +2185,53 @@ def help():
 
 if __name__ == '__main__':
 
-    calculateAA()
-    #plotCDFShortLivedEvent('WA', 1, 0, 0)
+
     #cli()
-    #calculateAverageTimebyPrefix("LINIX_010119_070119_new/reporttimeWA.txt")
-    #calculateAverageTimebyPrefix("LINIX_080119_140119_new/reporttimeWA.txt")
-    #calculateAverageTimebyPrefix("LINIX_150119_210119_new/reporttimeWA.txt")
-    #calculateAverageTimebyPrefix("LINIX_220119_280119_new/reporttimeWA.txt")
+
+    calculateAverageTimebyPrefix("JPIX_week1/reporttimeWA.txt")
+    calculateAverageTimebyPrefix("JPIX_week2/reporttimeWA.txt")
+    calculateAverageTimebyPrefix("JPIX_week3/reporttimeWA.txt")
+
+    #----------------------------------------------------------------------------FALTAM
+
+    #calculateAverageTimebyPrefix("JPIX_week4/reporttimeWA.txt")
+
+    calculateAverageTimebyPrefix("JPIX_week1/reporttimeAW.txt")
+    calculateAverageTimebyPrefix("JPIX_week2/reporttimeAW.txt")
+    calculateAverageTimebyPrefix("JPIX_week3/reporttimeAW.txt")
+    #calculateAverageTimebyPrefix("JPIX_week4/reporttimeAW.txt")
+
+    calculateAverageTimebyPrefix("EQUINIX_week1/reporttimeWA.txt")
+    calculateAverageTimebyPrefix("EQUINIX_week2/reporttimeWA.txt")
+    #calculateAverageTimebyPrefix("EQUINIX_week3/reporttimeWA.txt")
+    #calculateAverageTimebyPrefix("EQUINIX_week4/reporttimeWA.txt")
+    calculateAverageTimebyPrefix("EQUINIX_week1/reporttimeAW.txt")
+    calculateAverageTimebyPrefix("EQUINIX_week2/reporttimeAW.txt")
+    #calculateAverageTimebyPrefix("EQUINIX_week3/reporttimeAW.txt")
+    #calculateAverageTimebyPrefix("EQUINIX_week4/reporttimeAW.txt")
+
     #diffTable()
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeAW",0.25,0)
-    #findPrefixThreshold("LINIX_010119_070119_new","LINIX_010119_070119_new/reporttimeWA",0.25,1)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeAW",0.25,0)
-    #findPrefixThreshold("LINIX_080119_140119_new","LINIX_080119_140119_new/reporttimeWA",0.25,1)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeAW",0.25,0)
-    #findPrefixThreshold("LINIX_150119_210119_new","LINIX_150119_210119_new/reporttimeWA",0.25,1)
-    #findPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeAW",0.25,0)
-    #indPrefixThreshold("LINIX_220119_280119_new","LINIX_220119_280119_new/reporttimeWA",0.25,1)
+
+    #findPrefixThreshold("JPIX_week1","JPIX_week1/reporttimeAW",1,0)
+    #findPrefixThreshold("JPIX_week1","JPIX_week1/reporttimeWA",1,1)
+    #findPrefixThreshold("JPIX_week2","JPIX_week2/reporttimeAW",1,0)
+    #findPrefixThreshold("JPIX_week2","JPIX_week2/reporttimeWA",1,1)
+    #findPrefixThreshold("JPIX_week3","JPIX_week3/reporttimeAW",1,0)
+    #findPrefixThreshold("JPIX_week3","JPIX_week3/reporttimeWA",1,1)
+    #findPrefixThreshold("JPIX_week4","JPIX_week4/reporttimeAW",1,0)
+    #findPrefixThreshold("JPIX_week4","JPIX_week4/reporttimeWA",1,1)
+
+    #findPrefixThreshold("EQUINIX_week1","EQUINIX_week1/reporttimeAW",1,0)
+    #findPrefixThreshold("EQUINIX_week1","EQUINIX_week1/reporttimeWA",1,1)
+    #findPrefixThreshold("EQUINIX_week2","EQUINIX_week2/reporttimeAW",1,0)
+    #findPrefixThreshold("EQUINIX_week2","EQUINIX_week2/reporttimeWA",1,1)
+    #findPrefixThreshold("EQUINIX_week3","EQUINIX_week3/reporttimeAW",1,0)
+    #findPrefixThreshold("EQUINIX_week3","EQUINIX_week3/reporttimeWA",1,1)
+    #findPrefixThreshold("EQUINIX_week4","EQUINIX_week4/reporttimeAW",1,0)
+    #findPrefixThreshold("EQUINIX_week4","EQUINIX_week4/reporttimeWA",1,1)
+
+
+
+    #calculateAA('JPIX_week1/reporttimeAW-AS4788.txt', 'JPIX_week1/teste.txt')
+
+    #plotCDFShortLivedEvent('WA', 1, 0, 0)
