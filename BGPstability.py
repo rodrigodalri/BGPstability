@@ -1380,7 +1380,7 @@ def diffTable():
     listPrefix3 = []
     listPrefix4 = []
 
-    with open('LINIX_010119_070119_new/reportPrefixesAW.txt') as fp:
+    with open('EQUINIX_week1/reportPrefixesAW.txt') as fp:
         line = fp.readline()
         line = fp.readline()
         tamanho = line.split(': ')[1]
@@ -1390,7 +1390,7 @@ def diffTable():
             listPrefix1.append(line.split(':')[0])
             line = fp.readline()
 
-    with open('LINIX_080119_140119_new/reportPrefixesAW.txt') as fp:
+    with open('EQUINIX_week2/reportPrefixesAW.txt') as fp:
         line = fp.readline()
         line = fp.readline()
         tamanho = line.split(': ')[1]
@@ -1400,7 +1400,7 @@ def diffTable():
             listPrefix2.append(line.split(':')[0])
             line = fp.readline()
 
-    with open('LINIX_150119_210119_new/reportPrefixesAW.txt') as fp:
+    with open('EQUINIX_week3/reportPrefixesAW.txt') as fp:
         line = fp.readline()
         line = fp.readline()
         tamanho = line.split(': ')[1]
@@ -1410,7 +1410,7 @@ def diffTable():
             listPrefix3.append(line.split(':')[0])
             line = fp.readline()
 
-    with open('LINIX_220119_280119_new/reportPrefixesAW.txt') as fp:
+    with open('EQUINIX_week4/reportPrefixesWA.txt') as fp:
         line = fp.readline()
         line = fp.readline()
         tamanho = line.split(': ')[1]
@@ -1764,10 +1764,10 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
                         timeList4.append(time)
                     line = fp4.readline()
 
-    pylab.plot(np.sort(timeList1),np.arange(len(timeList1))/float(len(timeList1)-1), color='SkyBlue', label="010119-070119 - "+ str(len(timeList1)),  linewidth=2, linestyle='-')
-    pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), color='IndianRed', label="080119-140119 - "+ str(len(timeList2)),  linewidth=2, linestyle='--')
-    pylab.plot(np.sort(timeList3),np.arange(len(timeList3))/float(len(timeList3)-1), color='Chocolate', label="150119-210119 - "+ str(len(timeList3)),  linewidth=2, linestyle='-.')
-    pylab.plot(np.sort(timeList4),np.arange(len(timeList4))/float(len(timeList4)-1), color='Orange', label="220119-280119 - "+ str(len(timeList4)),  linewidth=2, linestyle=':')
+    pylab.plot(np.sort(timeList1),np.arange(len(timeList1))/float(len(timeList1)-1), color='SkyBlue', label="0104119-070419 - "+ str(len(timeList1)),  linewidth=2, linestyle='-')
+    pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), color='IndianRed', label="080419-140419 - "+ str(len(timeList2)),  linewidth=2, linestyle='--')
+    pylab.plot(np.sort(timeList3),np.arange(len(timeList3))/float(len(timeList3)-1), color='Chocolate', label="150419-210419 - "+ str(len(timeList3)),  linewidth=2, linestyle='-.')
+    pylab.plot(np.sort(timeList4),np.arange(len(timeList4))/float(len(timeList4)-1), color='Orange', label="220419-280419 - "+ str(len(timeList4)),  linewidth=2, linestyle=':')
     pylab.title("Time between " + name, loc='center')
     pylab.ylabel("Frequency", fontsize=10)
     pylab.xlabel("Time (min)", fontsize=10)
@@ -2259,7 +2259,7 @@ if __name__ == '__main__':
     #findPrefixThreshold("EQUINIX_week4","EQUINIX_week4/reporttimeAW",1,0)
     #findPrefixThreshold("EQUINIX_week4","EQUINIX_week4/reporttimeWA",1,1)
 
-    #diffTable()
+    diffTable()
 
     #calculateAA('JPIX_week1/reportPrefixThreshold-1AW-NEW2.txt', 'JPIX_week1/ShortLivedEvents_new.txt')
     #calculateAA('JPIX_week2/reportPrefixThreshold-1AW-NEW2.txt', 'JPIX_week2/ShortLivedEvents_new.txt')
@@ -2272,10 +2272,6 @@ if __name__ == '__main__':
     #calculateAA('EQUINIX_week4/reportPrefixThreshold-1AW-NEW2.txt', 'EQUINIX_week4/ShortLivedEvents_new.txt')
 
 
-
-
-
-
     #plotCDF("WA",0,0,0,"JPIX")
     #plotCDF("AW",0,0,0,"JPIX")
     #plotCDF("WA",0,0,0,"EQUINIX")
@@ -2285,7 +2281,7 @@ if __name__ == '__main__':
     #plotCDFShortLivedEvent("JPIX_week2", 1, 0, 0)
     #plotCDFShortLivedEvent("JPIX_week3", 1, 0, 0)
     #plotCDFShortLivedEvent("JPIX_week4", 1, 0, 0)
-    plotCDFShortLivedEvent("EQUINIX_week1", 1, 0, 0)
-    plotCDFShortLivedEvent("EQUINIX_week2", 1, 0, 0)
-    plotCDFShortLivedEvent("EQUINIX_week3", 1, 0, 0)
-    plotCDFShortLivedEvent("EQUINIX_week4", 1, 0, 0)
+    #plotCDFShortLivedEvent("EQUINIX_week1", 1, 0, 0)
+    #plotCDFShortLivedEvent("EQUINIX_week2", 1, 0, 0)
+    #plotCDFShortLivedEvent("EQUINIX_week3", 1, 0, 0)
+    #plotCDFShortLivedEvent("EQUINIX_week4", 1, 0, 0)
