@@ -1,0 +1,166 @@
+4788;103.121.188.0/24;3 days, 3:26:21;sameprefix;diffpath
+4788;45.125.50.0/24;0:54:32;sameprefix;samepath
+4788;144.48.140.0/24;4 days, 10:17:09;sameprefix;samepath
+4788;2c0f:f918::/32;1:08:42;sameprefix;samepath
+4788;103.71.155.0/24;23:47:26;sameprefix;samepath
+4788;103.70.224.0/24;1 day, 16:58:33;sameprefix;samepath
+4788;119.110.231.0/24;2:28:35;sameprefix;samepath
+4788;2001:df5:e000::/48;0:01:07;sameprefix;samepath
+4788;61.5.129.0/24;10:29:40;sameprefix;samepath
+4788;103.105.172.0/22;0:34:44;dagreg;samepath
+4788;43.255.30.0/24;1 day, 4:31:59;sameprefix;samepath
+4788;2001:df0:427::/48;0:00:02;sameprefix;samepath
+4788;103.255.178.0/24;2 days, 2:50:46;sameprefix;samepath
+4788;45.115.238.0/23;2 days, 22:40:16;sameprefix;samepath
+4788;45.125.50.0/24;0:06:07;sameprefix;samepath
+4788;223.27.197.0/24;0:47:54;sameprefix;samepath
+4788;45.125.50.0/24;0:01:39;sameprefix;samepath
+4788;223.27.197.0/24;15:59:01;sameprefix;samepath
+4788;2c0f:f918::/32;0:01:33;sameprefix;samepath
+4788;45.125.50.0/24;1 day, 3:22:06;sameprefix;samepath
+4788;2c0f:f918::/32;17:32:48;sameprefix;samepath
+4788;42.152.0.0/14;0:00:32;dagreg;diffpath
+4788;203.114.68.0/24;5:39:51;sameprefix;samepath
+4788;61.5.129.0/24;6:02:03;sameprefix;samepath
+4788;61.5.129.0/24;0:03:43;sameprefix;samepath
+4788;43.255.30.0/24;0:03:35;sameprefix;samepath
+4788;119.110.231.0/24;1:40:40;sameprefix;samepath
+4788;223.27.197.0/24;3 days, 6:48:33;sameprefix;diffpath
+4788;119.110.231.0/24;3:19:19;sameprefix;samepath
+4788;61.5.129.0/24;0:01:55;sameprefix;samepath
+4788;2c0f:f918::/32;2:27:39;sameprefix;samepath
+4788;203.114.68.0/24;0:52:03;sameprefix;samepath
+4788;203.114.68.0/24;1:28:38;sameprefix;samepath
+4788;2c0f:f918::/32;0:18:32;sameprefix;samepath
+4788;2c0f:f918::/32;0:55:14;sameprefix;samepath
+4788;2c0f:f918::/32;2:39:38;sameprefix;samepath
+4788;119.110.231.0/24;0:04:39;sameprefix;samepath
+4788;119.110.231.0/24;2:24:23;sameprefix;samepath
+4788;103.55.33.0/24;1:13:07;sameprefix;samepath
+4788;39.32.128.0/17;4 days, 21:39:47;sameprefix;samepath
+4788;103.55.33.0/24;1 day, 4:59:32;sameprefix;samepath
+4788;119.110.231.0/24;14:07:01;sameprefix;samepath
+4788;61.5.129.0/24;14:24:31;sameprefix;samepath
+4788;45.125.50.0/24;0:45:58;sameprefix;samepath
+4788;45.125.50.0/24;0:44:30;sameprefix;samepath
+4788;45.125.50.0/24;0:38:56;sameprefix;samepath
+4788;45.125.50.0/24;0:42:32;sameprefix;samepath
+4788;196.49.9.0/24;1:04:41;sameprefix;samepath
+4788;118.67.200.0/22;22:24:24;sameprefix;samepath
+4788;2404:8980::/32;0:00:29;sameprefix;samepath
+4788;2404:8980::/32;0:00:23;sameprefix;samepath
+4788;45.125.50.0/24;1:49:37;sameprefix;samepath
+4788;119.110.231.0/24;0:00:03;sameprefix;samepath
+4788;103.100.103.0/24;0:03:52;sameprefix;diffpath
+4788;103.100.103.0/24;2 days, 10:19:55;sameprefix;diffpath
+4788;2c0f:f918::/32;3 days, 6:06:12;sameprefix;samepath
+4788;2400:cb00:178::/48;3 days, 4:08:56;sameprefix;diffpath
+4788;103.55.33.0/24;2 days, 17:27:41;sameprefix;samepath
+4788;2400:9800:6::/48;21:39:33;sameprefix;samepath
+4788;2400:9800:4::/48;21:39:33;sameprefix;samepath
+4788;2400:9800:5::/48;21:39:33;sameprefix;samepath
+4788;2404:8980::/32;7:55:35;sameprefix;samepath
+4788;2404:8980::/32;0:34:31;sameprefix;samepath
+4788;122.248.105.0/24;0:03:59;sameprefix;diffpath
+4788;103.112.240.0/22;8:04:28;dagreg;samepath
+4788;45.115.238.0/23;0:00:33;sameprefix;samepath
+4788;2404:8980::/32;6:49:06;sameprefix;samepath
+4788;118.67.204.0/22;15:48:16;sameprefix;samepath
+4788;2404:8980::/32;0:00:10;sameprefix;samepath
+4788;103.42.208.0/22;0:00:04;sameprefix;samepath
+4788;2404:8980::/32;0:00:02;sameprefix;samepath
+4788;2404:8980::/32;0:00:19;sameprefix;samepath
+4788;2404:8980::/32;0:06:23;sameprefix;samepath
+4788;118.67.204.0/22;1:38:15;sameprefix;samepath
+4788;103.123.113.0/24;0:08:18;sameprefix;samepath
+4788;223.27.197.0/24;0:03:54;sameprefix;samepath
+4788;103.121.188.0/24;0:15:05;sameprefix;samepath
+4788;203.81.172.0/22;1:07:21;sameprefix;diffpath
+4788;203.81.172.0/22;1:56:29;sameprefix;samepath
+4788;203.81.172.0/22;1:54:23;sameprefix;samepath
+4788;103.71.155.0/24;0:01:33;sameprefix;samepath
+4788;2c0f:f918::/32;0:14:01;sameprefix;samepath
+4788;2c0f:f918::/32;12:05:55;sameprefix;samepath
+4788;103.121.188.0/24;3 days, 3:26:21;sameprefix;diffpath
+4788;45.125.50.0/24;0:54:32;sameprefix;samepath
+4788;144.48.140.0/24;4 days, 10:17:09;sameprefix;samepath
+4788;2c0f:f918::/32;1:08:42;sameprefix;samepath
+4788;103.71.155.0/24;23:47:26;sameprefix;samepath
+4788;103.70.224.0/24;1 day, 16:58:33;sameprefix;samepath
+4788;119.110.231.0/24;2:28:35;sameprefix;samepath
+4788;2001:df5:e000::/48;0:01:07;sameprefix;samepath
+4788;61.5.129.0/24;10:29:40;sameprefix;samepath
+4788;103.105.172.0/22;0:34:44;dagreg;samepath
+4788;43.255.30.0/24;1 day, 4:31:59;sameprefix;samepath
+4788;2001:df0:427::/48;0:00:02;sameprefix;samepath
+4788;103.255.178.0/24;2 days, 2:50:46;sameprefix;samepath
+4788;45.115.238.0/23;2 days, 22:40:16;sameprefix;samepath
+4788;45.125.50.0/24;0:06:07;sameprefix;samepath
+4788;223.27.197.0/24;0:47:54;sameprefix;samepath
+4788;45.125.50.0/24;0:01:39;sameprefix;samepath
+4788;223.27.197.0/24;15:59:01;sameprefix;samepath
+4788;2c0f:f918::/32;0:01:33;sameprefix;samepath
+4788;45.125.50.0/24;1 day, 3:22:06;sameprefix;samepath
+4788;2c0f:f918::/32;17:32:48;sameprefix;samepath
+4788;42.152.0.0/14;0:00:32;dagreg;diffpath
+4788;203.114.68.0/24;5:39:51;sameprefix;samepath
+4788;61.5.129.0/24;6:02:03;sameprefix;samepath
+4788;61.5.129.0/24;0:03:43;sameprefix;samepath
+4788;43.255.30.0/24;0:03:35;sameprefix;samepath
+4788;119.110.231.0/24;1:40:40;sameprefix;samepath
+4788;223.27.197.0/24;3 days, 6:48:33;sameprefix;diffpath
+4788;119.110.231.0/24;3:19:19;sameprefix;samepath
+4788;61.5.129.0/24;0:01:55;sameprefix;samepath
+4788;2c0f:f918::/32;2:27:39;sameprefix;samepath
+4788;203.114.68.0/24;0:52:03;sameprefix;samepath
+4788;203.114.68.0/24;1:28:38;sameprefix;samepath
+4788;2c0f:f918::/32;0:18:32;sameprefix;samepath
+4788;2c0f:f918::/32;0:55:14;sameprefix;samepath
+4788;2c0f:f918::/32;2:39:38;sameprefix;samepath
+4788;119.110.231.0/24;0:04:39;sameprefix;samepath
+4788;119.110.231.0/24;2:24:23;sameprefix;samepath
+4788;103.55.33.0/24;1:13:07;sameprefix;samepath
+4788;39.32.128.0/17;4 days, 21:39:47;sameprefix;samepath
+4788;103.55.33.0/24;1 day, 4:59:32;sameprefix;samepath
+4788;119.110.231.0/24;14:07:01;sameprefix;samepath
+4788;61.5.129.0/24;14:24:31;sameprefix;samepath
+4788;45.125.50.0/24;0:45:58;sameprefix;samepath
+4788;45.125.50.0/24;0:44:30;sameprefix;samepath
+4788;45.125.50.0/24;0:38:56;sameprefix;samepath
+4788;45.125.50.0/24;0:42:32;sameprefix;samepath
+4788;196.49.9.0/24;1:04:41;sameprefix;samepath
+4788;118.67.200.0/22;22:24:24;sameprefix;samepath
+4788;2404:8980::/32;0:00:29;sameprefix;samepath
+4788;2404:8980::/32;0:00:23;sameprefix;samepath
+4788;45.125.50.0/24;1:49:37;sameprefix;samepath
+4788;119.110.231.0/24;0:00:03;sameprefix;samepath
+4788;103.100.103.0/24;0:03:52;sameprefix;diffpath
+4788;103.100.103.0/24;2 days, 10:19:55;sameprefix;diffpath
+4788;2c0f:f918::/32;3 days, 6:06:12;sameprefix;samepath
+4788;2400:cb00:178::/48;3 days, 4:08:56;sameprefix;diffpath
+4788;103.55.33.0/24;2 days, 17:27:41;sameprefix;samepath
+4788;2400:9800:6::/48;21:39:33;sameprefix;samepath
+4788;2400:9800:4::/48;21:39:33;sameprefix;samepath
+4788;2400:9800:5::/48;21:39:33;sameprefix;samepath
+4788;2404:8980::/32;7:55:35;sameprefix;samepath
+4788;2404:8980::/32;0:34:31;sameprefix;samepath
+4788;122.248.105.0/24;0:03:59;sameprefix;diffpath
+4788;103.112.240.0/22;8:04:28;dagreg;samepath
+4788;45.115.238.0/23;0:00:33;sameprefix;samepath
+4788;2404:8980::/32;6:49:06;sameprefix;samepath
+4788;118.67.204.0/22;15:48:16;sameprefix;samepath
+4788;2404:8980::/32;0:00:10;sameprefix;samepath
+4788;103.42.208.0/22;0:00:04;sameprefix;samepath
+4788;2404:8980::/32;0:00:02;sameprefix;samepath
+4788;2404:8980::/32;0:00:19;sameprefix;samepath
+4788;2404:8980::/32;0:06:23;sameprefix;samepath
+4788;118.67.204.0/22;1:38:15;sameprefix;samepath
+4788;103.123.113.0/24;0:08:18;sameprefix;samepath
+4788;223.27.197.0/24;0:03:54;sameprefix;samepath
+4788;103.121.188.0/24;0:15:05;sameprefix;samepath
+4788;203.81.172.0/22;1:07:21;sameprefix;diffpath
+4788;203.81.172.0/22;1:56:29;sameprefix;samepath
+4788;203.81.172.0/22;1:54:23;sameprefix;samepath
+4788;103.71.155.0/24;0:01:33;sameprefix;samepath
+4788;2c0f:f918::/32;0:14:01;sameprefix;samepath
+4788;2c0f:f918::/32;12:05:55;sameprefix;samepath

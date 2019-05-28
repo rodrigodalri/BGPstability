@@ -195,11 +195,12 @@ def txttoMemory_shortlived(_path):
         line = fp.readline()
 
         while line:
+            #print(line)
             n_as = line.split(";")[0]
-            prefix = line.split(";")[1] +'/'+ line.split(";")[2]
-            time = line.split(";")[3]
-            timestamp1 = line.split(";")[4]
-            aspath = line.split(";")[6]
+            prefix = line.split(";")[1]
+            time = line.split(";")[2]
+            timestamp1 = line.split(";")[3]
+            aspath = line.split(";")[5]
             msg = {"as": n_as,"time": time,"aspath": aspath, "timestamp1": timestamp1, "prefix": prefix}
             msglist.append(msg)
 
@@ -787,8 +788,9 @@ def calculateAA(_path, _save):
 
     #msglist = txttoMemory_shortlived('JPIX_week1/reporttimeAW-AS4788.txt')
     msglist = txttoMemory_shortlived(_path)
-
+    print(save)
     for i in msglist:
+
         prefix = i['prefix']
         path = ''
         prefix = ''
@@ -797,6 +799,7 @@ def calculateAA(_path, _save):
         for j in msglist:
             prefix2 = j['prefix']
             if i['timestamp1'] < j['timestamp1'] and i['as'] == j['as'] and find == 0:
+                #print('entrou')
                 if i['prefix'] == j['prefix']:
                     prefix = 'sameprefix'
                 else:
@@ -811,6 +814,7 @@ def calculateAA(_path, _save):
                     path = 'diffpath'
                 if prefix != '':
                     find = 1
+
                     f = open(save, 'a')
                     f.write(str(i["as"])+';'+str(i["prefix"])+';'+str(i["time"])+';'+str(prefix)+';'+str(path)+'\n')
                     f.close()
@@ -1203,7 +1207,7 @@ def findPrefixThreshold(_label, _path, _threshold, _type):
         typepath = "AW"
     else:
         typepath = "WA"
-    f = open(label+'/reportPrefixThreshold-'+str(threshold)+typepath+'-NEW.txt', 'a+')
+    f = open(label+'/reportPrefixThreshold-'+str(threshold)+typepath+'-NEW2.txt', 'a+')
 
     with open(path) as fp:
         line = fp.readline()
@@ -1211,6 +1215,9 @@ def findPrefixThreshold(_label, _path, _threshold, _type):
             nAs = line.split(";")[0]
             prefix = line.split(";")[1]+"/"+line.split(";")[2]
             aux = line.split(";")[3]
+            time1 = line.split(";")[4]
+            time2 = line.split(";")[5]
+            aspath = line.split(";")[6]
             try:
                 days = aux.split(",")[0]
                 days = int(days[:1])
@@ -1226,7 +1233,8 @@ def findPrefixThreshold(_label, _path, _threshold, _type):
                 time = s/60 + m + h*60
             #print (time)
             if (time < threshold):
-                f.write(str(prefix)+'\n')
+                prefix.replace('/',';')
+                f.write(str(nAs)+';'+str(prefix)+';'+str(aux)+';'+str(time1)+';'+str(time2)+';'+str(aspath)+'\n')
             line = fp.readline()
 
     f.close()
@@ -1320,11 +1328,12 @@ def mostRepeatedPrefix(_path, _version):
 
 #TODO: menu
 #calculate the average time by each prefix
-def calculateAverageTimebyPrefix(_path):
+def calculateAverageTimebyPrefix(_path, _type):
     path = _path
+    type = _type
     save = path.split('/')[0]
 
-    f = open(save+'/reportPrefixesWA.txt', 'a+')
+    f = open(save+'/reportPrefixes'+type+'.txt', 'a+')
     f.write('\n'+'JPIX_'+'\n')
     a,b = wichPrefixHasChanged(path)
     f.write('Number of prefixes: '+str(b)+'\n')
@@ -1598,22 +1607,23 @@ def plotIXPprefix():
     plt.clf()
 
 #plot times between messages AW and WA
-def plotCDF(_type, _threshold, _as, _prefix):
+def plotCDF(_type, _threshold, _as, _prefix, _path):
 
     type = _type
     threshold = _threshold
     nAs = _as
     prefix = int(_prefix)
+    path = _path
     count = 0
     timeList1 = []
     timeList2 = []
     timeList3 = []
     timeList4 = []
 
-    path1 = "AMSIX_010119_070119_new/reporttime"+type+".txt"
-    path2 = "AMSIX_080119_140119/reporttime"+type+".txt"
-    path3 = "AMSIX_150119_210119/reporttime"+type+".txt"
-    path4 = "AMSIX_220119_280119/reporttime"+type+".txt"
+    path1 = path+"_week1/reporttime"+type+".txt"
+    path2 = path+"_week2/reporttime"+type+".txt"
+    path3 = path+"_week3/reporttime"+type+".txt"
+    path4 = path+"_week4/reporttime"+type+".txt"
 
     if type == "WA":
         name = "a Withdrawn and an Announcement"
@@ -1641,6 +1651,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
             readAS = int(line.split(';')[0])
             readPrefix = int(line.split(';')[2])
             readTime = line.split(';')[3]
+
             try:
                 days = readTime.split(",")[0]
                 days = int(days[:1])
@@ -1649,7 +1660,8 @@ def plotCDF(_type, _threshold, _as, _prefix):
                 m = int(hours.split(":")[1])
                 s = int(hours.split(":")[2])
                 time = s/60 + m + h*60 + days*24*60
-                if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                #print(time)
+                if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
                     timeList1.append(time)
                 line = fp1.readline()
             except:
@@ -1657,7 +1669,8 @@ def plotCDF(_type, _threshold, _as, _prefix):
                 m = int(readTime.split(":")[1])
                 s = int(readTime.split(":")[2])
                 time = s/60 + m + h*60
-                if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                #print(time)
+                if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
                     timeList1.append(time)
                 line = fp1.readline()
 
@@ -1679,7 +1692,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
                     m = int(hours.split(":")[1])
                     s = int(hours.split(":")[2])
                     time = s/60 + m + h*60 + days*24*60
-                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
                         timeList2.append(time)
                     line = fp2.readline()
                 except:
@@ -1687,7 +1700,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
                     m = int(readTime.split(":")[1])
                     s = int(readTime.split(":")[2])
                     time = s/60 + m + h*60
-                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
                         timeList2.append(time)
                     line = fp2.readline()
 
@@ -1709,7 +1722,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
                     m = int(hours.split(":")[1])
                     s = int(hours.split(":")[2])
                     time = s/60 + m + h*60 + days*24*60
-                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
                         timeList3.append(time)
                     line = fp3.readline()
                 except:
@@ -1717,7 +1730,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
                     m = int(readTime.split(":")[1])
                     s = int(readTime.split(":")[2])
                     time = s/60 + m + h*60
-                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
                         timeList3.append(time)
                     line = fp3.readline()
 
@@ -1739,7 +1752,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
                     m = int(hours.split(":")[1])
                     s = int(hours.split(":")[2])
                     time = s/60 + m + h*60 + days*24*60
-                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
                         timeList4.append(time)
                     line = fp4.readline()
                 except:
@@ -1747,7 +1760,7 @@ def plotCDF(_type, _threshold, _as, _prefix):
                     m = int(readTime.split(":")[1])
                     s = int(readTime.split(":")[2])
                     time = s/60 + m + h*60
-                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == '')):
+                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
                         timeList4.append(time)
                     line = fp4.readline()
 
@@ -1762,8 +1775,8 @@ def plotCDF(_type, _threshold, _as, _prefix):
     pylab.xlim(0, )
     pylab.ylim(0, 1)
     pylab.legend(loc="best", fontsize=10)
-    pylab.savefig("AMSIX_newplots/"+save+".pdf", dpi=600)
-    pylab.savefig("AMSIX_newplots/"+save+".png", dpi=600)
+    pylab.savefig("plots_TCC/"+path+"/"+save+".pdf", dpi=600)
+    pylab.savefig("plots_TCC/"+path+"/"+save+".png", dpi=600)
     pylab.clf()
 
 #plot number of changes in aspath
@@ -1827,25 +1840,25 @@ def plotCDFASPrefix():
     pylab.clf()
 
 #plot number of changes in aspath
-def plotCDFShortLivedEvent(_type, _threshold, _as, _prefix):
+def plotCDFShortLivedEvent(_path, _threshold, _as, _prefix):
 
-    type = _type
+    save = _path
     threshold = _threshold
-    nAs = _as
-    prefix = int(_prefix)
+    #nAs = _as
+    #prefix = int(_prefix)
+    nAs = 0
+    prefix = 0
     count = 0
 
-    path1 = "AMSIX_010119_070119_new/reporttime"+type+".txt"
+    path1 = _path+"/ShortLivedEvents_new.txt"
     changesList1 = []
     changesList2 = []
     changesList3 = []
-    #changesList4 = []
-    count = 0
+    changesList4 = []
+    changesList5 = []
+    changesList6 = []
 
-    if type == "WA":
-        save = "ShortLivedEvent-WA"
-    else:
-        save = "ShortLivedEvent-AW"
+    save = save+"AA"
 
     if(threshold != 0):
         save = save+"-"+str(threshold)
@@ -1856,6 +1869,8 @@ def plotCDFShortLivedEvent(_type, _threshold, _as, _prefix):
     if(prefix != 0):
         save = save+"-prefix"+str(prefix)
 
+    aux = 0
+
     with open(path1) as fp:
         days = 0
         readAS = 0
@@ -1863,11 +1878,11 @@ def plotCDFShortLivedEvent(_type, _threshold, _as, _prefix):
         readTime = ''
         line = fp.readline()
         while line:
-            print(line)
             readAS = int(line.split(';')[0])
-            readPrefix = int(line.split(';')[2])
-            readTime = line.split(';')[3]
-            aux = int(line.split(";")[7])
+            readPrefix = line.split(';')[1]
+            readTime = line.split(';')[2]
+            prefix = int(line.split(";")[3])
+            path = int(line.split(";")[4])
             try:
                 days = readTime.split(",")[0]
                 days = int(days[:1])
@@ -1876,44 +1891,64 @@ def plotCDFShortLivedEvent(_type, _threshold, _as, _prefix):
                 m = int(hours.split(":")[1])
                 s = int(hours.split(":")[2])
                 time = s/60 + m + h*60 + days*24*60
-                if (time < threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
-                    if aux == 0:
-                        changesList1.append(time)
-                    if aux == 1:
-                        changesList2.append(time)
-                    if aux == 2:
-                        changesList3.append(time)
+                #if (time < threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                #sameprefix = 0
+                #dagreg = 1
+                #agreg = 2
+                #samepath = 3
+                #diffpath = 4
+                if prefix == 0 and path == 3:
+                    print(entrou)
+                    changesList1.append(time)
+                if prefix == 1 and path == 3:
+                    changesList2.append(time)
+                if prefix == 2 and path == 3:
+                    changesList3.append(time)
+                if prefix == 0 and path == 4:
+                    changesList4.append(time)
+                if prefix == 1 and path == 4:
+                    changesList5.append(time)
+                if prefix == 2 and path == 4:
+                    changesList6.append(time)
                 line = fp.readline()
             except:
                 h = int(readTime.split(":")[0])
                 m = int(readTime.split(":")[1])
                 s = int(readTime.split(":")[2])
                 time = s/60 + m + h*60
-                if (time < threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
-                    if aux == 0:
-                        changesList1.append(time)
-                    if aux == 1:
-                        changesList2.append(time)
-                    if aux == 2:
-                        changesList3.append(time)
+                #if (time < threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                if prefix == 0 and path == 3:
+                    changesList1.append(time)
+                if prefix == 1 and path == 3:
+                    changesList2.append(time)
+                if prefix == 2 and path == 3:
+                    changesList3.append(time)
+                if prefix == 0 and path == 4:
+                    changesList4.append(time)
+                if prefix == 1 and path == 4:
+                    changesList5.append(time)
+                if prefix == 2 and path == 4:
+                    changesList6.append(time)
                 line = fp.readline()
         line = fp.readline()
 
-    pylab.plot(np.sort(changesList1),np.arange(len(changesList1))/float(len(changesList1)-1), color='SkyBlue', label='exact match - ' + str(len(changesList1)),  linewidth=2, linestyle='-')
-    pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), color='IndianRed', label='disaggregation - ' + str(len(changesList2)),  linewidth=2, linestyle='--')
-    pylab.plot(np.sort(changesList3),np.arange(len(changesList3))/float(len(changesList3)-1), color='Chocolate', label='aggregation - ' + str(len(changesList3)),  linewidth=2, linestyle='-.')
-    #pylab.plot(np.sort(changesList4),np.arange(len(changesList4))/float(len(changesList4)-1), color='Orange', label='DECIX_010119_070119 - ' + str(len(changesList4)),  linewidth=2, linestyle=':')
-    pylab.title(save, loc='center')
+    pylab.plot(np.sort(changesList1),np.arange(len(changesList1))/float(len(changesList1)-1), color='SkyBlue', label='exact_match / exact_path - ' + str(len(changesList1)),  linewidth=2, linestyle='-')
+    pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), color='IndianRed', label='disaggregation / exact_path - ' + str(len(changesList2)),  linewidth=2, linestyle='--')
+    pylab.plot(np.sort(changesList3),np.arange(len(changesList3))/float(len(changesList3)-1), color='Chocolate', label='aggregation / exact_path - ' + str(len(changesList3)),  linewidth=2, linestyle='-.')
+    pylab.plot(np.sort(changesList4),np.arange(len(changesList4))/float(len(changesList4)-1), color='palegreen', label='exact_match / diff_path - ' + str(len(changesList4)),  linewidth=2, linestyle='-')
+    pylab.plot(np.sort(changesList5),np.arange(len(changesList5))/float(len(changesList5)-1), color='plum', label='disaggregation / diff_path - ' + str(len(changesList5)),  linewidth=2, linestyle='--')
+    pylab.plot(np.sort(changesList6),np.arange(len(changesList6))/float(len(changesList6)-1), color='grey', label='aggregation / diff_path - ' + str(len(changesList6)),  linewidth=2, linestyle='-.')
+    pylab.title("Short Lived Events", loc='center')
     pylab.ylabel("Frequency", fontsize=10)
     pylab.xlabel("Time (min)", fontsize=10)
     pylab.grid(True)
-    #plt.xticks(np.arange(min(changesList2), max(changesList2)+1, 1.0))
+    #plt.xticks(np.arange(min(changesList1), max(changesList1)+1, 1.0))
     pylab.xlim(0, )
     pylab.ylim(0, 1)
-    pylab.legend(loc="best", fontsize=12)
-    plt.show()
-    #pylab.savefig(save+".pdf", dpi=600)
-    #pylab.savefig(save+".png", dpi=600)
+    pylab.legend(loc="best", fontsize=8)
+    #plt.show()
+    pylab.savefig("plots_TCC/EQUINIX/"+save+".pdf", dpi=600)
+    pylab.savefig("plots_TCC/EQUINIX/"+save+".png", dpi=600)
     pylab.clf()
 
 #TODO fix
@@ -2188,29 +2223,23 @@ if __name__ == '__main__':
 
     #cli()
 
-    calculateAverageTimebyPrefix("JPIX_week1/reporttimeWA.txt")
-    calculateAverageTimebyPrefix("JPIX_week2/reporttimeWA.txt")
-    calculateAverageTimebyPrefix("JPIX_week3/reporttimeWA.txt")
+    #calculateAverageTimebyPrefix("JPIX_week1/reporttimeWA.txt", "WA")
+    #calculateAverageTimebyPrefix("JPIX_week2/reporttimeWA.txt", "WA")
+    #calculateAverageTimebyPrefix("JPIX_week3/reporttimeWA.txt", "WA")
+    #calculateAverageTimebyPrefix("JPIX_week4/reporttimeWA.txt", "WA")
+    #calculateAverageTimebyPrefix("JPIX_week1/reporttimeAW.txt", "AW")
+    #calculateAverageTimebyPrefix("JPIX_week2/reporttimeAW.txt", "AW")
+    #calculateAverageTimebyPrefix("JPIX_week3/reporttimeAW.txt", "AW")
+    #calculateAverageTimebyPrefix("JPIX_week4/reporttimeAW.txt", "AW")
 
-    #----------------------------------------------------------------------------FALTAM
-
-    #calculateAverageTimebyPrefix("JPIX_week4/reporttimeWA.txt")
-
-    calculateAverageTimebyPrefix("JPIX_week1/reporttimeAW.txt")
-    calculateAverageTimebyPrefix("JPIX_week2/reporttimeAW.txt")
-    calculateAverageTimebyPrefix("JPIX_week3/reporttimeAW.txt")
-    #calculateAverageTimebyPrefix("JPIX_week4/reporttimeAW.txt")
-
-    calculateAverageTimebyPrefix("EQUINIX_week1/reporttimeWA.txt")
-    calculateAverageTimebyPrefix("EQUINIX_week2/reporttimeWA.txt")
-    #calculateAverageTimebyPrefix("EQUINIX_week3/reporttimeWA.txt")
-    #calculateAverageTimebyPrefix("EQUINIX_week4/reporttimeWA.txt")
-    calculateAverageTimebyPrefix("EQUINIX_week1/reporttimeAW.txt")
-    calculateAverageTimebyPrefix("EQUINIX_week2/reporttimeAW.txt")
-    #calculateAverageTimebyPrefix("EQUINIX_week3/reporttimeAW.txt")
-    #calculateAverageTimebyPrefix("EQUINIX_week4/reporttimeAW.txt")
-
-    #diffTable()
+    #calculateAverageTimebyPrefix("EQUINIX_week1/reporttimeWA.txt", "WA")
+    #calculateAverageTimebyPrefix("EQUINIX_week2/reporttimeWA.txt", "WA")
+    #calculateAverageTimebyPrefix("EQUINIX_week3/reporttimeWA.txt", "WA")
+    #calculateAverageTimebyPrefix("EQUINIX_week4/reporttimeWA.txt", "WA")
+    #calculateAverageTimebyPrefix("EQUINIX_week1/reporttimeAW.txt", "AW")
+    #calculateAverageTimebyPrefix("EQUINIX_week2/reporttimeAW.txt", "AW")
+    #calculateAverageTimebyPrefix("EQUINIX_week3/reporttimeAW.txt", "AW")
+    #calculateAverageTimebyPrefix("EQUINIX_week4/reporttimeAW.txt", "AW")
 
     #findPrefixThreshold("JPIX_week1","JPIX_week1/reporttimeAW",1,0)
     #findPrefixThreshold("JPIX_week1","JPIX_week1/reporttimeWA",1,1)
@@ -2230,8 +2259,33 @@ if __name__ == '__main__':
     #findPrefixThreshold("EQUINIX_week4","EQUINIX_week4/reporttimeAW",1,0)
     #findPrefixThreshold("EQUINIX_week4","EQUINIX_week4/reporttimeWA",1,1)
 
+    #diffTable()
+
+    #calculateAA('JPIX_week1/reportPrefixThreshold-1AW-NEW2.txt', 'JPIX_week1/ShortLivedEvents_new.txt')
+    #calculateAA('JPIX_week2/reportPrefixThreshold-1AW-NEW2.txt', 'JPIX_week2/ShortLivedEvents_new.txt')
+    #calculateAA('JPIX_week3/reportPrefixThreshold-1AW-NEW2.txt', 'JPIX_week3/ShortLivedEvents_new.txt')
+    #calculateAA('JPIX_week4/reportPrefixThreshold-1AW-NEW2.txt', 'JPIX_week4/ShortLivedEvents_new.txt')
+
+    #calculateAA('EQUINIX_week1/reportPrefixThreshold-1AW-NEW2.txt', 'EQUINIX_week1/ShortLivedEvents_new.txt')
+    #calculateAA('EQUINIX_week2/reportPrefixThreshold-1AW-NEW2.txt', 'EQUINIX_week2/ShortLivedEvents_new.txt')
+    #calculateAA('EQUINIX_week3/reportPrefixThreshold-1AW-NEW2.txt', 'EQUINIX_week3/ShortLivedEvents_new.txt')
+    #calculateAA('EQUINIX_week4/reportPrefixThreshold-1AW-NEW2.txt', 'EQUINIX_week4/ShortLivedEvents_new.txt')
 
 
-    #calculateAA('JPIX_week1/reporttimeAW-AS4788.txt', 'JPIX_week1/teste.txt')
 
-    #plotCDFShortLivedEvent('WA', 1, 0, 0)
+
+
+
+    #plotCDF("WA",0,0,0,"JPIX")
+    #plotCDF("AW",0,0,0,"JPIX")
+    #plotCDF("WA",0,0,0,"EQUINIX")
+    #plotCDF("AW",0,0,0,"EQUINIX")
+
+    #plotCDFShortLivedEvent("JPIX_week1", 1, 0, 0)
+    #plotCDFShortLivedEvent("JPIX_week2", 1, 0, 0)
+    #plotCDFShortLivedEvent("JPIX_week3", 1, 0, 0)
+    #plotCDFShortLivedEvent("JPIX_week4", 1, 0, 0)
+    plotCDFShortLivedEvent("EQUINIX_week1", 1, 0, 0)
+    plotCDFShortLivedEvent("EQUINIX_week2", 1, 0, 0)
+    plotCDFShortLivedEvent("EQUINIX_week3", 1, 0, 0)
+    plotCDFShortLivedEvent("EQUINIX_week4", 1, 0, 0)
