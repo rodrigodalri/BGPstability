@@ -1831,6 +1831,406 @@ def diffTable_collector_ASes():
     #print(six_five)
     #print(six)
 
+def diffTable_collector_ASes_PATH():
+
+    listAS1 = []
+    listAS2 = []
+    listAS3 = []
+    listAS4 = []
+    listAS5 = []
+    #listAS6 = []
+
+    with open('EQUINIX_week1/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS1.append(i)
+            except:
+                listAS1.append(path)
+            line = fp.readline()
+    with open('EQUINIX_week2/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS1.append(i)
+            except:
+                listAS1.append(path)
+            line = fp.readline()
+    with open('EQUINIX_week3/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS1.append(i)
+            except:
+                listAS1.append(path)
+            line = fp.readline()
+    with open('EQUINIX_week4/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS1.append(i)
+            except:
+                listAS1.append(path)
+            line = fp.readline()
+
+    with open('JPIX_week1/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS2.append(i)
+            except:
+                listAS2.append(path)
+            line = fp.readline()
+    with open('JPIX_week2/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS2.append(i)
+            except:
+                listAS2.append(path)
+            line = fp.readline()
+    with open('JPIX_week3/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS2.append(i)
+            except:
+                listAS2.append(path)
+            line = fp.readline()
+    with open('JPIX_week4/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS2.append(i)
+            except:
+                listAS2.append(path)
+            line = fp.readline()
+
+    with open('AMSIX_week1/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS3.append(i)
+            except:
+                listAS3.append(path)
+            line = fp.readline()
+    with open('AMSIX_week2/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS3.append(i)
+            except:
+                listAS3.append(path)
+            line = fp.readline()
+    with open('AMSIX_week3/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS3.append(i)
+            except:
+                listAS3.append(path)
+            line = fp.readline()
+    with open('AMSIX_week4/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS3.append(i)
+            except:
+                listAS3.append(path)
+            line = fp.readline()
+
+    with open('MEGAPORTSYD_week1/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS4.append(i)
+            except:
+                listAS4.append(path)
+            line = fp.readline()
+    with open('MEGAPORTSYD_week2/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS4.append(i)
+            except:
+                listAS4.append(path)
+            line = fp.readline()
+    with open('MEGAPORTSYD_week3/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS4.append(i)
+            except:
+                listAS4.append(path)
+            line = fp.readline()
+    with open('MEGAPORTSYD_week4/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS4.append(i)
+            except:
+                listAS4.append(path)
+            line = fp.readline()
+
+    with open('SCL_week1/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS5.append(i)
+            except:
+                listAS5.append(path)
+            line = fp.readline()
+    with open('SCL_week2/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS5.append(i)
+            except:
+                listAS5.append(path)
+            line = fp.readline()
+    with open('SCL_week3/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS5.append(i)
+            except:
+                listAS5.append(path)
+            line = fp.readline()
+    with open('SCL_week4/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS5.append(i)
+            except:
+                listAS5.append(path)
+            line = fp.readline()
+
+    #with open('NAPAFRICA_week1/reporttimeAW.txt') as fp:
+    #    line = fp.readline()
+    #    while line:
+    #        path = line.split(';')[6]
+    #        path = path[1:-1]
+    #        try:
+    #            ases = path.split(', ')
+    #            for i in ases:
+    #                listAS6.append(i)
+    #        except:
+    #            listAS6.append(path)
+    #        line = fp.readline()
+    #with open('NAPAFRICA_week2/reporttimeAW.txt') as fp:
+    #    line = fp.readline()
+    #    while line:
+    #        path = line.split(';')[6]
+    #        path = path[1:-1]
+    #        try:
+    #            ases = path.split(', ')
+    #            for i in ases:
+    #                listAS6.append(i)
+    #        except:
+    #            listAS6.append(path)
+    #        line = fp.readline()
+    #with open('NAPAFRICA_week3/reporttimeAW.txt') as fp:
+    #    line = fp.readline()
+    #    while line:
+    #        path = line.split(';')[6]
+    #        path = path[1:-1]
+    #        try:
+    #            ases = path.split(', ')
+    #            for i in ases:
+    #                listAS6.append(i)
+    #        except:
+    #            listAS6.append(path)
+    #        line = fp.readline()
+    #with open('NAPAFRICA_week4/reporttimeAW.txt') as fp:
+    #    line = fp.readline()
+    #    while line:
+    #        path = line.split(';')[6]
+    #        path = path[1:-1]
+    #        try:
+    #            ases = path.split(', ')
+    #            for i in ases:
+    #                listAS6.append(i)
+    #        except:
+    #            listAS6.append(path)
+    #        line = fp.readline()
+
+
+    one_total = len(set(listAS1))
+    one_two = len(set(listAS1) - set(listAS2))
+    one_three = len(set(listAS1) - set(listAS3))
+    one_four = len(set(listAS1) - set(listAS4))
+    one_five = len(set(listAS1) - set(listAS5))
+    #one_six = len(set(listAS1) - set(listAS6))
+    one = len(set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5)) #- set(listAS6))
+
+    two_total = len(set(listAS2))
+    two_one = len(set(listAS2) - set(listAS1))
+    two_three = len(set(listAS2) - set(listAS3))
+    two_four = len(set(listAS2) - set(listAS4))
+    two_five = len(set(listAS2) - set(listAS5))
+    #two_six = len(set(listAS2) - set(listAS6))
+    two = len(set(listAS2) - set(listAS1) - set(listAS3) - set(listAS4) - set(listAS5)) # - set(listAS6))
+
+    three_total = len(set(listAS3))
+    three_one = len(set(listAS3) - set(listAS1))
+    three_two = len(set(listAS3) - set(listAS2))
+    three_four = len(set(listAS3) - set(listAS4))
+    three_five = len(set(listAS3) - set(listAS5))
+    #three_six = len(set(listAS3) - set(listAS6))
+    three = len(set(listAS3) - set(listAS1) - set(listAS2) - set(listAS4) - set(listAS5)) # - set(listAS6))
+
+    four_total = len(set(listAS4))
+    four_one = len(set(listAS4) - set(listAS1))
+    four_two = len(set(listAS4) - set(listAS2))
+    four_three = len(set(listAS4) - set(listAS3))
+    four_five = len(set(listAS4) - set(listAS5))
+    #four_six = len(set(listAS4) - set(listAS6))
+    four = len(set(listAS4) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS5)) # - set(listAS6))
+
+    five_total = len(set(listAS5))
+    five_one = len(set(listAS5) - set(listAS1))
+    five_two = len(set(listAS5) - set(listAS2))
+    five_three = len(set(listAS5) - set(listAS3))
+    five_four = len(set(listAS5) - set(listAS4))
+    #five_six = len(set(listAS5) - set(listAS6))
+    five = len(set(listAS5) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4)) # - set(listAS6))
+
+    #six_total = len(set(listAS6))
+    #six_one = len(set(listAS6) - set(listAS1))
+    #six_two = len(set(listAS6) - set(listAS2))
+    #six_three = len(set(listAS6) - set(listAS3))
+    #six_four = len(set(listAS6) - set(listAS4))
+    #six_five = len(set(listAS6) - set(listAS5))
+    #six = len(set(listAS6) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5))
+
+    print(one_total)
+    print(one_two)
+    print(one_three)
+    print(one_four)
+    print(one_five)
+    #print(one_six)
+    print(one)
+
+    print(two_total)
+    print(two_one)
+    print(two_three)
+    print(two_four)
+    print(two_five)
+    #print(two_six)
+    print(two)
+
+    print(three_total)
+    print(three_one)
+    print(three_two)
+    print(three_four)
+    print(three_five)
+    #print(three_six)
+    print(three)
+
+    print(four_total)
+    print(four_one)
+    print(four_two)
+    print(four_three)
+    print(four_five)
+    #print(four_six)
+    print(four)
+
+    print(five_total)
+    print(five_one)
+    print(five_two)
+    print(five_three)
+    print(five_four)
+    #print(five_six)
+    print(five)
+
+    #print(six_total)
+    #print(six_one)
+    #print(six_two)
+    #print(six_three)
+    #print(six_four)
+    #print(six_five)
+    #print(six)
+
 def diffTable_collector():
 
     listPrefix1 = []
@@ -3039,6 +3439,32 @@ if __name__ == '__main__':
     #calculateAA('MEGAPORTSYD_week3/reportPrefixThreshold-1AW.txt', 'MEGAPORTSYD_week3/ShortLivedEvents_new.txt')
     #calculateAA('MEGAPORTSYD_week4/reportPrefixThreshold-1AW.txt', 'MEGAPORTSYD_week4/ShortLivedEvents_new.txt')
 
+    #print("AA - AS6939 - JPIX")
+    #calculateAA('JPIX_week1/reporttimeAW-AS6939.txt', 'JPIX_week1/AS6939_breakdown.txt')
+    #calculateAA('JPIX_week2/reporttimeAW-AS6939.txt', 'JPIX_week2/AS6939_breakdown.txt')
+    #calculateAA('JPIX_week3/reporttimeAW-AS6939.txt', 'JPIX_week3/AS6939_breakdown.txt')
+    #calculateAA('JPIX_week4/reporttimeAW-AS6939.txt', 'JPIX_week4/AS6939_breakdown.txt')
+    #print("AA - AS6939 - EQUINIX")
+    #calculateAA('EQUINIX_week1/reporttimeAW-AS6939.txt', 'EQUINIX_week1/AS6939_breakdown.txt')
+    #calculateAA('EQUINIX_week2/reporttimeAW-AS6939.txt', 'EQUINIX_week2/AS6939_breakdown.txt')
+    #calculateAA('EQUINIX_week3/reporttimeAW-AS6939.txt', 'EQUINIX_week3/AS6939_breakdown.txt')
+    #calculateAA('EQUINIX_week4/reporttimeAW-AS6939.txt', 'EQUINIX_week4/AS6939_breakdown.txt')
+    #print("AA - AS6939 - AMSIX")
+    #calculateAA('AMSIX_week1/reporttimeAW-AS6939.txt', 'AMSIX_week1/AS6939_breakdown.txt')
+    #calculateAA('AMSIX_week2/reporttimeAW-AS6939.txt', 'AMSIX_week2/AS6939_breakdown.txt')
+    #calculateAA('AMSIX_week3/reporttimeAW-AS6939.txt', 'AMSIX_week3/AS6939_breakdown.txt')
+    #calculateAA('AMSIX_week4/reporttimeAW-AS6939.txt', 'AMSIX_week4/AS6939_breakdown.txt')
+    #print("AA - AS6939 - SCL")
+    #calculateAA('SCL_week1/reporttimeAW-AS6939.txt', 'SCL_week1/AS6939_breakdown.txt')
+    #calculateAA('SCL_week2/reporttimeAW-AS6939.txt', 'SCL_week2/AS6939_breakdown.txt')
+    #calculateAA('SCL_week3/reporttimeAW-AS6939.txt', 'SCL_week3/AS6939_breakdown.txt')
+    #calculateAA('SCL_week4/reporttimeAW-AS6939.txt', 'SCL_week4/AS6939_breakdown.txt')
+    #print("AA - AS6939 - MEGAPORTSYD")
+    #calculateAA('MEGAPORTSYD_week1/reporttimeAW-AS6939.txt', 'MEGAPORTSYD_week1/AS6939_breakdown.txt')
+    #calculateAA('MEGAPORTSYD_week2/reporttimeAW-AS6939.txt', 'MEGAPORTSYD_week2/AS6939_breakdown.txt')
+    #calculateAA('MEGAPORTSYD_week3/reporttimeAW-AS6939.txt', 'MEGAPORTSYD_week3/AS6939_breakdown.txt')
+    #calculateAA('MEGAPORTSYD_week4/reporttimeAW-AS6939.txt', 'MEGAPORTSYD_week4/AS6939_breakdown.txt')
+
     #diffTable()
     #diffTable_collector()
     #diffTable_collector_ASes()
@@ -3119,6 +3545,53 @@ if __name__ == '__main__':
     #highestTimes("SCL_week3/reportPrefixesWA.txt")
     #highestTimes("SCL_week4/reportPrefixesAW.txt")
     #highestTimes("SCL_week4/reportPrefixesWA.txt")
+
+    diffTable_collector_ASes_PATH()
+
+    #---------------------------------------------------------------------------
+
+    #diffTable()
+    #diffTable_collector()
+    #diffTable_collector_ASes()
+
+    #calculateAverageTimebyPrefix("NAPAFRICA_week1/reporttimeWA.txt", "WA")
+    #calculateAverageTimebyPrefix("NAPAFRICA_week2/reporttimeWA.txt", "WA")
+    #calculateAverageTimebyPrefix("NAPAFRICA_week3/reporttimeWA.txt", "WA")
+    #calculateAverageTimebyPrefix("NAPAFRICA_week4/reporttimeWA.txt", "WA")
+    #calculateAverageTimebyPrefix("NAPAFRICA_week1/reporttimeAW.txt", "AW")
+    #calculateAverageTimebyPrefix("NAPAFRICA_week2/reporttimeAW.txt", "AW")
+    #calculateAverageTimebyPrefix("NAPAFRICA_week3/reporttimeAW.txt", "AW")
+    #calculateAverageTimebyPrefix("NAPAFRICA_week4/reporttimeAW.txt", "AW")
+
+    #findPrefixThreshold("NAPAFRICA_week1","NAPAFRICA_week1/reporttimeAW",1,0)
+    #findPrefixThreshold("NAPAFRICA_week1","NAPAFRICA_week1/reporttimeWA",1,1)
+    #findPrefixThreshold("NAPAFRICA_week2","NAPAFRICA_week2/reporttimeAW",1,0)
+    #findPrefixThreshold("NAPAFRICA_week2","NAPAFRICA_week2/reporttimeWA",1,1)
+    #findPrefixThreshold("NAPAFRICA_week3","NAPAFRICA_week3/reporttimeAW",1,0)
+    #findPrefixThreshold("NAPAFRICA_week3","NAPAFRICA_week3/reporttimeWA",1,1)
+    #findPrefixThreshold("NAPAFRICA_week4","NAPAFRICA_week4/reporttimeAW",1,0)
+    #findPrefixThreshold("NAPAFRICA_week4","NAPAFRICA_week4/reporttimeWA",1,1)
+
+    #calculateAA('NAPAFRICA_week1/reportPrefixThreshold-1AW.txt', 'NAPAFRICA_week1/ShortLivedEvents_new.txt')
+    #calculateAA('NAPAFRICA_week2/reportPrefixThreshold-1AW.txt', 'NAPAFRICA_week2/ShortLivedEvents_new.txt')
+    #calculateAA('NAPAFRICA_week3/reportPrefixThreshold-1AW.txt', 'NAPAFRICA_week3/ShortLivedEvents_new.txt')
+    #calculateAA('NAPAFRICA_week4/reportPrefixThreshold-1AW.txt', 'NAPAFRICA_week4/ShortLivedEvents_new.txt')
+
+    #calculateAA('NAPAFRICA_week1/reporttimeAW-AS6939.txt', 'NAPAFRICA_week1/AS6939_breakdown.txt')
+    #calculateAA('NAPAFRICA_week2/reporttimeAW-AS6939.txt', 'NAPAFRICA_week2/AS6939_breakdown.txt')
+    #calculateAA('NAPAFRICA_week3/reporttimeAW-AS6939.txt', 'NAPAFRICA_week3/AS6939_breakdown.txt')
+    #calculateAA('NAPAFRICA_week4/reporttimeAW-AS6939.txt', 'NAPAFRICA_week4/AS6939_breakdown.txt')
+
+    #plotCDF("WA",0,0,0,"NAPAFRICA")
+    #plotCDF("AW",0,0,0,"NAPAFRICA")
+
+    #plotCDF("WA",0,6939,0,"NAPAFRICA")
+    #plotCDF("AW",0,6939,0,"NAPAFRICA")
+
+    #plotCDFShortLivedEvent("NAPAFRICA_week1", 1, 0, 0)
+    #plotCDFShortLivedEvent("NAPAFRICA_week2", 1, 0, 0)
+    #plotCDFShortLivedEvent("NAPAFRICA_week3", 1, 0, 0)
+    #plotCDFShortLivedEvent("NAPAFRICA_week4", 1, 0, 0)
 
     #highestTimes("NAPAFRICA_week1/reportPrefixesAW.txt")
     #highestTimes("NAPAFRICA_week1/reportPrefixesWA.txt")
