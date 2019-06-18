@@ -1300,7 +1300,7 @@ def averageTimeByPrefix(_path, _prefix):
 
     #print(averageTime)
 
-    return averageTime
+    return averageTime,len(timeList)
 
 #return the most repeated prefix of IPv4 or IPv6
 def mostRepeatedPrefix(_path, _version):
@@ -1335,13 +1335,13 @@ def calculateAverageTimebyPrefix(_path, _type):
     save = path.split('/')[0]
 
     f = open(save+'/reportPrefixes'+type+'.txt', 'a+')
-    f.write('\n'+'JPIX_'+'\n')
+    f.write('\n'+'collector_'+'\n')
     a,b = wichPrefixHasChanged(path)
     f.write('Number of prefixes: '+str(b)+'\n')
     f.write('averageTimes'+'\n')
     for i in a:
-        c = averageTimeByPrefix(path,i)
-        f.write(i+': '+str(c)+'\n')
+        c,number = averageTimeByPrefix(path,i)
+        f.write(i+': '+str(c)+';'+str(number)+'\n')
     f.close()
 
 #list the prefixes with the highest times
@@ -1378,7 +1378,6 @@ def highestTimes(_path):
     print(listtimes[len(listtimes)-8])
     print(listtimes[len(listtimes)-9])
     print(listtimes[len(listtimes)-10])
-
 
 def diffTable():
 
@@ -1474,7 +1473,7 @@ def diffTable_collector_ASes():
     listAS3 = []
     listAS4 = []
     listAS5 = []
-    #listAS6 = []
+    listAS6 = []
 
     with open('EQUINIX_week1/reportIXP.txt') as fp:
         line = fp.readline()
@@ -1698,49 +1697,49 @@ def diffTable_collector_ASes():
             line = fp.readline()
             line = fp.readline()
 
-    #with open('NAPAFRICA_week1/reportIXP.txt') as fp:
-        #line = fp.readline()
-        #line = fp.readline()
-        #line = fp.readline()
-        #while line:
-            #listAS6.append(line)
-            #line = fp.readline()
-            #line = fp.readline()
-            #line = fp.readline()
-    #with open('NAPAFRICA_week2/reportIXP.txt') as fp:
-        #line = fp.readline()
-        #line = fp.readline()
-        #line = fp.readline()
-        #while line:
-            #listAS6.append(line)
-            #line = fp.readline()
-            #line = fp.readline()
-            #line = fp.readline()
-    #with open('NAPAFRICA_week3/reportIXP.txt') as fp:
-        #line = fp.readline()
-        #line = fp.readline()
-        #line = fp.readline()
-        #while line:
-            #listAS6.append(line)
-            #line = fp.readline()
-            #line = fp.readline()
-            #line = fp.readline()
-    #with open('NAPAFRICA_week4/reportIXP.txt') as fp:
-        #line = fp.readline()
-        #line = fp.readline()
-        #line = fp.readline()
-        #while line:
-            #listAS6.append(line)
-            #line = fp.readline()
-            #line = fp.readline()
-            #line = fp.readline()
+    with open('NAPAFRICA_week1/reportIXP.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listAS6.append(line)
+            line = fp.readline()
+            line = fp.readline()
+            line = fp.readline()
+    with open('NAPAFRICA_week2/reportIXP.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listAS6.append(line)
+            line = fp.readline()
+            line = fp.readline()
+            line = fp.readline()
+    with open('NAPAFRICA_week3/reportIXP.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listAS6.append(line)
+            line = fp.readline()
+            line = fp.readline()
+            line = fp.readline()
+    with open('NAPAFRICA_week4/reportIXP.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listAS6.append(line)
+            line = fp.readline()
+            line = fp.readline()
+            line = fp.readline()
 
     one_total = len(set(listAS1))
     one_two = len(set(listAS1) - set(listAS2))
     one_three = len(set(listAS1) - set(listAS3))
     one_four = len(set(listAS1) - set(listAS4))
     one_five = len(set(listAS1) - set(listAS5))
-    #one_six = len(set(listAS1) - set(listAS6))
+    one_six = len(set(listAS1) - set(listAS6))
     one = len(set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5)) #- set(listAS6))
 
     two_total = len(set(listAS2))
@@ -1748,7 +1747,7 @@ def diffTable_collector_ASes():
     two_three = len(set(listAS2) - set(listAS3))
     two_four = len(set(listAS2) - set(listAS4))
     two_five = len(set(listAS2) - set(listAS5))
-    #two_six = len(set(listAS2) - set(listAS6))
+    two_six = len(set(listAS2) - set(listAS6))
     two = len(set(listAS2) - set(listAS1) - set(listAS3) - set(listAS4) - set(listAS5)) # - set(listAS6))
 
     three_total = len(set(listAS3))
@@ -1756,7 +1755,7 @@ def diffTable_collector_ASes():
     three_two = len(set(listAS3) - set(listAS2))
     three_four = len(set(listAS3) - set(listAS4))
     three_five = len(set(listAS3) - set(listAS5))
-    #three_six = len(set(listAS3) - set(listAS6))
+    three_six = len(set(listAS3) - set(listAS6))
     three = len(set(listAS3) - set(listAS1) - set(listAS2) - set(listAS4) - set(listAS5)) # - set(listAS6))
 
     four_total = len(set(listAS4))
@@ -1764,7 +1763,7 @@ def diffTable_collector_ASes():
     four_two = len(set(listAS4) - set(listAS2))
     four_three = len(set(listAS4) - set(listAS3))
     four_five = len(set(listAS4) - set(listAS5))
-    #four_six = len(set(listAS4) - set(listAS6))
+    four_six = len(set(listAS4) - set(listAS6))
     four = len(set(listAS4) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS5)) # - set(listAS6))
 
     five_total = len(set(listAS5))
@@ -1772,23 +1771,23 @@ def diffTable_collector_ASes():
     five_two = len(set(listAS5) - set(listAS2))
     five_three = len(set(listAS5) - set(listAS3))
     five_four = len(set(listAS5) - set(listAS4))
-    #five_six = len(set(listAS5) - set(listAS6))
+    five_six = len(set(listAS5) - set(listAS6))
     five = len(set(listAS5) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4)) # - set(listAS6))
 
-    #six_total = len(set(listAS6))
-    #six_one = len(set(listAS6) - set(listAS1))
-    #six_two = len(set(listAS6) - set(listAS2))
-    #six_three = len(set(listAS6) - set(listAS3))
-    #six_four = len(set(listAS6) - set(listAS4))
-    #six_five = len(set(listAS6) - set(listAS5))
-    #six = len(set(listAS6) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5))
+    six_total = len(set(listAS6))
+    six_one = len(set(listAS6) - set(listAS1))
+    six_two = len(set(listAS6) - set(listAS2))
+    six_three = len(set(listAS6) - set(listAS3))
+    six_four = len(set(listAS6) - set(listAS4))
+    six_five = len(set(listAS6) - set(listAS5))
+    six = len(set(listAS6) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5))
 
     print(one_total)
     print(one_two)
     print(one_three)
     print(one_four)
     print(one_five)
-    #print(one_six)
+    print(one_six)
     print(one)
 
     print(two_total)
@@ -1796,7 +1795,7 @@ def diffTable_collector_ASes():
     print(two_three)
     print(two_four)
     print(two_five)
-    #print(two_six)
+    print(two_six)
     print(two)
 
     print(three_total)
@@ -1804,7 +1803,7 @@ def diffTable_collector_ASes():
     print(three_two)
     print(three_four)
     print(three_five)
-    #print(three_six)
+    print(three_six)
     print(three)
 
     print(four_total)
@@ -1812,7 +1811,7 @@ def diffTable_collector_ASes():
     print(four_two)
     print(four_three)
     print(four_five)
-    #print(four_six)
+    print(four_six)
     print(four)
 
     print(five_total)
@@ -1820,16 +1819,16 @@ def diffTable_collector_ASes():
     print(five_two)
     print(five_three)
     print(five_four)
-    #print(five_six)
+    print(five_six)
     print(five)
 
-    #print(six_total)
-    #print(six_one)
-    #print(six_two)
-    #print(six_three)
-    #print(six_four)
-    #print(six_five)
-    #print(six)
+    print(six_total)
+    print(six_one)
+    print(six_two)
+    print(six_three)
+    print(six_four)
+    print(six_five)
+    print(six)
 
 def diffTable_collector_ASes_PATH():
 
@@ -1838,7 +1837,7 @@ def diffTable_collector_ASes_PATH():
     listAS3 = []
     listAS4 = []
     listAS5 = []
-    #listAS6 = []
+    listAS6 = []
 
     with open('EQUINIX_week1/reporttimeAW.txt') as fp:
         line = fp.readline()
@@ -2085,54 +2084,54 @@ def diffTable_collector_ASes_PATH():
                 listAS5.append(path)
             line = fp.readline()
 
-    #with open('NAPAFRICA_week1/reporttimeAW.txt') as fp:
-    #    line = fp.readline()
-    #    while line:
-    #        path = line.split(';')[6]
-    #        path = path[1:-1]
-    #        try:
-    #            ases = path.split(', ')
-    #            for i in ases:
-    #                listAS6.append(i)
-    #        except:
-    #            listAS6.append(path)
-    #        line = fp.readline()
-    #with open('NAPAFRICA_week2/reporttimeAW.txt') as fp:
-    #    line = fp.readline()
-    #    while line:
-    #        path = line.split(';')[6]
-    #        path = path[1:-1]
-    #        try:
-    #            ases = path.split(', ')
-    #            for i in ases:
-    #                listAS6.append(i)
-    #        except:
-    #            listAS6.append(path)
-    #        line = fp.readline()
-    #with open('NAPAFRICA_week3/reporttimeAW.txt') as fp:
-    #    line = fp.readline()
-    #    while line:
-    #        path = line.split(';')[6]
-    #        path = path[1:-1]
-    #        try:
-    #            ases = path.split(', ')
-    #            for i in ases:
-    #                listAS6.append(i)
-    #        except:
-    #            listAS6.append(path)
-    #        line = fp.readline()
-    #with open('NAPAFRICA_week4/reporttimeAW.txt') as fp:
-    #    line = fp.readline()
-    #    while line:
-    #        path = line.split(';')[6]
-    #        path = path[1:-1]
-    #        try:
-    #            ases = path.split(', ')
-    #            for i in ases:
-    #                listAS6.append(i)
-    #        except:
-    #            listAS6.append(path)
-    #        line = fp.readline()
+    with open('NAPAFRICA_week1/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS6.append(i)
+            except:
+                listAS6.append(path)
+            line = fp.readline()
+    with open('NAPAFRICA_week2/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS6.append(i)
+            except:
+                listAS6.append(path)
+            line = fp.readline()
+    with open('NAPAFRICA_week3/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS6.append(i)
+            except:
+                listAS6.append(path)
+            line = fp.readline()
+    with open('NAPAFRICA_week4/reporttimeAW.txt') as fp:
+        line = fp.readline()
+        while line:
+            path = line.split(';')[6]
+            path = path[1:-1]
+            try:
+                ases = path.split(', ')
+                for i in ases:
+                    listAS6.append(i)
+            except:
+                listAS6.append(path)
+            line = fp.readline()
 
 
     one_total = len(set(listAS1))
@@ -2140,7 +2139,7 @@ def diffTable_collector_ASes_PATH():
     one_three = len(set(listAS1) - set(listAS3))
     one_four = len(set(listAS1) - set(listAS4))
     one_five = len(set(listAS1) - set(listAS5))
-    #one_six = len(set(listAS1) - set(listAS6))
+    one_six = len(set(listAS1) - set(listAS6))
     one = len(set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5)) #- set(listAS6))
 
     two_total = len(set(listAS2))
@@ -2148,7 +2147,7 @@ def diffTable_collector_ASes_PATH():
     two_three = len(set(listAS2) - set(listAS3))
     two_four = len(set(listAS2) - set(listAS4))
     two_five = len(set(listAS2) - set(listAS5))
-    #two_six = len(set(listAS2) - set(listAS6))
+    two_six = len(set(listAS2) - set(listAS6))
     two = len(set(listAS2) - set(listAS1) - set(listAS3) - set(listAS4) - set(listAS5)) # - set(listAS6))
 
     three_total = len(set(listAS3))
@@ -2156,7 +2155,7 @@ def diffTable_collector_ASes_PATH():
     three_two = len(set(listAS3) - set(listAS2))
     three_four = len(set(listAS3) - set(listAS4))
     three_five = len(set(listAS3) - set(listAS5))
-    #three_six = len(set(listAS3) - set(listAS6))
+    three_six = len(set(listAS3) - set(listAS6))
     three = len(set(listAS3) - set(listAS1) - set(listAS2) - set(listAS4) - set(listAS5)) # - set(listAS6))
 
     four_total = len(set(listAS4))
@@ -2164,7 +2163,7 @@ def diffTable_collector_ASes_PATH():
     four_two = len(set(listAS4) - set(listAS2))
     four_three = len(set(listAS4) - set(listAS3))
     four_five = len(set(listAS4) - set(listAS5))
-    #four_six = len(set(listAS4) - set(listAS6))
+    four_six = len(set(listAS4) - set(listAS6))
     four = len(set(listAS4) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS5)) # - set(listAS6))
 
     five_total = len(set(listAS5))
@@ -2172,23 +2171,23 @@ def diffTable_collector_ASes_PATH():
     five_two = len(set(listAS5) - set(listAS2))
     five_three = len(set(listAS5) - set(listAS3))
     five_four = len(set(listAS5) - set(listAS4))
-    #five_six = len(set(listAS5) - set(listAS6))
+    five_six = len(set(listAS5) - set(listAS6))
     five = len(set(listAS5) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4)) # - set(listAS6))
 
-    #six_total = len(set(listAS6))
-    #six_one = len(set(listAS6) - set(listAS1))
-    #six_two = len(set(listAS6) - set(listAS2))
-    #six_three = len(set(listAS6) - set(listAS3))
-    #six_four = len(set(listAS6) - set(listAS4))
-    #six_five = len(set(listAS6) - set(listAS5))
-    #six = len(set(listAS6) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5))
+    six_total = len(set(listAS6))
+    six_one = len(set(listAS6) - set(listAS1))
+    six_two = len(set(listAS6) - set(listAS2))
+    six_three = len(set(listAS6) - set(listAS3))
+    six_four = len(set(listAS6) - set(listAS4))
+    six_five = len(set(listAS6) - set(listAS5))
+    six = len(set(listAS6) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5))
 
     print(one_total)
     print(one_two)
     print(one_three)
     print(one_four)
     print(one_five)
-    #print(one_six)
+    print(one_six)
     print(one)
 
     print(two_total)
@@ -2196,7 +2195,7 @@ def diffTable_collector_ASes_PATH():
     print(two_three)
     print(two_four)
     print(two_five)
-    #print(two_six)
+    print(two_six)
     print(two)
 
     print(three_total)
@@ -2204,7 +2203,7 @@ def diffTable_collector_ASes_PATH():
     print(three_two)
     print(three_four)
     print(three_five)
-    #print(three_six)
+    print(three_six)
     print(three)
 
     print(four_total)
@@ -2212,7 +2211,7 @@ def diffTable_collector_ASes_PATH():
     print(four_two)
     print(four_three)
     print(four_five)
-    #print(four_six)
+    print(four_six)
     print(four)
 
     print(five_total)
@@ -2220,16 +2219,16 @@ def diffTable_collector_ASes_PATH():
     print(five_two)
     print(five_three)
     print(five_four)
-    #print(five_six)
+    print(five_six)
     print(five)
 
-    #print(six_total)
-    #print(six_one)
-    #print(six_two)
-    #print(six_three)
-    #print(six_four)
-    #print(six_five)
-    #print(six)
+    print(six_total)
+    print(six_one)
+    print(six_two)
+    print(six_three)
+    print(six_four)
+    print(six_five)
+    print(six)
 
 def diffTable_collector():
 
@@ -2238,7 +2237,7 @@ def diffTable_collector():
     listPrefix3 = []
     listPrefix4 = []
     listPrefix5 = []
-    #listPrefix6 = []
+    listPrefix6 = []
 
     with open('EQUINIX_week1/reportPrefixesAW.txt') as fp:
         line = fp.readline()
@@ -2425,49 +2424,49 @@ def diffTable_collector():
             listPrefix5.append(line.split(':')[0])
             line = fp.readline()
 
-    #with open('NAPAFRICA_week1/reportPrefixesAW.txt') as fp:
-        #line = fp.readline()
-        #line = fp.readline()
-        #tamanho = line.split(': ')[1]
-        #line = fp.readline()
-        #line = fp.readline()
-        #while line:
-            #listPrefix6.append(line.split(':')[0])
-            #line = fp.readline()
-    #with open('NAPAFRICA_week2/reportPrefixesAW.txt') as fp:
-        #line = fp.readline()
-        #line = fp.readline()
-        #tamanho = line.split(': ')[1]
-        #line = fp.readline()
-        #line = fp.readline()
-        #while line:
-            #listPrefix6.append(line.split(':')[0])
-            #line = fp.readline()
-    #with open('NAPAFRICA_week3/reportPrefixesAW.txt') as fp:
-        #line = fp.readline()
-        #line = fp.readline()
-        #tamanho = line.split(': ')[1]
-        #line = fp.readline()
-        #line = fp.readline()
-        #while line:
-            #listPrefix6.append(line.split(':')[0])
-            #line = fp.readline()
-    #with open('NAPAFRICA_week4/reportPrefixesAW.txt') as fp:
-        #line = fp.readline()
-        #line = fp.readline()
-        #tamanho = line.split(': ')[1]
-        #line = fp.readline()
-        #line = fp.readline()
-        #while line:
-            #listPrefix6.append(line.split(':')[0])
-            #line = fp.readline()
+    with open('NAPAFRICA_week1/reportPrefixesAW.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listPrefix6.append(line.split(':')[0])
+            line = fp.readline()
+    with open('NAPAFRICA_week2/reportPrefixesAW.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listPrefix6.append(line.split(':')[0])
+            line = fp.readline()
+    with open('NAPAFRICA_week3/reportPrefixesAW.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listPrefix6.append(line.split(':')[0])
+            line = fp.readline()
+    with open('NAPAFRICA_week4/reportPrefixesAW.txt') as fp:
+        line = fp.readline()
+        line = fp.readline()
+        tamanho = line.split(': ')[1]
+        line = fp.readline()
+        line = fp.readline()
+        while line:
+            listPrefix6.append(line.split(':')[0])
+            line = fp.readline()
 
     one_total = len(set(listPrefix1))
     one_two = len(set(listPrefix1) - set(listPrefix2))
     one_three = len(set(listPrefix1) - set(listPrefix3))
     one_four = len(set(listPrefix1) - set(listPrefix4))
     one_five = len(set(listPrefix1) - set(listPrefix5))
-    #one_six = len(set(listPrefix1) - set(listPrefix6))
+    one_six = len(set(listPrefix1) - set(listPrefix6))
     one = len(set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4) - set(listPrefix5)) #- set(listPrefix6))
 
     two_total = len(set(listPrefix2))
@@ -2475,7 +2474,7 @@ def diffTable_collector():
     two_three = len(set(listPrefix2) - set(listPrefix3))
     two_four = len(set(listPrefix2) - set(listPrefix4))
     two_five = len(set(listPrefix2) - set(listPrefix5))
-    #two_six = len(set(listPrefix2) - set(listPrefix6))
+    two_six = len(set(listPrefix2) - set(listPrefix6))
     two = len(set(listPrefix2) - set(listPrefix1) - set(listPrefix3) - set(listPrefix4) - set(listPrefix5)) # - set(listPrefix6))
 
     three_total = len(set(listPrefix3))
@@ -2483,7 +2482,7 @@ def diffTable_collector():
     three_two = len(set(listPrefix3) - set(listPrefix2))
     three_four = len(set(listPrefix3) - set(listPrefix4))
     three_five = len(set(listPrefix3) - set(listPrefix5))
-    #three_six = len(set(listPrefix3) - set(listPrefix6))
+    three_six = len(set(listPrefix3) - set(listPrefix6))
     three = len(set(listPrefix3) - set(listPrefix1) - set(listPrefix2) - set(listPrefix4) - set(listPrefix5)) # - set(listPrefix6))
 
     four_total = len(set(listPrefix4))
@@ -2491,7 +2490,7 @@ def diffTable_collector():
     four_two = len(set(listPrefix4) - set(listPrefix2))
     four_three = len(set(listPrefix4) - set(listPrefix3))
     four_five = len(set(listPrefix4) - set(listPrefix5))
-    #four_six = len(set(listPrefix4) - set(listPrefix6))
+    four_six = len(set(listPrefix4) - set(listPrefix6))
     four = len(set(listPrefix4) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix5)) # - set(listPrefix6))
 
     five_total = len(set(listPrefix5))
@@ -2499,23 +2498,23 @@ def diffTable_collector():
     five_two = len(set(listPrefix5) - set(listPrefix2))
     five_three = len(set(listPrefix5) - set(listPrefix3))
     five_four = len(set(listPrefix5) - set(listPrefix4))
-    #five_six = len(set(listPrefix5) - set(listPrefix6))
+    five_six = len(set(listPrefix5) - set(listPrefix6))
     five = len(set(listPrefix5) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4)) # - set(listPrefix6))
 
-    #six_total = len(set(listPrefix6))
-    #six_one = len(set(listPrefix6) - set(listPrefix1))
-    #six_two = len(set(listPrefix6) - set(listPrefix2))
-    #six_three = len(set(listPrefix6) - set(listPrefix3))
-    #six_four = len(set(listPrefix6) - set(listPrefix4))
-    #six_five = len(set(listPrefix6) - set(listPrefix5))
-    #six = len(set(listPrefix6) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4) - set(listPrefix5))
+    six_total = len(set(listPrefix6))
+    six_one = len(set(listPrefix6) - set(listPrefix1))
+    six_two = len(set(listPrefix6) - set(listPrefix2))
+    six_three = len(set(listPrefix6) - set(listPrefix3))
+    six_four = len(set(listPrefix6) - set(listPrefix4))
+    six_five = len(set(listPrefix6) - set(listPrefix5))
+    six = len(set(listPrefix6) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4) - set(listPrefix5))
 
     print(one_total)
     print(one_two)
     print(one_three)
     print(one_four)
     print(one_five)
-    #print(one_six)
+    print(one_six)
     print(one)
 
     print(two_total)
@@ -2523,7 +2522,7 @@ def diffTable_collector():
     print(two_three)
     print(two_four)
     print(two_five)
-    #print(two_six)
+    print(two_six)
     print(two)
 
     print(three_total)
@@ -2539,7 +2538,7 @@ def diffTable_collector():
     print(four_two)
     print(four_three)
     print(four_five)
-    #print(four_six)
+    print(four_six)
     print(four)
 
     print(five_total)
@@ -2547,16 +2546,57 @@ def diffTable_collector():
     print(five_two)
     print(five_three)
     print(five_four)
-    #print(five_six)
+    print(five_six)
     print(five)
 
-    #print(six_total)
-    #print(six_one)
-    #print(six_two)
-    #print(six_three)
-    #print(six_four)
-    #print(six_five)
-    #print(six)
+    print(six_total)
+    print(six_one)
+    print(six_two)
+    print(six_three)
+    print(six_four)
+    print(six_five)
+    print(six)
+
+
+def joelho(_path, _save, _time1, _time2):
+
+    path = _path
+    save = _save
+    time1 = _time1
+    time2 = _time2
+
+    with open(path) as fp:
+        days = 0
+        readTime = ''
+        line = fp.readline()
+        while line:
+            readTime = line.split(';')[3]
+            try:
+                days = readTime.split(",")[0]
+                days = int(days[:1])
+                hours = readTime.split(",")[1]
+                h = int(hours.split(":")[0])
+                m = int(hours.split(":")[1])
+                s = int(hours.split(":")[2])
+                time = s/60 + m + h*60 + days*24*60
+                #print(time)
+                if (time > time1 and time < time2):
+                    f = open(save+'joelhos-'+str(time1)+'-'+str(time2)+'.txt', 'a+')
+                    f.write(line)
+                    f.close()
+                line = fp.readline()
+            except:
+                h = int(readTime.split(":")[0])
+                m = int(readTime.split(":")[1])
+                s = int(readTime.split(":")[2])
+                time = s/60 + m + h*60
+                #print(time)
+                if (time > time1 and time < time2):
+                    f = open(save+'joelhos-'+str(time1)+'-'+str(time2)+'.txt', 'a+')
+                    f.write(line)
+                    f.close()
+                line = fp.readline()
+
 #------------------------------[STATISTIC]-------------------------------------------
 #------------------------------[PLOT]------------------------------------------------
 #plot information about the IXP
@@ -2566,50 +2606,370 @@ def plotIXPmsg():
     d2 = []
     d3 = []
     d4 = []
+    d5 = []
+    d6 = []
 
-    path1 = "DECIX_010119_070119_new/reportIXP.txt"
-    path2 = "DECIX_080119_140119/reportIXP.txt"
-    path3 = "DECIX_150119_210119/reportIXP.txt"
-    path4 = "DECIX_220119_280119/reportIXP.txt"
+    path1 = "AMSIX_week1/reportIXP.txt"
+    path2 = "AMSIX_week2/reportIXP.txt"
+    path3 = "AMSIX_week3/reportIXP.txt"
+    path4 = "AMSIX_week4/reportIXP.txt"
+
+    path5 = "EQUINIX_week1/reportIXP.txt"
+    path6 = "EQUINIX_week2/reportIXP.txt"
+    path7 = "EQUINIX_week3/reportIXP.txt"
+    path8 = "EQUINIX_week4/reportIXP.txt"
+
+    path9 = "JPIX_week1/reportIXP.txt"
+    path10 = "JPIX_week2/reportIXP.txt"
+    path11 = "JPIX_week3/reportIXP.txt"
+    path12 = "JPIX_week4/reportIXP.txt"
+
+    path13 = "MEGAPORTSYD_week1/reportIXP.txt"
+    path14 = "MEGAPORTSYD_week2/reportIXP.txt"
+    path15 = "MEGAPORTSYD_week3/reportIXP.txt"
+    path16 = "MEGAPORTSYD_week4/reportIXP.txt"
+
+    path17 = "SCL_week1/reportIXP.txt"
+    path18 = "SCL_week2/reportIXP.txt"
+    path19 = "SCL_week3/reportIXP.txt"
+    path20 = "SCL_week4/reportIXP.txt"
+
+    path21 = "NAPAFRICA_week1/reportIXP.txt"
+    path22 = "NAPAFRICA_week2/reportIXP.txt"
+    path23 = "NAPAFRICA_week3/reportIXP.txt"
+    path24 = "NAPAFRICA_week4/reportIXP.txt"
+
+    msg = 0
+    anun = 0
+    wit = 0
 
     with open(path1) as fp1:
         line = fp1.readline()
-        d1.append(int(line.split(";")[0]))
-        d1.append(int(line.split(";")[1]))
-        d1.append(int(line.split(";")[2]))
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp1.readline()
+            line = fp1.readline()
+            line = fp1.readline()
+            line = fp1.readline()
 
     with open(path2) as fp2:
         line = fp2.readline()
-        d2.append(int(line.split(";")[0]))
-        d2.append(int(line.split(";")[1]))
-        d2.append(int(line.split(";")[2]))
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp2.readline()
+            line = fp2.readline()
+            line = fp2.readline()
+            line = fp2.readline()
 
     with open(path3) as fp3:
         line = fp3.readline()
-        d3.append(int(line.split(";")[0]))
-        d3.append(int(line.split(";")[1]))
-        d3.append(int(line.split(";")[2]))
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp3.readline()
+            line = fp3.readline()
+            line = fp3.readline()
+            line = fp3.readline()
 
     with open(path4) as fp4:
         line = fp4.readline()
-        d4.append(int(line.split(";")[0]))
-        d4.append(int(line.split(";")[1]))
-        d4.append(int(line.split(";")[2]))
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp4.readline()
+            line = fp4.readline()
+            line = fp4.readline()
+            line = fp4.readline()
+
+    d1.append(msg)
+    d1.append(anun)
+    d1.append(wit)
+
+    msg = 0
+    anun = 0
+    wit = 0
+
+    with open(path5) as fp5:
+        line = fp5.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp5.readline()
+            line = fp5.readline()
+            line = fp5.readline()
+            line = fp5.readline()
+
+    with open(path6) as fp6:
+        line = fp6.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp6.readline()
+            line = fp6.readline()
+            line = fp6.readline()
+            line = fp6.readline()
+
+    with open(path7) as fp7:
+        line = fp7.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp7.readline()
+            line = fp7.readline()
+            line = fp7.readline()
+            line = fp7.readline()
+
+    with open(path8) as fp8:
+        line = fp8.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp8.readline()
+            line = fp8.readline()
+            line = fp8.readline()
+            line = fp8.readline()
+
+    d2.append(msg)
+    d2.append(anun)
+    d2.append(wit)
+
+    msg = 0
+    anun = 0
+    wit = 0
+
+    with open(path9) as fp9:
+        line = fp9.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp9.readline()
+            line = fp9.readline()
+            line = fp9.readline()
+            line = fp9.readline()
+
+    with open(path10) as fp10:
+        line = fp10.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp10.readline()
+            line = fp10.readline()
+            line = fp10.readline()
+            line = fp10.readline()
+
+    with open(path11) as fp11:
+        line = fp11.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp11.readline()
+            line = fp11.readline()
+            line = fp11.readline()
+            line = fp11.readline()
+
+    with open(path12) as fp12:
+        line = fp12.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp12.readline()
+            line = fp12.readline()
+            line = fp12.readline()
+            line = fp12.readline()
+
+    d3.append(msg)
+    d3.append(anun)
+    d3.append(wit)
+
+    msg = 0
+    anun = 0
+    wit = 0
+
+    with open(path13) as fp13:
+        line = fp13.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp13.readline()
+            line = fp13.readline()
+            line = fp13.readline()
+            line = fp13.readline()
+
+    with open(path14) as fp14:
+        line = fp14.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp14.readline()
+            line = fp14.readline()
+            line = fp14.readline()
+            line = fp14.readline()
+
+    with open(path15) as fp15:
+        line = fp15.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp15.readline()
+            line = fp15.readline()
+            line = fp15.readline()
+            line = fp15.readline()
+
+    with open(path16) as fp16:
+        line = fp16.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp16.readline()
+            line = fp16.readline()
+            line = fp16.readline()
+            line = fp16.readline()
+
+    d4.append(msg)
+    d4.append(anun)
+    d4.append(wit)
+
+
+    msg = 0
+    anun = 0
+    wit = 0
+
+    with open(path17) as fp17:
+        line = fp17.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp17.readline()
+            line = fp17.readline()
+            line = fp17.readline()
+            line = fp17.readline()
+
+    with open(path18) as fp18:
+        line = fp18.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp18.readline()
+            line = fp18.readline()
+            line = fp18.readline()
+            line = fp18.readline()
+
+    with open(path19) as fp19:
+        line = fp19.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp19.readline()
+            line = fp19.readline()
+            line = fp19.readline()
+            line = fp19.readline()
+
+    with open(path20) as fp20:
+        line = fp20.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp20.readline()
+            line = fp20.readline()
+            line = fp20.readline()
+            line = fp20.readline()
+
+    d5.append(msg)
+    d5.append(anun)
+    d5.append(wit)
+
+    msg = 0
+    anun = 0
+    wit = 0
+
+    with open(path21) as fp21:
+        line = fp21.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp21.readline()
+            line = fp21.readline()
+            line = fp21.readline()
+            line = fp21.readline()
+
+    with open(path22) as fp22:
+        line = fp22.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp22.readline()
+            line = fp22.readline()
+            line = fp22.readline()
+            line = fp22.readline()
+
+    with open(path23) as fp23:
+        line = fp23.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp23.readline()
+            line = fp23.readline()
+            line = fp23.readline()
+            line = fp23.readline()
+
+    with open(path24) as fp24:
+        line = fp24.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp24.readline()
+            line = fp24.readline()
+            line = fp24.readline()
+            line = fp24.readline()
+
+    d6.append(msg)
+    d6.append(anun)
+    d6.append(wit)
+
+
 
     ind = np.arange(len(d1))  # the x locations for the groups
     width = 0.12  # the width of the bars
 
     fig, ax = plt.subplots()
-    rects1 = ax.bar(ind - 3/2*width, d1, width, color='SkyBlue', label='010119-070119')
-    rects2 = ax.bar(ind - 1/2*width, d2, width, color='IndianRed', label='080119-140119')
-    rects3 = ax.bar(ind + 1/2*width, d3, width, color='Chocolate', label='150119-210119')
-    rects4 = ax.bar(ind + 3/2*width, d4, width, color='Orange', label='220119-280119')
+    rects1 = ax.bar(ind - 5/2*width, d1, width, color='SkyBlue', label='AMSIX')
+    rects2 = ax.bar(ind - 3/2*width, d2, width, color='IndianRed', label='EQUINIX')
+    rects3 = ax.bar(ind - 1/2*width, d3, width, color='Chocolate', label='JPIX')
+    rects4 = ax.bar(ind + 1/2*width, d4, width, color='Orange', label='SYDNEY')
+    rects5 = ax.bar(ind + 3/2*width, d5, width, color='Chocolate', label='SCL')
+    rects6 = ax.bar(ind + 5/2*width, d6, width, color='Orange', label='NAPAFRICA')
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
-    ax.set_ylabel('Number of')
-    ax.set_title('BGP Messages')
+    ax.set_ylabel('Quantidade')
+    ax.set_title('Mensagens BGP')
     ax.set_xticks(ind)
-    ax.set_xticklabels(('Total Messages', 'Announcement Messages', 'Withdrawn Messages'))
+    ax.set_xticklabels(('Mensagens Totais', 'Anúncios Totais', 'Retiradas Totais'))
     ax.legend()
 
     def autolabel(rects, xpos='center'):
@@ -2625,6 +2985,8 @@ def plotIXPmsg():
     autolabel(rects2, "center")
     autolabel(rects3, "center")
     autolabel(rects4, "right")
+    autolabel(rects5, "center")
+    autolabel(rects6, "center")
 
     plt.show()
     plt.savefig("IXPmsg.pdf", dpi=600)
@@ -3051,41 +3413,419 @@ def plotCDFShortLivedEvent(_path, _threshold, _as, _prefix):
     pylab.clf()
 
 #TODO fix
-#plot ASes information
-def printASes(_listASNs, _date):
+#plot collectors 
+def printASes():
 
-    listASNs = _listASNs
-    date = _date
+    #listASNs = _listASNs
+    #date = _date
     numA = []
     numW = []
     listASs = []
 
-    for i in listASNs:
-        with open("reports/AMSIX/AS"+str(i)+".txt") as fp:
-            line = fp.readline()
-            while line:
-                if(line.split(";")[0] == date):
-                    a = int(line.split(";")[5])
-                    w = int(line.split(";")[6])
-                    listASs.append(str(i))
-                    numA.append(a)
-                    numW.append(w)
-                line = fp.readline()
+    #for i in listASNs:
+    #    with open("reports/AMSIX/AS"+str(i)+".txt") as fp:
+    #        line = fp.readline()
+    #        while line:
+    #            if(line.split(";")[0] == date):
+    #                a = int(line.split(";")[5])
+    #                w = int(line.split(";")[6])
+    #                listASs.append(str(i))
+    #                numA.append(a)
+    #                numW.append(w)
+    #            line = fp.readline()
 
-    N = len(listASNs)
+
+    d1 = []
+    d2 = []
+    d3 = []
+    d4 = []
+    d5 = []
+    d6 = []
+
+    path1 = "AMSIX_week1/reportIXP.txt"
+    path2 = "AMSIX_week2/reportIXP.txt"
+    path3 = "AMSIX_week3/reportIXP.txt"
+    path4 = "AMSIX_week4/reportIXP.txt"
+
+    path5 = "EQUINIX_week1/reportIXP.txt"
+    path6 = "EQUINIX_week2/reportIXP.txt"
+    path7 = "EQUINIX_week3/reportIXP.txt"
+    path8 = "EQUINIX_week4/reportIXP.txt"
+
+    path9 = "JPIX_week1/reportIXP.txt"
+    path10 = "JPIX_week2/reportIXP.txt"
+    path11 = "JPIX_week3/reportIXP.txt"
+    path12 = "JPIX_week4/reportIXP.txt"
+
+    path13 = "MEGAPORTSYD_week1/reportIXP.txt"
+    path14 = "MEGAPORTSYD_week2/reportIXP.txt"
+    path15 = "MEGAPORTSYD_week3/reportIXP.txt"
+    path16 = "MEGAPORTSYD_week4/reportIXP.txt"
+
+    path17 = "SCL_week1/reportIXP.txt"
+    path18 = "SCL_week2/reportIXP.txt"
+    path19 = "SCL_week3/reportIXP.txt"
+    path20 = "SCL_week4/reportIXP.txt"
+
+    path21 = "NAPAFRICA_week1/reportIXP.txt"
+    path22 = "NAPAFRICA_week2/reportIXP.txt"
+    path23 = "NAPAFRICA_week3/reportIXP.txt"
+    path24 = "NAPAFRICA_week4/reportIXP.txt"
+
+    msg = 0
+    anun = 0
+    wit = 0
+
+    with open(path13) as fp13:
+        line = fp13.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp13.readline()
+            line = fp13.readline()
+            line = fp13.readline()
+            line = fp13.readline()
+
+    with open(path14) as fp14:
+        line = fp14.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp14.readline()
+            line = fp14.readline()
+            line = fp14.readline()
+            line = fp14.readline()
+
+    with open(path15) as fp15:
+        line = fp15.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp15.readline()
+            line = fp15.readline()
+            line = fp15.readline()
+            line = fp15.readline()
+
+    with open(path16) as fp16:
+        line = fp16.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp16.readline()
+            line = fp16.readline()
+            line = fp16.readline()
+            line = fp16.readline()
+
+    #d4.append(msg)
+    #d4.append(anun)
+    #d4.append(wit)
+
+    listASs.append(str('MEGAPORTSYD'))
+    numA.append(anun/10000)
+    numW.append(wit/10000)
+
+    msg = 0
+    anun = 0
+    wit = 0
+
+    with open(path21) as fp21:
+        line = fp21.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp21.readline()
+            line = fp21.readline()
+            line = fp21.readline()
+            line = fp21.readline()
+
+    with open(path22) as fp22:
+        line = fp22.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp22.readline()
+            line = fp22.readline()
+            line = fp22.readline()
+            line = fp22.readline()
+
+    with open(path23) as fp23:
+        line = fp23.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp23.readline()
+            line = fp23.readline()
+            line = fp23.readline()
+            line = fp23.readline()
+
+    with open(path24) as fp24:
+        line = fp24.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp24.readline()
+            line = fp24.readline()
+            line = fp24.readline()
+            line = fp24.readline()
+
+    #d6.append(msg)
+    #d6.append(anun)
+    #d6.append(wit)
+
+    listASs.append(str('NAPAFRICA'))
+    numA.append(anun/10000)
+    numW.append(wit/10000)
+
+    msg = 0
+    anun = 0
+    wit = 0
+
+    with open(path9) as fp9:
+        line = fp9.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp9.readline()
+            line = fp9.readline()
+            line = fp9.readline()
+            line = fp9.readline()
+
+    with open(path10) as fp10:
+        line = fp10.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp10.readline()
+            line = fp10.readline()
+            line = fp10.readline()
+            line = fp10.readline()
+
+    with open(path11) as fp11:
+        line = fp11.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp11.readline()
+            line = fp11.readline()
+            line = fp11.readline()
+            line = fp11.readline()
+
+    with open(path12) as fp12:
+        line = fp12.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp12.readline()
+            line = fp12.readline()
+            line = fp12.readline()
+            line = fp12.readline()
+
+    #d3.append(msg)
+    #d3.append(anun)
+    #d3.append(wit)
+
+    listASs.append(str('JPIX'))
+    numA.append(anun/10000)
+    numW.append(wit/10000)
+
+    msg = 0
+    anun = 0
+    wit = 0
+
+    with open(path1) as fp1:
+        line = fp1.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp1.readline()
+            line = fp1.readline()
+            line = fp1.readline()
+            line = fp1.readline()
+
+    with open(path2) as fp2:
+        line = fp2.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp2.readline()
+            line = fp2.readline()
+            line = fp2.readline()
+            line = fp2.readline()
+
+    with open(path3) as fp3:
+        line = fp3.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp3.readline()
+            line = fp3.readline()
+            line = fp3.readline()
+            line = fp3.readline()
+
+    with open(path4) as fp4:
+        line = fp4.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp4.readline()
+            line = fp4.readline()
+            line = fp4.readline()
+            line = fp4.readline()
+
+    #d1.append(msg)
+    #d1.append(anun)
+    #d1.append(wit)
+
+    listASs.append(str('AMSIX'))
+    numA.append(anun/10000)
+    numW.append(wit/10000)
+
+    msg = 0
+    anun = 0
+    wit = 0
+
+    with open(path5) as fp5:
+        line = fp5.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp5.readline()
+            line = fp5.readline()
+            line = fp5.readline()
+            line = fp5.readline()
+
+    with open(path6) as fp6:
+        line = fp6.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp6.readline()
+            line = fp6.readline()
+            line = fp6.readline()
+            line = fp6.readline()
+
+    with open(path7) as fp7:
+        line = fp7.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp7.readline()
+            line = fp7.readline()
+            line = fp7.readline()
+            line = fp7.readline()
+
+    with open(path8) as fp8:
+        line = fp8.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp8.readline()
+            line = fp8.readline()
+            line = fp8.readline()
+            line = fp8.readline()
+
+    #d2.append(msg)
+    #d2.append(anun)
+    #d2.append(wit)
+
+    listASs.append(str('EQUINIX'))
+    numA.append(anun/10000)
+    numW.append(wit/10000)
+
+
+    msg = 0
+    anun = 0
+    wit = 0
+
+    with open(path17) as fp17:
+        line = fp17.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp17.readline()
+            line = fp17.readline()
+            line = fp17.readline()
+            line = fp17.readline()
+
+    with open(path18) as fp18:
+        line = fp18.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp18.readline()
+            line = fp18.readline()
+            line = fp18.readline()
+            line = fp18.readline()
+
+    with open(path19) as fp19:
+        line = fp19.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp19.readline()
+            line = fp19.readline()
+            line = fp19.readline()
+            line = fp19.readline()
+
+    with open(path20) as fp20:
+        line = fp20.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp20.readline()
+            line = fp20.readline()
+            line = fp20.readline()
+            line = fp20.readline()
+
+    #d5.append(msg)
+    #d5.append(anun)
+    #d5.append(wit)
+
+    listASs.append(str('SCL'))
+    numA.append(anun/10000)
+    numW.append(wit/10000)
+
+    print(numA)
+    print(numW)
+
+    N = 6
     ind = np.arange(N)    # the x locations for the groups
     width = 0.35       # the width of the bars: can also be len(x) sequence
 
     p1 = plt.bar(ind, numA, width)
     p2 = plt.bar(ind, numW, width, bottom=numA)
 
-    plt.ylabel('Number of Prefixes')
-    plt.title('Prefixes of ASes - ' + date )
-    plt.semilogy(ind, np.exp(-ind/5.0))
+    plt.ylabel('Quantidade (em milhares de dezenas)')
+    plt.title('Número Total de Mensagens por Coletor')
+    #plt.yscale("log")
     plt.xticks(ind, listASs, fontsize=8)
-    plt.legend((p1[0], p2[0]), ('Announced', 'Withdrawed'))
-    plt.savefig("figures/amsixASes"+date+".pdf", dpi=600)
-    plt.savefig("figures/amsixASes"+date+".png", dpi=600)
+    plt.legend((p1[0], p2[0]), ('Anúncios', 'Retiradas'))
+    plt.savefig("plots_TCC/msgs_coletores.pdf", dpi=600)
+    plt.savefig("plots_TCC/msgs_coletores.png", dpi=600)
     plt.show()
     plt.clf()
 
@@ -3240,7 +3980,7 @@ def cli():
                     prefixSize = action.split("CalculateChangesASPrefix(")[1]
                     prefixSize = prefixSize[:-1]
                     print('Calculating the changes of each (prefix,AS)',"\n")
-                    calculateChangesASPrefix(prefixes,ASes,msglist, collectorName)
+                    calculateChangesASPrefix(prefixes,ASes,msglist,collectorName)
 
                 elif "CalculateALL" in action:
                     aux = action.split("CalculateALL(")[1]
@@ -3319,6 +4059,25 @@ def help():
 
 if __name__ == '__main__':
 
+
+    #joelho("EQUINIX_week1/reporttimeAW.txt", "EQUINIX_week1/AW-", 115, 125)
+    #joelho("EQUINIX_week2/reporttimeAW.txt", "EQUINIX_week2/AW-", 115, 125)
+    #joelho("EQUINIX_week3/reporttimeAW.txt", "EQUINIX_week3/AW-", 115, 125)
+    #joelho("EQUINIX_week4/reporttimeAW.txt", "EQUINIX_week4/AW-", 115, 125)
+
+    #joelho("EQUINIX_week1/reporttimeWA.txt", "EQUINIX_week1/WA-", 55, 65)
+    #joelho("EQUINIX_week2/reporttimeWA.txt", "EQUINIX_week2/WA-", 55, 65)
+    #joelho("EQUINIX_week3/reporttimeWA.txt", "EQUINIX_week3/WA-", 55, 65)
+    #joelho("EQUINIX_week4/reporttimeWA.txt", "EQUINIX_week4/WA-", 55, 65)
+
+    #joelho("EQUINIX_week1/reporttimeWA.txt", "EQUINIX_week1/WA-", 115, 125)
+    #joelho("EQUINIX_week2/reporttimeWA.txt", "EQUINIX_week2/WA-", 115, 125)
+    #joelho("EQUINIX_week3/reporttimeWA.txt", "EQUINIX_week3/WA-", 115, 125)
+    #joelho("EQUINIX_week4/reporttimeWA.txt", "EQUINIX_week4/WA-", 115, 125)
+
+    #plotIXPmsg()
+
+    printASes()
 
     #cli()
 
@@ -3546,7 +4305,7 @@ if __name__ == '__main__':
     #highestTimes("SCL_week4/reportPrefixesAW.txt")
     #highestTimes("SCL_week4/reportPrefixesWA.txt")
 
-    diffTable_collector_ASes_PATH()
+    #diffTable_collector_ASes_PATH()
 
     #---------------------------------------------------------------------------
 
