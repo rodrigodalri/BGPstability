@@ -1386,7 +1386,7 @@ def diffTable():
     listPrefix3 = []
     listPrefix4 = []
 
-    with open('SCL_week1/reportPrefixesAW.txt') as fp:
+    with open('NAPAFRICA_week1/reportPrefixesAW.txt') as fp:
         line = fp.readline()
         line = fp.readline()
         tamanho = line.split(': ')[1]
@@ -1396,7 +1396,7 @@ def diffTable():
             listPrefix1.append(line.split(':')[0])
             line = fp.readline()
 
-    with open('SCL_week2/reportPrefixesAW.txt') as fp:
+    with open('NAPAFRICA_week2/reportPrefixesAW.txt') as fp:
         line = fp.readline()
         line = fp.readline()
         tamanho = line.split(': ')[1]
@@ -1406,7 +1406,7 @@ def diffTable():
             listPrefix2.append(line.split(':')[0])
             line = fp.readline()
 
-    with open('SCL_week3/reportPrefixesAW.txt') as fp:
+    with open('NAPAFRICA_week3/reportPrefixesAW.txt') as fp:
         line = fp.readline()
         line = fp.readline()
         tamanho = line.split(': ')[1]
@@ -1416,7 +1416,7 @@ def diffTable():
             listPrefix3.append(line.split(':')[0])
             line = fp.readline()
 
-    with open('SCL_week4/reportPrefixesAW.txt') as fp:
+    with open('NAPAFRICA_week4/reportPrefixesAW.txt') as fp:
         line = fp.readline()
         line = fp.readline()
         tamanho = line.split(': ')[1]
@@ -1481,7 +1481,6 @@ def diffTable_collector_ASes():
         line = fp.readline()
         line = fp.readline()
         while line:
-            print(line)
             listAS1.append(line)
             line = fp.readline()
             line = fp.readline()
@@ -1696,13 +1695,14 @@ def diffTable_collector_ASes():
             line = fp.readline()
             line = fp.readline()
             line = fp.readline()
-
     with open('NAPAFRICA_week1/reportIXP.txt') as fp:
+        line = fp.readline()
         line = fp.readline()
         line = fp.readline()
         line = fp.readline()
         while line:
             listAS6.append(line)
+            line = fp.readline()
             line = fp.readline()
             line = fp.readline()
             line = fp.readline()
@@ -1710,8 +1710,10 @@ def diffTable_collector_ASes():
         line = fp.readline()
         line = fp.readline()
         line = fp.readline()
+        line = fp.readline()
         while line:
             listAS6.append(line)
+            line = fp.readline()
             line = fp.readline()
             line = fp.readline()
             line = fp.readline()
@@ -1719,8 +1721,10 @@ def diffTable_collector_ASes():
         line = fp.readline()
         line = fp.readline()
         line = fp.readline()
+        line = fp.readline()
         while line:
             listAS6.append(line)
+            line = fp.readline()
             line = fp.readline()
             line = fp.readline()
             line = fp.readline()
@@ -1728,8 +1732,10 @@ def diffTable_collector_ASes():
         line = fp.readline()
         line = fp.readline()
         line = fp.readline()
+        line = fp.readline()
         while line:
             listAS6.append(line)
+            line = fp.readline()
             line = fp.readline()
             line = fp.readline()
             line = fp.readline()
@@ -1740,7 +1746,7 @@ def diffTable_collector_ASes():
     one_four = len(set(listAS1) - set(listAS4))
     one_five = len(set(listAS1) - set(listAS5))
     one_six = len(set(listAS1) - set(listAS6))
-    one = len(set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5)) #- set(listAS6))
+    one = len(set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5) - set(listAS6))
 
     two_total = len(set(listAS2))
     two_one = len(set(listAS2) - set(listAS1))
@@ -1748,7 +1754,7 @@ def diffTable_collector_ASes():
     two_four = len(set(listAS2) - set(listAS4))
     two_five = len(set(listAS2) - set(listAS5))
     two_six = len(set(listAS2) - set(listAS6))
-    two = len(set(listAS2) - set(listAS1) - set(listAS3) - set(listAS4) - set(listAS5)) # - set(listAS6))
+    two = len(set(listAS2) - set(listAS1) - set(listAS3) - set(listAS4) - set(listAS5)  - set(listAS6))
 
     three_total = len(set(listAS3))
     three_one = len(set(listAS3) - set(listAS1))
@@ -1756,7 +1762,7 @@ def diffTable_collector_ASes():
     three_four = len(set(listAS3) - set(listAS4))
     three_five = len(set(listAS3) - set(listAS5))
     three_six = len(set(listAS3) - set(listAS6))
-    three = len(set(listAS3) - set(listAS1) - set(listAS2) - set(listAS4) - set(listAS5)) # - set(listAS6))
+    three = len(set(listAS3) - set(listAS1) - set(listAS2) - set(listAS4) - set(listAS5)  - set(listAS6))
 
     four_total = len(set(listAS4))
     four_one = len(set(listAS4) - set(listAS1))
@@ -1764,7 +1770,7 @@ def diffTable_collector_ASes():
     four_three = len(set(listAS4) - set(listAS3))
     four_five = len(set(listAS4) - set(listAS5))
     four_six = len(set(listAS4) - set(listAS6))
-    four = len(set(listAS4) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS5)) # - set(listAS6))
+    four = len(set(listAS4) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS5)  - set(listAS6))
 
     five_total = len(set(listAS5))
     five_one = len(set(listAS5) - set(listAS1))
@@ -1772,7 +1778,7 @@ def diffTable_collector_ASes():
     five_three = len(set(listAS5) - set(listAS3))
     five_four = len(set(listAS5) - set(listAS4))
     five_six = len(set(listAS5) - set(listAS6))
-    five = len(set(listAS5) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4)) # - set(listAS6))
+    five = len(set(listAS5) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4)  - set(listAS6))
 
     six_total = len(set(listAS6))
     six_one = len(set(listAS6) - set(listAS1))
@@ -1782,6 +1788,7 @@ def diffTable_collector_ASes():
     six_five = len(set(listAS6) - set(listAS5))
     six = len(set(listAS6) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5))
 
+
     print(one_total)
     print(one_two)
     print(one_three)
@@ -1789,7 +1796,7 @@ def diffTable_collector_ASes():
     print(one_five)
     print(one_six)
     print(one)
-
+    print('\n')
     print(two_total)
     print(two_one)
     print(two_three)
@@ -1797,7 +1804,7 @@ def diffTable_collector_ASes():
     print(two_five)
     print(two_six)
     print(two)
-
+    print('\n')
     print(three_total)
     print(three_one)
     print(three_two)
@@ -1805,7 +1812,7 @@ def diffTable_collector_ASes():
     print(three_five)
     print(three_six)
     print(three)
-
+    print('\n')
     print(four_total)
     print(four_one)
     print(four_two)
@@ -1813,7 +1820,7 @@ def diffTable_collector_ASes():
     print(four_five)
     print(four_six)
     print(four)
-
+    print('\n')
     print(five_total)
     print(five_one)
     print(five_two)
@@ -1821,7 +1828,7 @@ def diffTable_collector_ASes():
     print(five_four)
     print(five_six)
     print(five)
-
+    print('\n')
     print(six_total)
     print(six_one)
     print(six_two)
@@ -2140,7 +2147,7 @@ def diffTable_collector_ASes_PATH():
     one_four = len(set(listAS1) - set(listAS4))
     one_five = len(set(listAS1) - set(listAS5))
     one_six = len(set(listAS1) - set(listAS6))
-    one = len(set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5)) #- set(listAS6))
+    one = len(set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4) - set(listAS5) - set(listAS6))
 
     two_total = len(set(listAS2))
     two_one = len(set(listAS2) - set(listAS1))
@@ -2148,7 +2155,7 @@ def diffTable_collector_ASes_PATH():
     two_four = len(set(listAS2) - set(listAS4))
     two_five = len(set(listAS2) - set(listAS5))
     two_six = len(set(listAS2) - set(listAS6))
-    two = len(set(listAS2) - set(listAS1) - set(listAS3) - set(listAS4) - set(listAS5)) # - set(listAS6))
+    two = len(set(listAS2) - set(listAS1) - set(listAS3) - set(listAS4) - set(listAS5)  - set(listAS6))
 
     three_total = len(set(listAS3))
     three_one = len(set(listAS3) - set(listAS1))
@@ -2156,7 +2163,7 @@ def diffTable_collector_ASes_PATH():
     three_four = len(set(listAS3) - set(listAS4))
     three_five = len(set(listAS3) - set(listAS5))
     three_six = len(set(listAS3) - set(listAS6))
-    three = len(set(listAS3) - set(listAS1) - set(listAS2) - set(listAS4) - set(listAS5)) # - set(listAS6))
+    three = len(set(listAS3) - set(listAS1) - set(listAS2) - set(listAS4) - set(listAS5)  - set(listAS6))
 
     four_total = len(set(listAS4))
     four_one = len(set(listAS4) - set(listAS1))
@@ -2164,7 +2171,7 @@ def diffTable_collector_ASes_PATH():
     four_three = len(set(listAS4) - set(listAS3))
     four_five = len(set(listAS4) - set(listAS5))
     four_six = len(set(listAS4) - set(listAS6))
-    four = len(set(listAS4) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS5)) # - set(listAS6))
+    four = len(set(listAS4) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS5)  - set(listAS6))
 
     five_total = len(set(listAS5))
     five_one = len(set(listAS5) - set(listAS1))
@@ -2172,7 +2179,7 @@ def diffTable_collector_ASes_PATH():
     five_three = len(set(listAS5) - set(listAS3))
     five_four = len(set(listAS5) - set(listAS4))
     five_six = len(set(listAS5) - set(listAS6))
-    five = len(set(listAS5) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4)) # - set(listAS6))
+    five = len(set(listAS5) - set(listAS1) - set(listAS2) - set(listAS3) - set(listAS4)  - set(listAS6))
 
     six_total = len(set(listAS6))
     six_one = len(set(listAS6) - set(listAS1))
@@ -2189,7 +2196,7 @@ def diffTable_collector_ASes_PATH():
     print(one_five)
     print(one_six)
     print(one)
-
+    print('\n')
     print(two_total)
     print(two_one)
     print(two_three)
@@ -2197,7 +2204,7 @@ def diffTable_collector_ASes_PATH():
     print(two_five)
     print(two_six)
     print(two)
-
+    print('\n')
     print(three_total)
     print(three_one)
     print(three_two)
@@ -2205,7 +2212,7 @@ def diffTable_collector_ASes_PATH():
     print(three_five)
     print(three_six)
     print(three)
-
+    print('\n')
     print(four_total)
     print(four_one)
     print(four_two)
@@ -2213,7 +2220,7 @@ def diffTable_collector_ASes_PATH():
     print(four_five)
     print(four_six)
     print(four)
-
+    print('\n')
     print(five_total)
     print(five_one)
     print(five_two)
@@ -2221,7 +2228,7 @@ def diffTable_collector_ASes_PATH():
     print(five_four)
     print(five_six)
     print(five)
-
+    print('\n')
     print(six_total)
     print(six_one)
     print(six_two)
@@ -2467,7 +2474,7 @@ def diffTable_collector():
     one_four = len(set(listPrefix1) - set(listPrefix4))
     one_five = len(set(listPrefix1) - set(listPrefix5))
     one_six = len(set(listPrefix1) - set(listPrefix6))
-    one = len(set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4) - set(listPrefix5)) #- set(listPrefix6))
+    one = len(set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4) - set(listPrefix5) - set(listPrefix6))
 
     two_total = len(set(listPrefix2))
     two_one = len(set(listPrefix2) - set(listPrefix1))
@@ -2475,7 +2482,7 @@ def diffTable_collector():
     two_four = len(set(listPrefix2) - set(listPrefix4))
     two_five = len(set(listPrefix2) - set(listPrefix5))
     two_six = len(set(listPrefix2) - set(listPrefix6))
-    two = len(set(listPrefix2) - set(listPrefix1) - set(listPrefix3) - set(listPrefix4) - set(listPrefix5)) # - set(listPrefix6))
+    two = len(set(listPrefix2) - set(listPrefix1) - set(listPrefix3) - set(listPrefix4) - set(listPrefix5)  - set(listPrefix6))
 
     three_total = len(set(listPrefix3))
     three_one = len(set(listPrefix3) - set(listPrefix1))
@@ -2483,7 +2490,7 @@ def diffTable_collector():
     three_four = len(set(listPrefix3) - set(listPrefix4))
     three_five = len(set(listPrefix3) - set(listPrefix5))
     three_six = len(set(listPrefix3) - set(listPrefix6))
-    three = len(set(listPrefix3) - set(listPrefix1) - set(listPrefix2) - set(listPrefix4) - set(listPrefix5)) # - set(listPrefix6))
+    three = len(set(listPrefix3) - set(listPrefix1) - set(listPrefix2) - set(listPrefix4) - set(listPrefix5) - set(listPrefix6))
 
     four_total = len(set(listPrefix4))
     four_one = len(set(listPrefix4) - set(listPrefix1))
@@ -2491,7 +2498,7 @@ def diffTable_collector():
     four_three = len(set(listPrefix4) - set(listPrefix3))
     four_five = len(set(listPrefix4) - set(listPrefix5))
     four_six = len(set(listPrefix4) - set(listPrefix6))
-    four = len(set(listPrefix4) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix5)) # - set(listPrefix6))
+    four = len(set(listPrefix4) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix5)  - set(listPrefix6))
 
     five_total = len(set(listPrefix5))
     five_one = len(set(listPrefix5) - set(listPrefix1))
@@ -2499,7 +2506,7 @@ def diffTable_collector():
     five_three = len(set(listPrefix5) - set(listPrefix3))
     five_four = len(set(listPrefix5) - set(listPrefix4))
     five_six = len(set(listPrefix5) - set(listPrefix6))
-    five = len(set(listPrefix5) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4)) # - set(listPrefix6))
+    five = len(set(listPrefix5) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4) - set(listPrefix6))
 
     six_total = len(set(listPrefix6))
     six_one = len(set(listPrefix6) - set(listPrefix1))
@@ -2509,6 +2516,7 @@ def diffTable_collector():
     six_five = len(set(listPrefix6) - set(listPrefix5))
     six = len(set(listPrefix6) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4) - set(listPrefix5))
 
+    print('\n')
     print(one_total)
     print(one_two)
     print(one_three)
@@ -2516,7 +2524,7 @@ def diffTable_collector():
     print(one_five)
     print(one_six)
     print(one)
-
+    print('\n')
     print(two_total)
     print(two_one)
     print(two_three)
@@ -2524,15 +2532,15 @@ def diffTable_collector():
     print(two_five)
     print(two_six)
     print(two)
-
+    print('\n')
     print(three_total)
     print(three_one)
     print(three_two)
     print(three_four)
     print(three_five)
-    #print(three_six)
+    print(three_six)
     print(three)
-
+    print('\n')
     print(four_total)
     print(four_one)
     print(four_two)
@@ -2540,7 +2548,7 @@ def diffTable_collector():
     print(four_five)
     print(four_six)
     print(four)
-
+    print('\n')
     print(five_total)
     print(five_one)
     print(five_two)
@@ -2548,7 +2556,7 @@ def diffTable_collector():
     print(five_four)
     print(five_six)
     print(five)
-
+    print('\n')
     print(six_total)
     print(six_one)
     print(six_two)
@@ -2556,7 +2564,115 @@ def diffTable_collector():
     print(six_four)
     print(six_five)
     print(six)
+    print('\n')
 
+def diffTable_6939():
+
+    listPrefix1 = []
+    listPrefix2 = []
+    listPrefix3 = []
+    listPrefix4 = []
+    listPrefix5 = []
+
+    with open('teste/reportAMSIX_6939.txt') as fp:
+        line = fp.readline()
+        while line:
+            listPrefix1.append(line.split(';')[1]+line.split(';')[2])
+            line = fp.readline()
+
+    with open('teste/reportEQUINIX_6939.txt') as fp:
+        line = fp.readline()
+        while line:
+            listPrefix2.append(line.split(';')[1]+line.split(';')[2])
+            line = fp.readline()
+
+    with open('teste/reportJPIX_6939.txt') as fp:
+        line = fp.readline()
+        while line:
+            listPrefix3.append(line.split(';')[1]+line.split(';')[2])
+            line = fp.readline()
+
+    with open('teste/reportMEGAPORTSYD_6939.txt') as fp:
+        line = fp.readline()
+        while line:
+            listPrefix4.append(line.split(';')[1]+line.split(';')[2])
+            line = fp.readline()
+
+    with open('teste/reportNAPAFRICA_6939.txt') as fp:
+        line = fp.readline()
+        while line:
+            listPrefix5.append(line.split(';')[1]+line.split(';')[2])
+            line = fp.readline()
+
+    one_total = len(set(listPrefix1))
+    one_two = len(set(listPrefix1) - set(listPrefix2))
+    one_three = len(set(listPrefix1) - set(listPrefix3))
+    one_four = len(set(listPrefix1) - set(listPrefix4))
+    one_five = len(set(listPrefix1) - set(listPrefix5))
+    one = len(set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4) - set(listPrefix5))
+
+    two_total = len(set(listPrefix2))
+    two_one = len(set(listPrefix2) - set(listPrefix1))
+    two_three = len(set(listPrefix2) - set(listPrefix3))
+    two_four = len(set(listPrefix2) - set(listPrefix4))
+    two_five = len(set(listPrefix2) - set(listPrefix5))
+    two = len(set(listPrefix2) - set(listPrefix1) - set(listPrefix3) - set(listPrefix4) - set(listPrefix5))
+
+    three_total = len(set(listPrefix3))
+    three_one = len(set(listPrefix3) - set(listPrefix1))
+    three_two = len(set(listPrefix3) - set(listPrefix2))
+    three_four = len(set(listPrefix3) - set(listPrefix4))
+    three_five = len(set(listPrefix3) - set(listPrefix5))
+    three = len(set(listPrefix3) - set(listPrefix1) - set(listPrefix2) - set(listPrefix4) - set(listPrefix5))
+
+    four_total = len(set(listPrefix4))
+    four_one = len(set(listPrefix4) - set(listPrefix1))
+    four_two = len(set(listPrefix4) - set(listPrefix2))
+    four_three = len(set(listPrefix4) - set(listPrefix3))
+    four_five = len(set(listPrefix4) - set(listPrefix5))
+    four = len(set(listPrefix4) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix5))
+
+    five_total = len(set(listPrefix5))
+    five_one = len(set(listPrefix5) - set(listPrefix1))
+    five_two = len(set(listPrefix5) - set(listPrefix2))
+    five_three = len(set(listPrefix5) - set(listPrefix3))
+    five_four = len(set(listPrefix5) - set(listPrefix4))
+    five = len(set(listPrefix5) - set(listPrefix1) - set(listPrefix2) - set(listPrefix3) - set(listPrefix4))
+
+    print(one_total)
+    print(one_two)
+    print(one_three)
+    print(one_four)
+    print(one_five)
+    print(one)
+    print('\n')
+    print(two_total)
+    print(two_one)
+    print(two_three)
+    print(two_four)
+    print(two_five)
+    print(two)
+    print('\n')
+    print(three_total)
+    print(three_one)
+    print(three_two)
+    print(three_four)
+    print(three_five)
+    print(three)
+    print('\n')
+    print(four_total)
+    print(four_one)
+    print(four_two)
+    print(four_three)
+    print(four_five)
+    print(four)
+    print('\n')
+    print(five_total)
+    print(five_one)
+    print(five_two)
+    print(five_three)
+    print(five_four)
+    print(five)
 
 def joelho(_path, _save, _time1, _time2):
 
@@ -3075,6 +3191,8 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
     prefix = int(_prefix)
     path = _path
     count = 0
+    aux1 = 0
+    aux2 = 0
     timeList1 = []
     timeList2 = []
     timeList3 = []
@@ -3086,10 +3204,10 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
     path4 = path+"_week4/reporttime"+type+".txt"
 
     if type == "WA":
-        name = "a Withdrawn and an Announcement"
+        name = "uma Retirada e um Anúncio"
         save = "timeWA"
     else:
-        name = "an Announcement and a Withdrawn"
+        name = "um Anúncio e uma Retirada"
         save = "timeAW"
 
     if(threshold != 0):
@@ -3100,6 +3218,13 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
 
     if(prefix != 0):
         save = save+"-prefix"+str(prefix)
+
+    if(prefix == 4):
+        aux1 = 0
+        aux2 = 24
+    if(prefix == 6):
+        aux1 = 25
+        aux2 = 48
 
     with open(path1) as fp1:
         days = 0
@@ -3121,7 +3246,7 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
                 s = int(hours.split(":")[2])
                 time = s/60 + m + h*60 + days*24*60
                 #print(time)
-                if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                if (time > threshold and (nAs == readAS or nAs == 0) and ((readPrefix >= aux1 and readPrefix <= aux2) or prefix == 0)):
                     timeList1.append(time)
                 line = fp1.readline()
             except:
@@ -3130,7 +3255,7 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
                 s = int(readTime.split(":")[2])
                 time = s/60 + m + h*60
                 #print(time)
-                if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                if (time > threshold and (nAs == readAS or nAs == 0) and ((readPrefix >= aux1 and readPrefix <= aux2) or prefix == 0)):
                     timeList1.append(time)
                 line = fp1.readline()
 
@@ -3152,7 +3277,7 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
                     m = int(hours.split(":")[1])
                     s = int(hours.split(":")[2])
                     time = s/60 + m + h*60 + days*24*60
-                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                    if (time > threshold and (nAs == readAS or nAs == 0) and ((readPrefix >= aux1 and readPrefix <= aux2) or prefix == 0)):
                         timeList2.append(time)
                     line = fp2.readline()
                 except:
@@ -3160,7 +3285,7 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
                     m = int(readTime.split(":")[1])
                     s = int(readTime.split(":")[2])
                     time = s/60 + m + h*60
-                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                    if (time > threshold and (nAs == readAS or nAs == 0) and ((readPrefix >= aux1 and readPrefix <= aux2) or prefix == 0)):
                         timeList2.append(time)
                     line = fp2.readline()
 
@@ -3182,7 +3307,7 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
                     m = int(hours.split(":")[1])
                     s = int(hours.split(":")[2])
                     time = s/60 + m + h*60 + days*24*60
-                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                    if (time > threshold and (nAs == readAS or nAs == 0) and ((readPrefix >= aux1 and readPrefix <= aux2) or prefix == 0)):
                         timeList3.append(time)
                     line = fp3.readline()
                 except:
@@ -3190,7 +3315,7 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
                     m = int(readTime.split(":")[1])
                     s = int(readTime.split(":")[2])
                     time = s/60 + m + h*60
-                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                    if (time > threshold and (nAs == readAS or nAs == 0) and ((readPrefix >= aux1 and readPrefix <= aux2) or prefix == 0)):
                         timeList3.append(time)
                     line = fp3.readline()
 
@@ -3212,7 +3337,7 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
                     m = int(hours.split(":")[1])
                     s = int(hours.split(":")[2])
                     time = s/60 + m + h*60 + days*24*60
-                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                    if (time > threshold and (nAs == readAS or nAs == 0) and ((readPrefix >= aux1 and readPrefix <= aux2) or prefix == 0)):
                         timeList4.append(time)
                     line = fp4.readline()
                 except:
@@ -3220,7 +3345,7 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
                     m = int(readTime.split(":")[1])
                     s = int(readTime.split(":")[2])
                     time = s/60 + m + h*60
-                    if (time > threshold and (nAs == readAS or nAs == 0) and (prefix == readPrefix or prefix == 0)):
+                    if (time > threshold and (nAs == readAS or nAs == 0) and ((readPrefix >= aux1 and readPrefix <= aux2) or prefix == 0)):
                         timeList4.append(time)
                     line = fp4.readline()
 
@@ -3228,9 +3353,9 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
     pylab.plot(np.sort(timeList2),np.arange(len(timeList2))/float(len(timeList2)-1), color='IndianRed', label="080419-140419 - "+ str(len(timeList2)),  linewidth=2, linestyle='--')
     pylab.plot(np.sort(timeList3),np.arange(len(timeList3))/float(len(timeList3)-1), color='Chocolate', label="150419-210419 - "+ str(len(timeList3)),  linewidth=2, linestyle='-.')
     pylab.plot(np.sort(timeList4),np.arange(len(timeList4))/float(len(timeList4)-1), color='Orange', label="220419-280419 - "+ str(len(timeList4)),  linewidth=2, linestyle=':')
-    pylab.title("Time between " + name, loc='center')
-    pylab.ylabel("Frequency", fontsize=10)
-    pylab.xlabel("Time (min)", fontsize=10)
+    pylab.title("Tempo entre " + name, loc='center')
+    pylab.ylabel("Frequência", fontsize=10)
+    pylab.xlabel("Tempo (minutos)", fontsize=10)
     pylab.grid(True)
     pylab.xlim(0, )
     pylab.ylim(0, 1)
@@ -3241,12 +3366,14 @@ def plotCDF(_type, _threshold, _as, _prefix, _path):
     pylab.clf()
 
 #plot number of changes in aspath
-def plotCDFASPrefix():
+def plotCDFASPrefix(_collectorName):
 
-    path1 = "AMSIX_080418_140418/reportprefixesASes.txt"
-    path2 = "AMSIX_010119_070119/reportprefixesASes.txt"
-    path3 = "DECIX_080418_140418/reportprefixesASes.txt"
-    path4 = "DECIX_010119_070119/reportprefixesASes.txt"
+    collectorName = _collectorName
+
+    path1 = collectorName+"_week1/reportPrefixesWA.txt"
+    path2 = collectorName+"_week2/reportPrefixesWA.txt"
+    path3 = collectorName+"_week3/reportPrefixesWA.txt"
+    path4 = collectorName+"_week4/reportPrefixesWA.txt"
 
     changesList1 = []
     changesList2 = []
@@ -3254,53 +3381,62 @@ def plotCDFASPrefix():
     changesList4 = []
     count = 0
 
-    save = "prefixesASes"
+    save = "plots_TCC/"+collectorName+"_indisponibilidade"
 
     with open(path1) as fp:
         line = fp.readline()
+        line = fp.readline()
+        line = fp.readline()
+        line = fp.readline()
         while line:
-            num = int(line.split(";")[3])
-            changesList1.append(num)
+            changesList1.append(int(line.split(';')[1]))
             line = fp.readline()
 
     with open(path2) as fp2:
         line = fp2.readline()
+        line = fp2.readline()
+        line = fp2.readline()
+        line = fp2.readline()
         while line:
-            num = int(line.split(";")[3])
-            changesList2.append(num)
+            changesList2.append(int(line.split(';')[1]))
             line = fp2.readline()
 
     with open(path3) as fp3:
         line = fp3.readline()
+        line = fp3.readline()
+        line = fp3.readline()
+        line = fp3.readline()
         while line:
-            num = int(line.split(";")[3])
-            changesList3.append(num)
+            changesList3.append(int(line.split(';')[1]))
             line = fp3.readline()
 
     with open(path4) as fp4:
         line = fp4.readline()
+        line = fp4.readline()
+        line = fp4.readline()
+        line = fp4.readline()
         while line:
-            num = int(line.split(";")[3])
-            changesList4.append(num)
+            changesList4.append(int(line.split(';')[1]))
             line = fp4.readline()
 
-    pylab.plot(np.sort(changesList1),np.arange(len(changesList1))/float(len(changesList1)-1), color='SkyBlue', label='AMSIX_080418_140418 - ' + str(len(changesList1)),  linewidth=2, linestyle='-')
-    pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), color='IndianRed', label='AMSIX_010119_070119 - ' + str(len(changesList2)),  linewidth=2, linestyle='--')
-    pylab.plot(np.sort(changesList3),np.arange(len(changesList3))/float(len(changesList3)-1), color='Chocolate', label='DECIX_080418_140418 - ' + str(len(changesList3)),  linewidth=2, linestyle='-.')
-    pylab.plot(np.sort(changesList4),np.arange(len(changesList4))/float(len(changesList4)-1), color='Orange', label='DECIX_010119_070119 - ' + str(len(changesList4)),  linewidth=2, linestyle=':')
-    pylab.title("(Prefix,AS) - ASPATH Changes", loc='center')
-    pylab.ylabel("Frequency", fontsize=10)
-    pylab.xlabel("Number of changes", fontsize=10)
+    pylab.plot(np.sort(changesList1),np.arange(len(changesList1))/float(len(changesList1)-1), color='SkyBlue', label='0104119-070419 - ' + str(len(changesList1)),  linewidth=2, linestyle='-')
+    pylab.plot(np.sort(changesList2),np.arange(len(changesList2))/float(len(changesList2)-1), color='IndianRed', label='080419-140419 - ' + str(len(changesList2)),  linewidth=2, linestyle='--')
+    pylab.plot(np.sort(changesList3),np.arange(len(changesList3))/float(len(changesList3)-1), color='Chocolate', label='150419-210419 - ' + str(len(changesList3)),  linewidth=2, linestyle='-.')
+    pylab.plot(np.sort(changesList4),np.arange(len(changesList4))/float(len(changesList4)-1), color='Orange', label='220419-280419 - ' + str(len(changesList4)),  linewidth=2, linestyle=':')
+    pylab.title("Indisponibilidade de Prefixos", loc='center')
+    pylab.ylabel("Frequência", fontsize=10)
+    pylab.xlabel("Quantidade", fontsize=10)
     pylab.grid(True)
     plt.xticks(np.arange(min(changesList2), max(changesList2)+1, 1.0))
     pylab.xlim(0, 20)
     pylab.ylim(0, 1)
     pylab.legend(loc="best", fontsize=12)
+    #pylab.show()
     pylab.savefig(save+".pdf", dpi=600)
     pylab.savefig(save+".png", dpi=600)
     pylab.clf()
 
-#plot number of changes in aspath
+
 def plotCDFShortLivedEvent(_path, _threshold, _as, _prefix):
 
     save = _path
@@ -3413,7 +3549,7 @@ def plotCDFShortLivedEvent(_path, _threshold, _as, _prefix):
     pylab.clf()
 
 #TODO fix
-#plot collectors 
+#plot collectors
 def printASes():
 
     #listASNs = _listASNs
@@ -3476,62 +3612,6 @@ def printASes():
     anun = 0
     wit = 0
 
-    with open(path13) as fp13:
-        line = fp13.readline()
-        while line:
-            msg = msg + int(line.split(';')[0])
-            anun = anun + int(line.split(';')[1])
-            wit = wit +int(line.split(';')[2])
-            line = fp13.readline()
-            line = fp13.readline()
-            line = fp13.readline()
-            line = fp13.readline()
-
-    with open(path14) as fp14:
-        line = fp14.readline()
-        while line:
-            msg = msg + int(line.split(';')[0])
-            anun = anun + int(line.split(';')[1])
-            wit = wit +int(line.split(';')[2])
-            line = fp14.readline()
-            line = fp14.readline()
-            line = fp14.readline()
-            line = fp14.readline()
-
-    with open(path15) as fp15:
-        line = fp15.readline()
-        while line:
-            msg = msg + int(line.split(';')[0])
-            anun = anun + int(line.split(';')[1])
-            wit = wit +int(line.split(';')[2])
-            line = fp15.readline()
-            line = fp15.readline()
-            line = fp15.readline()
-            line = fp15.readline()
-
-    with open(path16) as fp16:
-        line = fp16.readline()
-        while line:
-            msg = msg + int(line.split(';')[0])
-            anun = anun + int(line.split(';')[1])
-            wit = wit +int(line.split(';')[2])
-            line = fp16.readline()
-            line = fp16.readline()
-            line = fp16.readline()
-            line = fp16.readline()
-
-    #d4.append(msg)
-    #d4.append(anun)
-    #d4.append(wit)
-
-    listASs.append(str('MEGAPORTSYD'))
-    numA.append(anun/10000)
-    numW.append(wit/10000)
-
-    msg = 0
-    anun = 0
-    wit = 0
-
     with open(path21) as fp21:
         line = fp21.readline()
         while line:
@@ -3581,6 +3661,62 @@ def printASes():
     #d6.append(wit)
 
     listASs.append(str('NAPAFRICA'))
+    numA.append(anun/10000)
+    numW.append(wit/10000)
+
+    msg = 0
+    anun = 0
+    wit = 0
+
+    with open(path13) as fp13:
+        line = fp13.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp13.readline()
+            line = fp13.readline()
+            line = fp13.readline()
+            line = fp13.readline()
+
+    with open(path14) as fp14:
+        line = fp14.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp14.readline()
+            line = fp14.readline()
+            line = fp14.readline()
+            line = fp14.readline()
+
+    with open(path15) as fp15:
+        line = fp15.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp15.readline()
+            line = fp15.readline()
+            line = fp15.readline()
+            line = fp15.readline()
+
+    with open(path16) as fp16:
+        line = fp16.readline()
+        while line:
+            msg = msg + int(line.split(';')[0])
+            anun = anun + int(line.split(';')[1])
+            wit = wit +int(line.split(';')[2])
+            line = fp16.readline()
+            line = fp16.readline()
+            line = fp16.readline()
+            line = fp16.readline()
+
+    #d4.append(msg)
+    #d4.append(anun)
+    #d4.append(wit)
+
+    listASs.append(str('MEGAPORTSYD'))
     numA.append(anun/10000)
     numW.append(wit/10000)
 
@@ -3821,6 +3957,7 @@ def printASes():
 
     plt.ylabel('Quantidade (em milhares de dezenas)')
     plt.title('Número Total de Mensagens por Coletor')
+    plt.grid(True)
     #plt.yscale("log")
     plt.xticks(ind, listASs, fontsize=8)
     plt.legend((p1[0], p2[0]), ('Anúncios', 'Retiradas'))
@@ -4077,9 +4214,18 @@ if __name__ == '__main__':
 
     #plotIXPmsg()
 
-    printASes()
+    #printASes()
+
+    #diffTable_6939()
 
     #cli()
+
+    #plotCDFASPrefix("AMSIX")
+    #plotCDFASPrefix("EQUINIX")
+    #plotCDFASPrefix("JPIX")
+    #plotCDFASPrefix("MEGAPORTSYD")
+    #plotCDFASPrefix("SCL")
+
 
     #calculateAverageTimebyPrefix("JPIX_week1/reporttimeWA.txt", "WA")
     #calculateAverageTimebyPrefix("JPIX_week2/reporttimeWA.txt", "WA")
@@ -4230,14 +4376,35 @@ if __name__ == '__main__':
 
     #plotCDF("WA",0,6939,0,"JPIX")
     #plotCDF("AW",0,6939,0,"JPIX")
+    #plotCDF("AW",0,0,0,"JPIX")
+    #plotCDF("WA",0,0,4,"JPIX")
+    #plotCDF("WA",0,0,6,"JPIX")
+    #plotCDF("AW",0,0,4,"JPIX")
+    #plotCDF("AW",0,0,6,"JPIX")
     #plotCDF("WA",0,6939,0,"EQUINIX")
     #plotCDF("AW",0,6939,0,"EQUINIX")
+    #plotCDF("WA",0,0,4,"EQUINIX")
+    #plotCDF("WA",0,0,6,"EQUINIX")
+    #plotCDF("AW",0,0,4,"EQUINIX")
+    #plotCDF("AW",0,0,6,"EQUINIX")
     #plotCDF("WA",0,6939,0,"AMSIX")
     #plotCDF("AW",0,6939,0,"AMSIX")
+    #plotCDF("WA",0,0,4,"AMSIX")
+    #plotCDF("WA",0,0,6,"AMSIX")
+    #plotCDF("AW",0,0,4,"AMSIX")
+    #plotCDF("AW",0,0,6,"AMSIX")
     #plotCDF("WA",0,6939,0,"SCL")
     #plotCDF("AW",0,6939,0,"SCL")
+    #plotCDF("WA",0,0,4,"SCL")
+    #plotCDF("WA",0,0,6,"SCL")
+    #plotCDF("AW",0,0,4,"SCL")
+    #plotCDF("AW",0,0,6,"SCL")
     #plotCDF("WA",0,6939,0,"MEGAPORTSYD")
     #plotCDF("AW",0,6939,0,"MEGAPORTSYD")
+    #plotCDF("WA",0,0,4,"MEGAPORTSYD")
+    #plotCDF("WA",0,0,6,"MEGAPORTSYD")
+    #plotCDF("AW",0,0,4,"MEGAPORTSYD")
+    #plotCDF("AW",0,0,6,"MEGAPORTSYD")
 
     #plotCDFShortLivedEvent("JPIX_week1", 1, 0, 0)
     #plotCDFShortLivedEvent("JPIX_week2", 1, 0, 0)
@@ -4305,14 +4472,6 @@ if __name__ == '__main__':
     #highestTimes("SCL_week4/reportPrefixesAW.txt")
     #highestTimes("SCL_week4/reportPrefixesWA.txt")
 
-    #diffTable_collector_ASes_PATH()
-
-    #---------------------------------------------------------------------------
-
-    #diffTable()
-    #diffTable_collector()
-    #diffTable_collector_ASes()
-
     #calculateAverageTimebyPrefix("NAPAFRICA_week1/reporttimeWA.txt", "WA")
     #calculateAverageTimebyPrefix("NAPAFRICA_week2/reporttimeWA.txt", "WA")
     #calculateAverageTimebyPrefix("NAPAFRICA_week3/reporttimeWA.txt", "WA")
@@ -4341,8 +4500,15 @@ if __name__ == '__main__':
     #calculateAA('NAPAFRICA_week3/reporttimeAW-AS6939.txt', 'NAPAFRICA_week3/AS6939_breakdown.txt')
     #calculateAA('NAPAFRICA_week4/reporttimeAW-AS6939.txt', 'NAPAFRICA_week4/AS6939_breakdown.txt')
 
+
     #plotCDF("WA",0,0,0,"NAPAFRICA")
     #plotCDF("AW",0,0,0,"NAPAFRICA")
+
+    #plotCDF("AW",0,0,4,"NAPAFRICA")
+    #plotCDF("AW",0,0,6,"NAPAFRICA")
+
+    #plotCDF("WA",0,0,4,"NAPAFRICA")
+    #plotCDF("WA",0,0,6,"NAPAFRICA")
 
     #plotCDF("WA",0,6939,0,"NAPAFRICA")
     #plotCDF("AW",0,6939,0,"NAPAFRICA")
@@ -4351,6 +4517,18 @@ if __name__ == '__main__':
     #plotCDFShortLivedEvent("NAPAFRICA_week2", 1, 0, 0)
     #plotCDFShortLivedEvent("NAPAFRICA_week3", 1, 0, 0)
     #plotCDFShortLivedEvent("NAPAFRICA_week4", 1, 0, 0)
+
+    #plotCDFASPrefix("NAPAFRICA")
+
+
+    #---------------------------------------------------------------------------
+
+
+
+    #diffTable()
+    #diffTable_collector()
+    #diffTable_collector_ASes()
+    diffTable_collector_ASes_PATH()
 
     #highestTimes("NAPAFRICA_week1/reportPrefixesAW.txt")
     #highestTimes("NAPAFRICA_week1/reportPrefixesWA.txt")
