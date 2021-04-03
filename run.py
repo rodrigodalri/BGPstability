@@ -13,6 +13,7 @@ from datetime import *
 #import matplotlib.pyplot as plt
 #import matplotlib.dates as mdates
 from collections import defaultdict
+from tqdm import tqdm
 #plt.rcParams.update({'figure.max_open_warning': 0})
 
 #AS43252 is decix
@@ -95,6 +96,12 @@ def txttoMemory_new(_path, _collectorName):
     announcement = 0
     withdrawn = 0
 
+    with open(path) as f:
+        for i, l in enumerate(f):
+            pass
+    fileLines = i + 1
+
+    pbar = tqdm(total=fileLines)
 
     # A, W
     data = defaultdict(pair_of_lists)
@@ -168,14 +175,38 @@ def txttoMemory_new(_path, _collectorName):
                 msgList.append(msg)
 
             line = fp.readline()
+            pbar.update(1)
 
     #print(specialCase)
     #print(highTimestampA)
     #print(highTimestampW)
+    pbar.close()
 
-    count = {x:prefixList.count(x) for x in set(prefixList)}
-    countAnnouncement = {x:prefixListA.count(x) for x in set(prefixListA)}
-    countWithdrawn = {x:prefixListW.count(x) for x in set(prefixListW)}
+    count = {}
+    countAnnouncement = {}
+    countWithdrawn = {}
+
+    for i in prefixList:
+        if i in count.keys():
+            count[i] += 1
+        else:
+            count[i] = 1
+
+    for i in prefixListA:
+        if i in countAnnouncement.keys():
+            countAnnouncement[i] += 1
+        else:
+            countAnnouncement[i] = 1
+
+    for i in prefixListW:
+        if i in countWithdrawn.keys():
+            countWithdrawn[i] += 1
+        else:
+            countWithdrawn[i] = 1
+
+    #count = {x:prefixList.count(x) for x in set(prefixList)}
+    #countAnnouncement = {x:prefixListA.count(x) for x in set(prefixListA)}
+    #countWithdrawn = {x:prefixListW.count(x) for x in set(prefixListW)}
     count = len(count)
     countAnnouncement = len(countAnnouncement)
     countWithdrawn = len(countWithdrawn)
@@ -2154,6 +2185,8 @@ if __name__ == '__main__':
     path = sys.argv[2]
     numberas = sys.argv[3]
 
+    print("\n##########\n", collectorName, path, numberas, "\n##########\n")
+
     print(collectorName)
     print(path)
     print(numberas)
@@ -2161,7 +2194,7 @@ if __name__ == '__main__':
     if not os.path.exists(collectorName):
         os.makedirs(collectorName)
 
-    auxlist,ases,prefix,data = txttoMemory_new(path,collectorName)
+    msglist,ases,prefix,data = txttoMemory_new(path,collectorName)
     dataAW = copy.deepcopy(data)
     dataWA = copy.deepcopy(data)
 
@@ -2179,7 +2212,6 @@ if __name__ == '__main__':
     ASes = {x:ases.count(x) for x in set(ases)}
     txtIXP2(ASes,collectorName)
     prefixes = {x:prefix.count(x) for x in set(prefix)}
-
 
     calculateTimeWA(msglist, prefixes, collectorName, 0, dataWA, int(numberas))
     calculateTimeAW(msglist, prefixes, collectorName, 0, dataAW, int(numberas))
